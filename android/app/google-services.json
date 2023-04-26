@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "939193095617",
+    "project_id": "quizish-ee75f",
+    "storage_bucket": "quizish-ee75f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939193095617:android:26ddd11762488e5f404b40",
+        "android_client_info": {
+          "package_name": "com.example.quizish"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "939193095617-c60554s40cslb958k7sun0124sokeo4l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb6pCs2Py2o9IHccmNL4x2Xy39CQ83Nzg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "939193095617-bv4ljj3b25sbddsnuv95ogr5dk2uera7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "939193095617-2ok35a5h6bpgaqvfcvm72j5g7sg99ai4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.quizish"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
