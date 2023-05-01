@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quizish/Screens/homescreen.dart';
 
 class loginScreen extends StatefulWidget {
   const loginScreen({Key? key}) : super(key: key);
@@ -59,7 +60,7 @@ class _loginScreenState extends State<loginScreen> {
           final user = await _auth.signInWithEmailAndPassword(
               email: email, password: password);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => const Placeholder(),
+            builder: (context) => const homeScreen(),
           ));
         });
   }
