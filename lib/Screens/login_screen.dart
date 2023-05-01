@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class loginScreen extends StatefulWidget {
   const loginScreen({Key? key}) : super(key: key);
@@ -14,6 +15,8 @@ class _loginScreenState extends State<loginScreen> {
   final _username = TextEditingController();
   final _password = TextEditingController();
   final _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +39,7 @@ class _loginScreenState extends State<loginScreen> {
                   children: [
                     newUserBtn(context),
                     loginBtn(context),
+                    btnGoogle(),
                   ],
                 )
               ],
@@ -77,6 +81,8 @@ class _loginScreenState extends State<loginScreen> {
           final user = await _auth.createUserWithEmailAndPassword(
               email: email, password: password);
         });
+
+
   }
 
   TextFormField usernameInput() {
@@ -99,4 +105,52 @@ class _loginScreenState extends State<loginScreen> {
           : null,
     );
   }
+
+  Widget btnGoogle() {
+    return Padding(
+        padding: EdgeInsets.only(top: 128),
+        child: Container(
+          height: 60,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(
+                  Theme.of(context).primaryColorLight),
+              shape: MaterialStateProperty.all
+              <RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                    side: BorderSide(color: Colors.red)),
+              ),
+            ),
+            onPressed: () {
+              loginWithGoogle();
+            },
+            child: Text(
+              'Log in with Google',
+              style: TextStyle(
+                  fontSize: 18, color:
+              Theme.of(context).primaryColorDark),
+            ),
+          ),
+        ));
+  }
+
+  Future<String?> loginWithGoogle() async {
+    final GoogleSignInAccount? googleSignInAccount =
+        await googleSignIn.signIn();
+    final GoogleSignInAuthentication? googleSignInAuthentication =
+        await googleSignInAccount?.authentication;
+    final AuthCredential authCredential = GoogleAuthProvider.credential(
+      accessToken: googleSignInAuthentication?.accessToken,
+      idToken: googleSignInAuthentication?.idToken,
+    );
+    final UserCredential authResult =
+        await _auth.signInWithCredential(authCredential);
+    final User? user = authResult.user;
+    if (user != null) {
+      return '$user';
+    }
+    return null;
+  }
 }
+
