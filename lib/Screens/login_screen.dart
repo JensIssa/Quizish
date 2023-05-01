@@ -39,7 +39,7 @@ class _loginScreenState extends State<loginScreen> {
                   children: [
                     newUserBtn(context),
                     loginBtn(context),
-                    btnGoogle(),
+                    btnGoogle(context),
                   ],
                 )
               ],
@@ -106,7 +106,7 @@ class _loginScreenState extends State<loginScreen> {
     );
   }
 
-  Widget btnGoogle() {
+  Widget btnGoogle(BuildContext buildContext) {
     return Padding(
         padding: EdgeInsets.only(top: 128),
         child: Container(
@@ -123,7 +123,13 @@ class _loginScreenState extends State<loginScreen> {
               ),
             ),
             onPressed: () {
-              loginWithGoogle();
+              loginWithGoogle().then((value) => {
+                if (value != null)
+                  {
+                    Navigator.of(buildContext).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const Placeholder(),
+                    ))
+                  }});
             },
             child: Text(
               'Log in with Google',
@@ -134,8 +140,7 @@ class _loginScreenState extends State<loginScreen> {
           ),
         ));
   }
-
-  Future<String?> loginWithGoogle() async {
+    loginWithGoogle() async {
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
     final GoogleSignInAuthentication? googleSignInAuthentication =
@@ -146,11 +151,8 @@ class _loginScreenState extends State<loginScreen> {
     );
     final UserCredential authResult =
         await _auth.signInWithCredential(authCredential);
-    final User? user = authResult.user;
-    if (user != null) {
-      return '$user';
-    }
-    return null;
+
+    return authResult;
   }
 }
 
