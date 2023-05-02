@@ -8,16 +8,16 @@ class LeaderboardData {
 }
 
 final leaderboardData = [
-  LeaderboardData('Rasmus', 100),
-  LeaderboardData('Jens', 200),
-  LeaderboardData('Jakob', 300),
-  LeaderboardData('Andreas', 400),
-  LeaderboardData('Andy', 500),
-  LeaderboardData('Mathias', 600),
-  LeaderboardData('Søren', 700),
-  LeaderboardData('Henrik', 800),
-  LeaderboardData('Jeppe', 900),
-  LeaderboardData('Alex', 1000),
+  LeaderboardData('Rasmus', 1000),
+  LeaderboardData('Jens', 900),
+  LeaderboardData('Jakob', 800),
+  LeaderboardData('Andreas', 700),
+  LeaderboardData('Andy', 600),
+  LeaderboardData('Mathias', 500),
+  LeaderboardData('Søren', 400),
+  LeaderboardData('Henrik', 300),
+  LeaderboardData('Jeppe', 200),
+  LeaderboardData('Alex', 100),
 ];
 
 class Leaderboard extends StatefulWidget {
@@ -50,7 +50,7 @@ class _LeaderboardState extends State<Leaderboard> {
               subtitle: Text('Score: ${data.score}', style: TextStyle(fontSize: 18.0)),
               trailing: Text('${index + 1}', style: TextStyle(fontSize: 20.0)),
               contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              tileColor: index % 2 == 0 ? Colors.grey[800] : Colors.grey[700],
+              tileColor: index == 0 ? Colors.yellow[400]: index == 1 ? Colors.black12 : index == 2 ? Colors.brown : index % 2 == 0 ? Colors.grey[800] : Colors.grey[700],
             );
           },
         ),
