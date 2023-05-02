@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizish/Widgets/InGameAppBarWidget.dart';
 
 class PlayersScreen extends StatelessWidget {
   const PlayersScreen({Key? key}) : super(key: key);
@@ -6,7 +7,7 @@ class PlayersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Quizish')),
+      appBar: InGameAppBar(onLeave: () {  },),
       body: Stack(
         children: [
           Container(
