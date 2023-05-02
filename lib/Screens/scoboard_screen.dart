@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 
 class LeaderboardData {
   final String name;
@@ -10,17 +8,18 @@ class LeaderboardData {
 }
 
 final leaderboardData = [
-  LeaderboardData('John', 100),
-  LeaderboardData('Jane', 200),
-  LeaderboardData('Jack', 300),
-  LeaderboardData('Jill', 400),
-  LeaderboardData('James', 500),
-  LeaderboardData('Jenny', 600),
-  LeaderboardData('Jared', 700),
-  LeaderboardData('Jasmine', 800),
-  LeaderboardData('Jasper', 900),
-  LeaderboardData('Jade', 1000),
+  LeaderboardData('Rasmus', 100),
+  LeaderboardData('Jens', 200),
+  LeaderboardData('Jakob', 300),
+  LeaderboardData('Andreas', 400),
+  LeaderboardData('Andy', 500),
+  LeaderboardData('Mathias', 600),
+  LeaderboardData('Søren', 700),
+  LeaderboardData('Henrik', 800),
+  LeaderboardData('Jeppe', 900),
+  LeaderboardData('Alex', 1000),
 ];
+
 class Leaderboard extends StatefulWidget {
   const Leaderboard({Key? key}) : super(key: key);
 
@@ -31,19 +30,30 @@ class Leaderboard extends StatefulWidget {
 class _LeaderboardState extends State<Leaderboard> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Leaderboard'),
+    return Theme(
+      data: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.white,
+        accentColor: Colors.blue,
       ),
-      body: ListView.builder(
-        itemCount: leaderboardData.length,
-        itemBuilder: (context, index) {
-          final data = leaderboardData[index];
-          return ListTile(
-            title: Text(data.name),
-            subtitle: Text('Score: ${data.score}'),
-          );
-        },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Leaderboard'),
+        ),
+        body: ListView.builder(
+          itemCount: leaderboardData.length,
+          itemBuilder: (context, index) {
+            final data = leaderboardData[index];
+            return ListTile(
+              leading: Icon(Icons.emoji_events, color: Colors.amber),
+              title: Text(data.name, style: TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text('Score: ${data.score}', style: TextStyle(fontSize: 18.0)),
+              trailing: Text('${index + 1}', style: TextStyle(fontSize: 20.0)),
+              contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              tileColor: index % 2 == 0 ? Colors.grey[800] : Colors.grey[700],
+            );
+          },
+        ),
       ),
     );
   }
