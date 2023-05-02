@@ -31,7 +31,9 @@ class PlayersScreen extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            _buildPlayerList(),
+            Flexible(
+              child: _buildPlayerList(),
+            )
           ])
         ],
       ),
@@ -39,34 +41,15 @@ class PlayersScreen extends StatelessWidget {
   }
 
   _buildPlayerList() {
-    return Flexible(
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 3,
-        ),
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return Container(
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text(
-                'Player ${index + 1}',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
+    return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 200,
+            childAspectRatio: 3 / 1.5,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20),
+        itemBuilder: (context, index) =>
+            _playerNameBox('Player $index'),
+        itemCount: 10);
   }
 
   _quizName() {
@@ -115,6 +98,28 @@ class PlayersScreen extends StatelessWidget {
             ),
           )
         ]),
+      ),
+    );
+  }
+
+  _playerNameBox(String playerName) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: Text(
+            playerName,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+        ),
       ),
     );
   }
