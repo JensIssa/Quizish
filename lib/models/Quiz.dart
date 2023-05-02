@@ -4,24 +4,34 @@ class Quiz {
   String title;
   String id;
   String description;
-  User author;
+  User? author;
   List<Question> questions;
-  bool isPublic;
 
   Quiz(
       {required this.title,
       required this.id,
       required this.description,
       required this.author,
-      required this.questions,
-      required this.isPublic});
+      required this.questions});
+
+  Quiz.noAuthor(
+      {required this.title,
+      required this.id,
+      required this.description,
+      required this.questions});
+
+  Quiz.empty()
+      : title = '',
+        id = '',
+        description = '',
+        author = null,
+        questions = [];
 
   Quiz.fromMap(this.id, Map<String, dynamic> data)
       : title = data['title'],
         description = data['description'],
         author = data['author'],
-        questions = data['questions'],
-        isPublic = data['isPublic'];
+        questions = data['questions'];
 
   Map<String, dynamic> toMap() {
     return {
@@ -30,7 +40,7 @@ class Quiz {
       'description': description,
       'author': author,
       'questions': questions,
-      'isPublic': isPublic,
+
     };
   }
 }
@@ -57,6 +67,7 @@ class Question {
   String question;
   List<Answers> answers;
   String? imgUrl;
+
 
   Question({required this.question, required this.answers, this.imgUrl});
 

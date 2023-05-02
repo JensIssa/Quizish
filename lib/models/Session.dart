@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:kahoot_proof_of_concept/models/Quiz.dart';
+
+import 'Quiz.dart';
 
 class GameSession {
   String id;

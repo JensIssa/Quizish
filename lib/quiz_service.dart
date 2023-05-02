@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kahoot_proof_of_concept/models/Session.dart';
 
 import 'models/Quiz.dart';
 

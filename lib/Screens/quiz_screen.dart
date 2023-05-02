@@ -1,5 +1,6 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
+import 'package:quizish/models/Quiz.dart';
 
 import '../widgets/quiz_button.dart';
 
@@ -13,6 +14,39 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   final int _duration = 10;
   final CountDownController _countDownController = CountDownController();
+  int currentQuestion = 0;
+  late Quiz quiz;
+
+  @override
+  void initState() {
+    super.initState();
+
+    quiz = Quiz.noAuthor(
+        title: "quiz title",
+        id: "-1",
+        description: "description",
+        questions: [
+          Question(question: "question", imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/1200px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
+              answers: [
+            Answers(answer: "answer 1", isCorrect: true),
+            Answers(answer: "answer", isCorrect: false),
+            Answers(answer: "answer", isCorrect: false),
+            Answers(answer: "answer", isCorrect: false),
+          ]),
+          Question(question: "question", answers: [
+            Answers(answer: "answer", isCorrect: false),
+            Answers(answer: "answer 2", isCorrect: true),
+            Answers(answer: "answer", isCorrect: false),
+            Answers(answer: "answer", isCorrect: false),
+          ]),
+          Question(question: "question", answers: [
+            Answers(answer: "answer", isCorrect: false),
+            Answers(answer: "answer", isCorrect: false),
+            Answers(answer: "answer 3", isCorrect: true),
+            Answers(answer: "answer", isCorrect: false),
+          ]),
+        ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +65,7 @@ class _QuizScreenState extends State<QuizScreen> {
             direction: Axis.horizontal,
             children: [
               Text(
-                '1 out of 10',
+                '${currentQuestion + 1}/${quiz.questions.length}',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
               ),
               const Spacer(),
@@ -39,67 +73,77 @@ class _QuizScreenState extends State<QuizScreen> {
             ],
           ),
           Text(
-            'What is the capital of France?',
+            quiz.questions[currentQuestion].question,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
           ),
-          SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 3,
-              child: Image(
-                image: NetworkImage(
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/1200px-Paris_-_Eiffelturm_und_Marsfeld2.jpg'),
-              )
-          ),
+          _imageContainer(),
           Positioned(
             bottom: 0,
             child: _buttonGrid(),
           ),
-        ]
-        )
-    );
+        ]));
   }
 
+  Widget _imageContainer() {
+    if (quiz.questions[currentQuestion].imgUrl == null) {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height / 6,
+      );
+    }
+    return SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height / 3,
+        child: Image(
+          image: NetworkImage(
+              quiz.questions[currentQuestion].imgUrl.toString()),
+        ));
+  }
 
   _buttonGrid() {
     return Expanded(
       child: GridView.count(
         crossAxisCount: 2,
         children: [
-          Expanded(child: Padding(
+          Expanded(
+              child: Padding(
             padding: const EdgeInsets.all(5),
             child: QuizButton(
-              text: 'Paris',
+              text: quiz.questions[currentQuestion].answers[0].answer,
               onPressed: () {
                 _countDownController.pause();
               },
               color: Colors.green,
             ),
           )),
-          Expanded(child: Padding(
+          Expanded(
+              child: Padding(
             padding: const EdgeInsets.all(5),
             child: QuizButton(
-              text: 'London',
+              text: quiz.questions[currentQuestion].answers[1].answer,
               onPressed: () {
                 _countDownController.pause();
               },
               color: Colors.red,
             ),
           )),
-          Expanded(child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: QuizButton(
-              text: 'Berlin',
-              onPressed: () {
-                _countDownController.start();
-              },
-              color: Colors.orange,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: QuizButton(
+                text: quiz.questions[currentQuestion].answers[2].answer,
+                onPressed: () {
+                  _countDownController.start();
+                },
+                color: Colors.orange,
+              ),
             ),
           ),
-          ),
-          Expanded(child: Padding(
+          Expanded(
+              child: Padding(
             padding: const EdgeInsets.all(5),
             child: QuizButton(
-              text: 'Rome',
+              text: quiz.questions[currentQuestion].answers[3].answer,
               onPressed: () {
                 _countDownController.pause();
               },
@@ -210,5 +254,4 @@ class _QuizScreenState extends State<QuizScreen> {
       },
     );
   }
-
 }
