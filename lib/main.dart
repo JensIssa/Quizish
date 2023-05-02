@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:quizish/Screens/scoboard_screen.dart';
 import 'Screens/login_screen.dart';
 import 'firebase_options.dart';
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),debugShowCheckedModeBanner: false,
-      home: loginScreen(),
+      home: Leaderboard(),
     );
   }
 }
