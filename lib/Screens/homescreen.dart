@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:quizish/Widgets/bottom_navigation_bar.dart';
+import 'package:quizish/Screens/quiz_details_screen.dart';
+import 'package:quizish/widgets/bottom_navigation_bar.dart';
 
 
 class homeScreen extends StatefulWidget {
@@ -32,7 +33,7 @@ class _homeScreenState extends State<homeScreen> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) => Placeholder(),
+                          builder: (context) => QuizDetailsScreen(index),
                       ),
                   );
               },
