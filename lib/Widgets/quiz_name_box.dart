@@ -7,6 +7,7 @@ class QuizNameBox extends Material {
     required String questionAmount,
     required String joinCode
   }) : super(
+    color: Colors.black,
     key: key,
     child: Padding(
       padding: const EdgeInsets.all(10),

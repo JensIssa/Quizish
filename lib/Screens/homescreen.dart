@@ -25,23 +25,26 @@ class _homeScreenState extends State<homeScreen> {
       ),
       bottomNavigationBar: PurpleNavigationBar(onPressed: () {  },
       ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-        children: List.generate(5,
-                (index) => GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => QuizDetailsScreen(index),
-                      ),
-                  );
-              },
-                  child: Hero(
-                    tag: 'quiz-$index',
-                    child: QuizNameBox(quizName: '', questionAmount: '', joinCode: '',),
-                  ),
+      body: Container(
+        color: Colors.black,
+        child: GridView.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: spacing,
+          crossAxisSpacing: spacing,
+          children: List.generate(5,
+                  (index) => GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => QuizDetailsScreen(index),
+                        ),
+                    );
+                },
+                    child: Hero(
+                      tag: 'quiz-$index',
+                      child: QuizNameBox(quizName: '', questionAmount: '', joinCode: '',),
+                    ),
+            ),
           ),
         ),
       ),
