@@ -37,7 +37,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.4.2
   firebase_core: ^2.10.0
+  circular_countdown_timer: ^0.2.3
+  cloud_firestore: ^4.5.1
   google_sign_in: ^6.1.0
+
 
 dev_dependencies:
   flutter_test:
