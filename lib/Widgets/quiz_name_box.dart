@@ -20,7 +20,7 @@ class QuizNameBox extends Material {
               SizedBox(height: 5,),
               Center(
                 child: Text(
-                  quizName,
+                  quizName + ' Quizname',
                   style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:quizish/Screens/quiz_details_screen.dart';
 import 'package:quizish/widgets/bottom_navigation_bar.dart';
+import 'package:quizish/widgets/quiz_name_box.dart';
 
 
 class homeScreen extends StatefulWidget {
@@ -39,54 +40,11 @@ class _homeScreenState extends State<homeScreen> {
               },
                   child: Hero(
                     tag: 'quiz-$index',
-                    child: _quizNameBox('Quizname', '', ''),
+                    child: QuizNameBox(quizName: '', questionAmount: '', joinCode: '',),
                   ),
           ),
         ),
       ),
     );
   }
-
-  _quizNameBox(String quizName, String questionAmount, String joinCode) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.circular(10),
-          ),
-            child: Column(
-              children: [
-                SizedBox(height: 5,),
-                Center(
-                  child: Text(
-                    quizName,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white
-                    ),
-                  ),
-                ),
-                SizedBox(height: 5,),
-                Text(
-                  questionAmount +  ' Question',
-                  style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white
-                  ),
-                ),
-                Text(
-                  joinCode + ' Gamepin #',
-                  style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white
-                  ),
-                ),
-              ]
-            ),
-          ),
-    );
-  }
-
 }
