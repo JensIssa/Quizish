@@ -4,6 +4,8 @@ import 'package:quizish/Screens/quiz_details_screen.dart';
 import 'package:quizish/widgets/bottom_navigation_bar.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
 
+import '../widgets/Appbar.dart';
+
 
 class homeScreen extends StatefulWidget {
 
@@ -18,10 +20,8 @@ class _homeScreenState extends State<homeScreen> {
   Widget build(BuildContext context) {
     const spacing = 5.0;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text ('Homescreen'),
-        centerTitle: true,
-        backgroundColor: Colors.purpleAccent,
+      appBar: PurpleAppBar(title: 'Homescreen',
+        backgroundColor: Color(0xFF7885b2),
       ),
       bottomNavigationBar: PurpleNavigationBar(onPressed: () {  },
       ),
