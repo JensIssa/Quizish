@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quizish/widgets/Appbar.dart';
 import 'package:quizish/widgets/quiz_button.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
 
@@ -13,10 +14,8 @@ class QuizDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Quiz Details'),
-        centerTitle: true,
-        backgroundColor: Colors.purpleAccent,
+      appBar: PurpleAppBar(title: 'Quiz Details',
+        backgroundColor: Color(0xFF7885b2),
       ),
       bottomNavigationBar: PurpleNavigationBar(
         onPressed: () {},

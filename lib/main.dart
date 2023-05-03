@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:quizish/Screens/join_screen.dart';
 import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'Screens/login_screen.dart';

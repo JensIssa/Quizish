@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizish/widgets/Appbar.dart';
 
 class LeaderboardData {
   final String name;
@@ -37,8 +38,9 @@ class _LeaderboardState extends State<Leaderboard> {
         accentColor: Colors.blue,
       ),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('1 out of 10'),
+        appBar: PurpleAppBar(
+          title: 'Leader board',
+          backgroundColor: Color(0xFF7885b2),
         ),
         body: ListView.separated(
           separatorBuilder: (context, index) => const Divider(

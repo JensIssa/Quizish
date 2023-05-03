@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quizish/Widgets/quiz_button.dart';
+import 'package:quizish/widgets/Appbar.dart';
 
 class joinScreen extends StatefulWidget {
   const joinScreen({Key? key}) : super(key: key);
@@ -13,8 +14,8 @@ class _joinScreenState extends State<joinScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Join Session'),
+      appBar: PurpleAppBar(title: 'Join Session',
+        backgroundColor: Color(0xFF7885b2),
       ),
       backgroundColor: Colors.black12,
       body: Column(
