@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:quizish/Screens/register_screen.dart';
 
 class loginScreen extends StatefulWidget {
   const loginScreen({Key? key}) : super(key: key);
@@ -71,19 +72,12 @@ class _loginScreenState extends State<loginScreen> {
 
   ElevatedButton newUserBtn(BuildContext context) {
     return ElevatedButton(
-        child: const Text('New User'),
-        onPressed: () async {
-          if (!_formKey.currentState!.validate()) {
-            setState(() {});
-            return;
-          }
-          final email = _username.value.text;
-          final password = _password.value.text;
-          final user = await _auth.createUserWithEmailAndPassword(
-              email: email, password: password);
+        child: const Text('Sign up here'),
+        onPressed: () {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const registerScreen(),
+          ));
         });
-
-
   }
 
   TextFormField usernameInput() {
