@@ -70,7 +70,10 @@ class _registerScreenState extends State<registerScreen> {
   TextFormField usernameInput() {
     return TextFormField(
       controller: _username,
-      decoration: const InputDecoration(label: Text('Username')),
+      decoration: const InputDecoration(label: Text('Username',
+        style: TextStyle(fontSize: 20),
+      )
+      ),
       validator: (value) =>
       (value == null || value.length > 12 || value.length < 3) ? 'Invalid username (minimum 3 and maximum 12)' : null,
     );
