@@ -20,12 +20,12 @@ class _loginScreenState extends State<loginScreen> {
   final _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurpleAppBar(title: 'Quizish Login',
-          backgroundColor: Color(0xFF7885b2),
+      appBar: PurpleAppBar(
+        title: 'Quizish Login',
+        backgroundColor: Color(0xFF7885b2),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -39,14 +39,10 @@ class _loginScreenState extends State<loginScreen> {
                 SizedBox(height: 30),
                 passwordInput(),
                 const SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    newUserBtn(context),
-                    loginBtn(context),
-                    btnGoogle(context),
-                  ],
-                )
+                loginBtn(context),
+                SizedBox(height: 15),
+                newUserBtn(context),
+                btnGoogle(context),
               ],
             ),
           ),
@@ -57,7 +53,20 @@ class _loginScreenState extends State<loginScreen> {
 
   ElevatedButton loginBtn(BuildContext context) {
     return ElevatedButton(
-        child: const Text('login'),
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStateColor.resolveWith((states) => Color(0xFF7885b2)),
+            fixedSize: MaterialStatePropertyAll(Size.fromWidth(150))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text('Login',
+              style: TextStyle(fontSize: 20),
+            ),
+            SizedBox(width: 8),
+            Icon(Icons.arrow_forward),
+          ],
+        ),
         onPressed: () async {
           if (!_formKey.currentState!.validate()) {
             setState(() {});
@@ -75,10 +84,15 @@ class _loginScreenState extends State<loginScreen> {
 
   ElevatedButton newUserBtn(BuildContext context) {
     return ElevatedButton(
-        child: const Text('Sign up here'),
+      style: ButtonStyle(
+          fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
+        backgroundColor: MaterialStateColor.resolveWith((states) =>
+            Color(0xFF7885b2))
+      ),
+        child: const Text('Sign up here', style: TextStyle(fontSize: 20),),
         onPressed: () {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const registerScreen(),
+            builder: (context) => const registerScreen(),
           ));
         });
   }
@@ -89,7 +103,10 @@ class _loginScreenState extends State<loginScreen> {
       controller: _email,
       decoration: const InputDecoration(
           prefixIcon: Icon(Icons.email),
-          label: Text('Email', style: TextStyle(fontSize: 20),)),
+          label: Text(
+            'Email',
+            style: TextStyle(fontSize: 20),
+          )),
       validator: (value) =>
           (value == null || !value.contains('@')) ? 'Email required' : null,
     );
@@ -100,7 +117,10 @@ class _loginScreenState extends State<loginScreen> {
       controller: _password,
       decoration: const InputDecoration(
           prefixIcon: Icon(Icons.lock),
-          label: Text('Password', style: TextStyle(fontSize: 20),)),
+          label: Text(
+            'Password',
+            style: TextStyle(fontSize: 20),
+          )),
       obscureText: true,
       validator: (value) => (value == null || value.length < 6)
           ? 'Password required (min 6 chars)'
@@ -117,8 +137,7 @@ class _loginScreenState extends State<loginScreen> {
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(
                   Theme.of(context).primaryColorLight),
-              shape: MaterialStateProperty.all
-              <RoundedRectangleBorder>(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0),
                     side: BorderSide(color: Colors.red)),
@@ -126,23 +145,25 @@ class _loginScreenState extends State<loginScreen> {
             ),
             onPressed: () {
               loginWithGoogle().then((value) => {
-                if (value != null)
-                  {
-                    Navigator.of(buildContext).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const Placeholder(),
-                    ))
-                  }});
+                    if (value != null)
+                      {
+                        Navigator.of(buildContext)
+                            .pushReplacement(MaterialPageRoute(
+                          builder: (context) => const Placeholder(),
+                        ))
+                      }
+                  });
             },
             child: Text(
               'Log in with Google',
               style: TextStyle(
-                  fontSize: 18, color:
-              Theme.of(context).primaryColorDark),
+                  fontSize: 18, color: Theme.of(context).primaryColorDark),
             ),
           ),
         ));
   }
-    loginWithGoogle() async {
+
+  loginWithGoogle() async {
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
     final GoogleSignInAuthentication? googleSignInAuthentication =
@@ -157,4 +178,3 @@ class _loginScreenState extends State<loginScreen> {
     return authResult;
   }
 }
-
