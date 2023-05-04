@@ -8,7 +8,7 @@ class PurpleNavigationBar extends Material {
     key: key,
     child: BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.purpleAccent,
+      backgroundColor: Color(0xFF7885b2),
       items: [
       const BottomNavigationBarItem(
             icon: Icon(Icons.home, color: Colors.black,),
