@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quizish/Screens/register_screen.dart';
+import 'package:quizish/widgets/Appbar.dart';
 
 class loginScreen extends StatefulWidget {
   const loginScreen({Key? key}) : super(key: key);
@@ -14,7 +15,7 @@ class loginScreen extends StatefulWidget {
 
 class _loginScreenState extends State<loginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _username = TextEditingController();
+  final _email = TextEditingController();
   final _password = TextEditingController();
   final _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -23,8 +24,8 @@ class _loginScreenState extends State<loginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
+      appBar: PurpleAppBar(title: 'Quizish Login',
+          backgroundColor: Color(0xFF7885b2),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -33,7 +34,9 @@ class _loginScreenState extends State<loginScreen> {
             key: _formKey,
             child: Column(
               children: [
-                usernameInput(),
+                SizedBox(height: 15),
+                emailInput(),
+                SizedBox(height: 30),
                 passwordInput(),
                 const SizedBox(height: 32),
                 Row(
@@ -60,7 +63,7 @@ class _loginScreenState extends State<loginScreen> {
             setState(() {});
             return;
           }
-          final email = _username.value.text;
+          final email = _email.value.text;
           final password = _password.value.text;
           final user = await _auth.signInWithEmailAndPassword(
               email: email, password: password);
@@ -80,11 +83,13 @@ class _loginScreenState extends State<loginScreen> {
         });
   }
 
-  TextFormField usernameInput() {
+  TextFormField emailInput() {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
-      controller: _username,
-      decoration: const InputDecoration(label: Text('Email')),
+      controller: _email,
+      decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.email),
+          label: Text('Email', style: TextStyle(fontSize: 20),)),
       validator: (value) =>
           (value == null || !value.contains('@')) ? 'Email required' : null,
     );
@@ -93,7 +98,9 @@ class _loginScreenState extends State<loginScreen> {
   TextFormField passwordInput() {
     return TextFormField(
       controller: _password,
-      decoration: const InputDecoration(label: Text('Password')),
+      decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.lock),
+          label: Text('Password', style: TextStyle(fontSize: 20),)),
       obscureText: true,
       validator: (value) => (value == null || value.length < 6)
           ? 'Password required (min 6 chars)'
