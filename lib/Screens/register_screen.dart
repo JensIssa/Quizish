@@ -21,7 +21,8 @@ class _registerScreenState extends State<registerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurpleAppBar(title: 'Register your user',
+      appBar: PurpleAppBar(
+        title: 'Register your user',
         backgroundColor: Color(0xFF7885b2),
       ),
       body: SingleChildScrollView(
@@ -42,8 +43,7 @@ class _registerScreenState extends State<registerScreen> {
                   backBtn(context)
                 ],
               ),
-            )
-        ),
+            )),
       ),
     );
   }
@@ -56,10 +56,13 @@ class _registerScreenState extends State<registerScreen> {
         );
       },
       style: ButtonStyle(
-        backgroundColor: MaterialStateColor.resolveWith((states) =>
-            Color(0xFF7885b2)),
+        fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
+        backgroundColor:
+            MaterialStateColor.resolveWith((states) => Color(0xFF7885b2)),
       ),
-      label: Text('Back', style: TextStyle(fontSize: 20),
+      label: Text(
+        'Back',
+        style: TextStyle(fontSize: 20),
       ),
       icon: Icon(Icons.arrow_back),
     );
@@ -68,8 +71,9 @@ class _registerScreenState extends State<registerScreen> {
   ElevatedButton registerBtn(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateColor.resolveWith((states) =>
-              Color(0xFF7885b2)),
+          fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
+          backgroundColor:
+              MaterialStateColor.resolveWith((states) => Color(0xFF7885b2)),
         ),
         child: const Text('New User', style: TextStyle(fontSize: 20)),
         onPressed: () async {
@@ -81,9 +85,8 @@ class _registerScreenState extends State<registerScreen> {
           final password = _password.value.text;
           final user = await _auth.createUserWithEmailAndPassword(
               email: email, password: password);
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const loginScreen()
-          ),
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const loginScreen()),
           );
         });
   }
@@ -93,14 +96,15 @@ class _registerScreenState extends State<registerScreen> {
       controller: _username,
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.account_circle),
-        label: Text('Username',
+        label: Text(
+          'Username',
           style: TextStyle(fontSize: 20),
         ),
       ),
       validator: (value) =>
-      (value == null || value.length > 12 || value.length < 3)
-          ? 'Invalid username (minimum 3 and maximum 12)'
-          : null,
+          (value == null || value.length > 12 || value.length < 3)
+              ? 'Invalid username (minimum 3 and maximum 12)'
+              : null,
     );
   }
 
@@ -109,13 +113,13 @@ class _registerScreenState extends State<registerScreen> {
       controller: _password,
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.lock),
-        label: Text('Password',
+        label: Text(
+          'Password',
           style: TextStyle(fontSize: 20),
         ),
       ),
       obscureText: true,
-      validator: (value) =>
-      (value == null || value.length < 6)
+      validator: (value) => (value == null || value.length < 6)
           ? 'Password required (min 6 chars)'
           : null,
     );
@@ -127,12 +131,13 @@ class _registerScreenState extends State<registerScreen> {
       controller: _email,
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.email),
-        label: Text('Email',
+        label: Text(
+          'Email',
           style: TextStyle(fontSize: 20),
         ),
       ),
       validator: (value) =>
-      (value == null || !value.contains('@')) ? 'Email required' : null,
+          (value == null || !value.contains('@')) ? 'Email required' : null,
     );
   }
 }
