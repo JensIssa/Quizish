@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'models/Quiz.dart';
+import '../models/Quiz.dart';
 
 class UserKeys {
   static const name = 'name';
