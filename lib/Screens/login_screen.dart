@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quizish/FireServices/UserService.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quizish/Screens/register_screen.dart';
@@ -19,6 +20,7 @@ class _loginScreenState extends State<loginScreen> {
   final _password = TextEditingController();
   final _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  final userService = UserService();
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +76,7 @@ class _loginScreenState extends State<loginScreen> {
           }
           final email = _email.value.text;
           final password = _password.value.text;
-          final user = await _auth.signInWithEmailAndPassword(
-              email: email, password: password);
+          userService.signIn(email, password);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const homeScreen(),
           ));

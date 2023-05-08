@@ -23,4 +23,8 @@ class UserService {
       UserAuth.displayName: displayName,
     });
   }
+
+  Future<void> signIn(String email, String password) async{
+    await _auth.signInWithEmailAndPassword(email: email, password: password);
+  }
 }
