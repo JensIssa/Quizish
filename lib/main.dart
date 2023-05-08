@@ -4,6 +4,7 @@ import 'package:quizish/Screens/join_screen.dart';
 import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'Screens/login_screen.dart';
+import 'Screens/register_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),debugShowCheckedModeBanner: false,
-      home: homeScreen(),
+      home: loginScreen(),
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quizish/widgets/Appbar.dart';
 import 'package:quizish/widgets/quiz_button.dart';
