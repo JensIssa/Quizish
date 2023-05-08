@@ -86,7 +86,7 @@ class _registerScreenState extends State<registerScreen> {
           final email = _email.value.text;
           final password = _password.value.text;
           final username = _username.value.text;
-         userService.signUp(email, password, username);
+          userService.signUp(email, password, username);
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const loginScreen()),
           );
