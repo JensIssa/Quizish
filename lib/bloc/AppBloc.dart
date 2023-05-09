@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
@@ -14,10 +13,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({required AuthService authService})
       : _authService = authService,
         super(
-        authService.currentUser.isNotEmpty
-            ? AppState.authenticated(authService.currentUser)
-            : const AppState.unauthenticated(),
-          ) {
+          authService.currentUser.isNotEmpty
+              ? AppState.authenticated(authService.currentUser)
+              : const AppState.unauthenticated(),
+        ) {
     on<AppUserChanged>(_onUserChanged);
     on<AppLogOutRequested>(_onLogOutRequested);
   }
@@ -25,12 +24,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   void _onUserChanged(
     AppUserChanged event,
     Emitter<AppState> emit,
-      )
-     {}
+  ) {
+    emit(event.user.isNotEmpty
+        ? AppState.authenticated(event.user)
+        : const AppState.unauthenticated());
+  }
 
   void _onLogOutRequested(
     AppLogOutRequested event,
     Emitter<AppState> emit,
-    ) {}
-
+  ) {
+    unawaited(_authService.logOut());
+  }
 }
