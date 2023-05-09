@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:json_theme/json_theme.dart';
 import 'package:quizish/Screens/join_screen.dart';
 import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/Screens/homescreen.dart';
@@ -10,23 +14,29 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final themeStr = await rootBundle.loadString('assets/theme.json');
+  final themeJson = json.decode(themeStr);
+  final theme = ThemeDecoder.decodeThemeData(themeJson)!;
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  runApp(MyApp(theme: theme));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final ThemeData theme;
+
+  const MyApp({super.key, required this.theme});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Quizish Loging',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),debugShowCheckedModeBanner: false,
+      theme: theme,
+      title: 'Quizish Logging',
       home: loginScreen(),
     );
   }

@@ -25,9 +25,9 @@ class _loginScreenState extends State<loginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurpleAppBar(
-        title: 'Quizish Login',
-        backgroundColor: Color(0xFF7885b2),
+      appBar: AppBar(
+        title: Text('Quizish Login'),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -56,8 +56,6 @@ class _loginScreenState extends State<loginScreen> {
   ElevatedButton loginBtn(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-            backgroundColor:
-                MaterialStateColor.resolveWith((states) => Color(0xFF7885b2)),
             fixedSize: MaterialStatePropertyAll(Size.fromWidth(150))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -87,8 +85,6 @@ class _loginScreenState extends State<loginScreen> {
     return ElevatedButton(
       style: ButtonStyle(
           fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
-        backgroundColor: MaterialStateColor.resolveWith((states) =>
-            Color(0xFF7885b2))
       ),
         child: const Text('Sign up here', style: TextStyle(fontSize: 20),),
         onPressed: () {
@@ -155,10 +151,14 @@ class _loginScreenState extends State<loginScreen> {
                       }
                   });
             },
-            child: Text(
-              'Log in with Google',
-              style: TextStyle(
-                  fontSize: 18, color: Theme.of(context).primaryColorDark),
+            child: Row(
+              children: [
+                Text(
+                  'Log in with Google',
+                  style: TextStyle(
+                      fontSize: 18, color: Theme.of(context).primaryColorDark),
+                ),
+              ],
             ),
           ),
         ));
