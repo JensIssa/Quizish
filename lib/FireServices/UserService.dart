@@ -1,12 +1,26 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class UserAuth {
-  static const uid = 'uid';
-  static const email = 'email';
-  static const displayName = 'name';
+class User extends Equatable {
+  final String? uid;
+  final String? email;
+  final String? displayName;
+
+  const User({required this.uid,  this.email, this.displayName});
+
+  static const empty = User(uid: '');
+
+  bool get isEmpty => this == User.empty;
+
+  bool get isNotEmpty => this != User.empty;
+
+  @override
+  List<Object?> get props => [uid, email, displayName];
 }
+
+
 
 class UserService {
 
