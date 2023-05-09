@@ -25,16 +25,12 @@ class User extends Equatable {
 class UserService {
 
   final _auth = FirebaseAuth.instance;
-
   final db = FirebaseFirestore.instance;
 
   Future<void>  signUp(String email, String password, String displayName) async {
     final user = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
     await db.collection('users').doc(user.user?.uid).set({
-      UserAuth.uid: user.user?.uid,
-      UserAuth.email: email,
-      UserAuth.displayName: displayName,
     });
   }
 
