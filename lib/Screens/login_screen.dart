@@ -76,7 +76,7 @@ class _loginScreenState extends State<loginScreen> {
           final password = _password.value.text;
           userService.signIn(email, password);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => const homeScreen(),
+            builder: (context) => const HomeScreen(),
           ));
         });
   }

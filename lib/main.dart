@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_theme/json_theme.dart';
+import 'package:quizish/Screens/in_app_container.dart';
 import 'package:quizish/Screens/join_screen.dart';
+import 'package:quizish/Screens/quiz_screen.dart';
 import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'Screens/login_screen.dart';
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: theme,
       title: 'Quizish Logging',
-      home: loginScreen(),
+      home: QuizScreen(),
     );
   }
 }

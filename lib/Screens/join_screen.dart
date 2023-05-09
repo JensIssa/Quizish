@@ -3,22 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:quizish/Widgets/quiz_button.dart';
 import 'package:quizish/widgets/Appbar.dart';
 
-class joinScreen extends StatefulWidget {
-  const joinScreen({Key? key}) : super(key: key);
+
+
+class JoinScreen extends StatefulWidget  {
+  const JoinScreen({Key? key}) : super(key: key);
 
   @override
-  State<joinScreen> createState() => _joinScreenState();
+  State<JoinScreen> createState() => _JoinScreenState();
+
+
 }
 
-class _joinScreenState extends State<joinScreen> {
+class _JoinScreenState extends State<JoinScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PurpleAppBar(title: 'Join Session',
-        backgroundColor: Color(0xFF7885b2),
-      ),
-      backgroundColor: Colors.black12,
-      body: Column(
+    return Column(
         children: [
           const SizedBox(height: 40),
           Center(
@@ -58,7 +57,6 @@ class _joinScreenState extends State<joinScreen> {
             )
             ),
         ],
-      )
     );
   }
 }

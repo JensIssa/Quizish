@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: ^4.5.1
   google_sign_in: ^6.1.0
   json_theme: ^4.0.0
+  tuple: ^2.0.1
 
 
 dev_dependencies:

@@ -23,9 +23,9 @@ class _registerScreenState extends State<registerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurpleAppBar(
-        title: 'Register your user',
-        backgroundColor: Color(0xFF7885b2),
+      appBar: AppBar(
+        title: Text('Quizish Register'),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -59,8 +59,6 @@ class _registerScreenState extends State<registerScreen> {
       },
       style: ButtonStyle(
         fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
-        backgroundColor:
-            MaterialStateColor.resolveWith((states) => Color(0xFF7885b2)),
       ),
       label: Text(
         'Back',
@@ -74,8 +72,6 @@ class _registerScreenState extends State<registerScreen> {
     return ElevatedButton(
         style: ButtonStyle(
           fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
-          backgroundColor:
-              MaterialStateColor.resolveWith((states) => Color(0xFF7885b2)),
         ),
         child: const Text('New User', style: TextStyle(fontSize: 20)),
         onPressed: () async {
