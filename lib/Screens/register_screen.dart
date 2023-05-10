@@ -1,8 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/FireServices/UserService.dart';
 import 'package:quizish/Screens/login_screen.dart';
 import 'package:quizish/Widgets/quiz_button.dart';
+import 'package:quizish/bloc/RegisterCubit.dart';
+import 'package:quizish/bloc/RegisterState.dart';
 import 'package:quizish/widgets/Appbar.dart';
 
 class registerScreen extends StatefulWidget {
@@ -30,24 +36,43 @@ class _registerScreenState extends State<registerScreen> {
       body: SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  SizedBox(height: 15),
-                  usernameInput(),
-                  SizedBox(height: 30),
-                  emailInput(),
-                  SizedBox(height: 30),
-                  passwordInput(),
-                  const SizedBox(height: 32),
-                  registerBtn(context),
-                  backBtn(context)
-                ],
-              ),
-            )),
+            child: BlocProvider<RegisterCubit>(
+              create: (_) => RegisterCubit(context.read<AuthService>()),
+              child: RegisterForm(context),
+            ),
+          ),
       ),
     );
+  }
+
+  BlocListener RegisterForm(BuildContext context) {
+    return BlocListener<RegisterCubit, RegisterState>(
+        listener: (context, state) {
+          if (state.status == RegisterStatus.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Registration failed'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              SizedBox(height: 15),
+              usernameInput(),
+              SizedBox(height: 30),
+              emailInput(),
+              SizedBox(height: 30),
+              passwordInput(),
+              const SizedBox(height: 32),
+              registerBtn(context),
+              backBtn(context)
+            ],
+          ),
+        ));
   }
 
   ElevatedButton backBtn(BuildContext context) {
@@ -110,36 +135,49 @@ class _registerScreenState extends State<registerScreen> {
     );
   }
 
-  TextFormField passwordInput() {
-    return TextFormField(
-      controller: _password,
-      decoration: const InputDecoration(
-        prefixIcon: Icon(Icons.lock),
-        label: Text(
-          'Password',
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
-      obscureText: true,
-      validator: (value) => (value == null || value.length < 6)
-          ? 'Password required (min 6 chars)'
-          : null,
+  BlocBuilder passwordInput() {
+    return BlocBuilder<RegisterCubit, RegisterState>(
+      buildWhen: (previous, current) => previous.email != current.email,
+      builder: (context, state) {
+        return TextFormField(
+          controller: _password,
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.lock),
+            label: Text(
+                'Password',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          obscureText: true,
+          validator: (value) => (value == null || value.length < 6)
+            ? 'Password required (min 6 chars)'
+            : null,
+        );
+      }
     );
   }
-
-  TextFormField emailInput() {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      controller: _email,
-      decoration: const InputDecoration(
-        prefixIcon: Icon(Icons.email),
-        label: Text(
-          'Email',
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
-      validator: (value) =>
-          (value == null || !value.contains('@')) ? 'Email required' : null,
+  
+  BlocBuilder emailInput() {
+    return BlocBuilder<RegisterCubit, RegisterState>(
+        buildWhen: (previous, current) => previous.email != current.email,
+        builder: (context, state) {
+          return TextFormField(
+            keyboardType: TextInputType.emailAddress,
+            controller: _email,
+            decoration: const InputDecoration(
+              prefixIcon: Icon(Icons.email),
+              label: Text(
+                'E-mail',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            validator: (value) =>
+            (value == null || !value.contains('@')) ? 'Email required' : null,
+          );
+        }
     );
   }
 }
+
+
+
