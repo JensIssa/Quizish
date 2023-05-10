@@ -2,6 +2,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:quizish/FireServices/UserService.dart';
 
+import '../models/User.dart';
+
 abstract class AppEvent extends Equatable {
 
 const AppEvent();
