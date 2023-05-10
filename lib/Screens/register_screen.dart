@@ -35,12 +35,12 @@ class _registerScreenState extends State<registerScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: BlocProvider<RegisterCubit>(
-              create: (_) => RegisterCubit(context.read<AuthService>()),
-              child: RegisterForm(context),
-            ),
+          padding: const EdgeInsets.all(16),
+          child: BlocProvider<RegisterCubit>(
+            create: (_) => RegisterCubit(context.read<AuthService>()),
+            child: RegisterForm(context),
           ),
+        ),
       ),
     );
   }
@@ -95,26 +95,33 @@ class _registerScreenState extends State<registerScreen> {
     );
   }
 
-  ElevatedButton registerBtn(BuildContext context) {
-    return ElevatedButton(
-        style: ButtonStyle(
-          fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
-          backgroundColor:
-              MaterialStateColor.resolveWith((states) => Color(0xFF7885b2)),
-        ),
-        child: const Text('New User', style: TextStyle(fontSize: 20)),
-        onPressed: () async {
-          if (!_formKey.currentState!.validate()) {
-            setState(() {});
-            return;
-          }
-          final email = _email.value.text;
-          final password = _password.value.text;
-          final username = _username.value.text;
-          userService.signUp(email, password, username);
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const loginScreen()),
-          );
+  BlocBuilder registerBtn(BuildContext context) {
+    return BlocBuilder<RegisterCubit, RegisterState>(
+        buildWhen: (previous, current) => previous.status != current.status,
+        builder: (context, state) {
+          return state.status == RegisterStatus.submitting ?
+              const CircularProgressIndicator():
+            ElevatedButton(
+              style: ButtonStyle(
+                fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
+                backgroundColor: MaterialStateColor.resolveWith(
+                    (states) => Color(0xFF7885b2)),
+              ),
+              child: const Text('New User', style: TextStyle(fontSize: 20)),
+              onPressed: () async {
+                if (!_formKey.currentState!.validate()) {
+                  setState(() {});
+                  return;
+                }
+                context.read<RegisterCubit>().registerFormSubmitted();
+                final email = _email.value.text;
+                final password = _password.value.text;
+                final username = _username.value.text;
+                userService.signUp(email, password, username);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => const loginScreen()),
+                );
+              });
         });
   }
 
@@ -137,26 +144,25 @@ class _registerScreenState extends State<registerScreen> {
 
   BlocBuilder passwordInput() {
     return BlocBuilder<RegisterCubit, RegisterState>(
-      buildWhen: (previous, current) => previous.email != current.email,
-      builder: (context, state) {
-        return TextFormField(
-          controller: _password,
-          decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.lock),
-            label: Text(
+        buildWhen: (previous, current) => previous.email != current.email,
+        builder: (context, state) {
+          return TextFormField(
+            controller: _password,
+            decoration: const InputDecoration(
+              prefixIcon: Icon(Icons.lock),
+              label: Text(
                 'Password',
-              style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20),
+              ),
             ),
-          ),
-          obscureText: true,
-          validator: (value) => (value == null || value.length < 6)
-            ? 'Password required (min 6 chars)'
-            : null,
-        );
-      }
-    );
+            obscureText: true,
+            validator: (value) => (value == null || value.length < 6)
+                ? 'Password required (min 6 chars)'
+                : null,
+          );
+        });
   }
-  
+
   BlocBuilder emailInput() {
     return BlocBuilder<RegisterCubit, RegisterState>(
         buildWhen: (previous, current) => previous.email != current.email,
@@ -171,13 +177,10 @@ class _registerScreenState extends State<registerScreen> {
                 style: TextStyle(fontSize: 20),
               ),
             ),
-            validator: (value) =>
-            (value == null || !value.contains('@')) ? 'Email required' : null,
+            validator: (value) => (value == null || !value.contains('@'))
+                ? 'Email required'
+                : null,
           );
-        }
-    );
+        });
   }
 }
-
-
-
