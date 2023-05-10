@@ -11,14 +11,13 @@ import 'package:quizish/bloc/RegisterCubit.dart';
 import 'package:quizish/bloc/RegisterState.dart';
 import 'package:quizish/widgets/Appbar.dart';
 
-class registerScreen extends StatefulWidget {
-  const registerScreen({Key? key}) : super(key: key);
 
-  @override
-  State<registerScreen> createState() => _registerScreenState();
-}
+class registerScreen extends StatelessWidget{
+   registerScreen({Key? key}) : super(key: key);
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) =>  registerScreen());
+  }
 
-class _registerScreenState extends State<registerScreen> {
   final _formKey = GlobalKey<FormState>();
   final _username = TextEditingController();
   final _password = TextEditingController();
@@ -110,7 +109,6 @@ class _registerScreenState extends State<registerScreen> {
               child: const Text('New User', style: TextStyle(fontSize: 20)),
               onPressed: () async {
                 if (!_formKey.currentState!.validate()) {
-                  setState(() {});
                   return;
                 }
                 context.read<RegisterCubit>().registerFormSubmitted();

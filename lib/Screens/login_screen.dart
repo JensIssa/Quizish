@@ -122,11 +122,8 @@ class _loginScreenState extends State<loginScreen> {
             Color(0xFF7885b2))
       ),
         child: const Text('Sign up here', style: TextStyle(fontSize: 20),),
-        onPressed: () {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => const registerScreen(),
-          ));
-        });
+      onPressed: () => Navigator.of(context).push<void>(registerScreen.route()),
+    );
   }
 
   BlocBuilder emailInput() {
