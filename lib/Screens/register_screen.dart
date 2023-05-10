@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/FireServices/AuthService.dart';
-import 'package:quizish/FireServices/UserService.dart';
 import 'package:quizish/Screens/login_screen.dart';
 import 'package:quizish/widgets/Appbar.dart';
 import '../bloc/register_bloc/RegisterCubit.dart';
@@ -20,8 +19,6 @@ class registerScreen extends StatelessWidget{
   final _username = TextEditingController();
   final _password = TextEditingController();
   final _email = TextEditingController();
-  final _auth = FirebaseAuth.instance;
-  final userService = UserService();
 
   @override
   Widget build(BuildContext context) {
@@ -110,10 +107,6 @@ class registerScreen extends StatelessWidget{
                   return;
                 }
                 context.read<RegisterCubit>().registerFormSubmitted();
-                final email = _email.value.text;
-                final password = _password.value.text;
-                final username = _username.value.text;
-                userService.signUp(email, password, username);
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => const loginScreen()),
                 );
