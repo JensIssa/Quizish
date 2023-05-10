@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:quizish/FireServices/AuthService.dart';
+import 'package:quizish/FireServices/UserService.dart';
 import 'package:quizish/bloc/AppEvent.dart';
 import 'package:quizish/bloc/app_state.dart';
 

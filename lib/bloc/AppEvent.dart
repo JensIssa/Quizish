@@ -1,4 +1,6 @@
+
 import 'package:equatable/equatable.dart';
+import 'package:quizish/FireServices/UserService.dart';
 
 import '../models/User.dart';
 

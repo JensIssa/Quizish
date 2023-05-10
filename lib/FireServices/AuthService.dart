@@ -1,12 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_Auth;
+import 'package:quizish/FireServices/UserService.dart';
 
 import '../models/User.dart';
 
 class AuthService{
 
   final firebase_Auth.FirebaseAuth _firebaseAuth;
-  final db = FirebaseFirestore.instance;
 
   AuthService({firebase_Auth.FirebaseAuth? firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? firebase_Auth.FirebaseAuth.instance;
@@ -27,7 +26,7 @@ class AuthService{
    required String password,
  }) async {
     try{
-      _firebaseAuth.createUserWithEmailAndPassword(
+      await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
     } on firebase_Auth.FirebaseAuthException catch (e) {
       throw Exception(e.message);
@@ -35,27 +34,17 @@ class AuthService{
    }
 
   Future<void> loginWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
-    try {
+  required String email,
+  required String password,
+  }) async
+  {
+    try{
       await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      final user = _firebaseAuth.currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          'email': user.email,
-          'displayName': user.displayName,
-          'uid': user.uid
-        });
-      }
-    }  catch (e) {
-      throw Exception();
+          email: email, password: password);
+    } on firebase_Auth.FirebaseAuthException catch (e) {
+      throw Exception(e.message);
     }
   }
-
 
   Future<void> logOut() async {
     try{
@@ -65,7 +54,6 @@ class AuthService{
     }
   }
 }
-
 extension on firebase_Auth.User {
   User get toUser {
     return User(
