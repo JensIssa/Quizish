@@ -1,15 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/FireServices/UserService.dart';
 import 'package:quizish/Screens/login_screen.dart';
-import 'package:quizish/Widgets/quiz_button.dart';
-import 'package:quizish/bloc/RegisterCubit.dart';
-import 'package:quizish/bloc/RegisterState.dart';
 import 'package:quizish/widgets/Appbar.dart';
+import '../bloc/register_bloc/RegisterCubit.dart';
+import '../bloc/register_bloc/RegisterState.dart';
 
 
 class registerScreen extends StatelessWidget{

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quizish/bloc/RegisterState.dart';
+import 'package:quizish/bloc/register_bloc/RegisterState.dart';
 
-import '../FireServices/AuthService.dart';
+import '../../FireServices/AuthService.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
   final AuthService _authService;

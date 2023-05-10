@@ -39,7 +39,7 @@ class _homeScreenState extends State<homeScreen> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => QuizDetailsScreen(index),
+                            builder: (context) => QuizDetailsScreen(),
                         ),
                     );
                 },

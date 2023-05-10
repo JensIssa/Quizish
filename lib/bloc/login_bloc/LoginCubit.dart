@@ -1,7 +1,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/FireServices/AuthService.dart';
-import 'package:quizish/bloc/LoginState.dart';
+import 'package:quizish/bloc/login_bloc/LoginState.dart';
 
 class LoginCubit extends Cubit<LoginState>{
   final AuthService _authService;

@@ -7,8 +7,8 @@ import 'package:quizish/FireServices/UserService.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quizish/Screens/register_screen.dart';
-import 'package:quizish/bloc/LoginCubit.dart';
-import 'package:quizish/bloc/LoginState.dart';
+import 'package:quizish/bloc/login_bloc/LoginCubit.dart';
+import 'package:quizish/bloc/login_bloc/LoginState.dart';
 import 'package:quizish/widgets/Appbar.dart';
 
 class loginScreen extends StatefulWidget {
