@@ -102,7 +102,7 @@ class loginScreen extends StatelessWidget {
           onPressed: () async {
             context.read<LoginCubit>().logInWithCredentials();;
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const homeScreen(),
+              builder: (context) => const HomeScreen(),
             ));
           });
     });
@@ -115,6 +115,7 @@ class newUserBtn extends StatelessWidget {
     return ElevatedButton(
       style: ButtonStyle(
           fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
+      ),
       child: const Text(
         'Sign up here',
         style: TextStyle(fontSize: 20),
