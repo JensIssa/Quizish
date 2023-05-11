@@ -10,6 +10,7 @@ import 'package:quizish/Screens/join_screen.dart';
 import 'package:quizish/Screens/quiz_screen.dart';
 import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/Screens/homescreen.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/bloc/AppBloc.dart';
@@ -52,11 +53,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return RepositoryProvider.value(value: _authService,
       child: BlocProvider(
         create: (_) => AppBloc(authService: _authService),
         child: AppView(theme: theme,),
       ),
+
     );
   }
   
