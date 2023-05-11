@@ -45,9 +45,8 @@ Future<void> main() {
 class MyApp extends StatelessWidget {
   final ThemeData theme;
 
-  const MyApp({super.key, required this.theme});
 
-  const MyApp({Key? key, required AuthService authService}) : _authService = authService, super(key: key);
+  const MyApp({Key? key, required this.theme, required AuthService authService}) : _authService = authService, super(key: key);
 
   final AuthService _authService;
   // This widget is the root of your application.
@@ -56,7 +55,7 @@ class MyApp extends StatelessWidget {
     return RepositoryProvider.value(value: _authService,
       child: BlocProvider(
         create: (_) => AppBloc(authService: _authService),
-        child: AppView(),
+        child: AppView(theme: theme,),
       ),
     );
   }

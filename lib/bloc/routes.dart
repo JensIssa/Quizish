@@ -8,7 +8,7 @@ List<Page> onGenerateAppViewPages(AppState state, List<Page<dynamic>> pages) {
     case AppStatus.authenticated:
       return [
         MaterialPage(
-          child: homeScreen(),
+          child: HomeScreen(),
         ),
       ];
     case AppStatus.unauthenticated:
