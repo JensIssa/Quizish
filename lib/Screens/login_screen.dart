@@ -1,26 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/FireServices/UserService.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quizish/Screens/register_screen.dart';
+import 'package:quizish/bloc/login_bloc/LoginCubit.dart';
+import 'package:quizish/bloc/login_bloc/LoginState.dart';
 import 'package:quizish/widgets/Appbar.dart';
 
-class loginScreen extends StatefulWidget {
-  const loginScreen({Key? key}) : super(key: key);
 
-  @override
-  State<loginScreen> createState() => _loginScreenState();
-}
-
-class _loginScreenState extends State<loginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _email = TextEditingController();
-  final _password = TextEditingController();
-  final _auth = FirebaseAuth.instance;
+class loginScreen extends StatelessWidget {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final userService = UserService();
+
+  loginScreen({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,98 +29,153 @@ class _loginScreenState extends State<loginScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                SizedBox(height: 15),
-                emailInput(),
-                SizedBox(height: 30),
-                passwordInput(),
-                const SizedBox(height: 32),
-                loginBtn(context),
-                SizedBox(height: 15),
-                newUserBtn(context),
-                btnGoogle(context),
-              ],
-            ),
+          child: BlocProvider(
+              create: (_) =>
+                  LoginCubit(
+                      context.read<AuthService>()
+                  ),
+              child: LoginForm()
           ),
         ),
       ),
     );
   }
+}
 
-  ElevatedButton loginBtn(BuildContext context) {
-    return ElevatedButton(
-        style: ButtonStyle(
-            fixedSize: MaterialStatePropertyAll(Size.fromWidth(150))),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text('Login',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(width: 8),
-            Icon(Icons.arrow_forward),
-          ],
-        ),
-        onPressed: () async {
-          if (!_formKey.currentState!.validate()) {
-            setState(() {});
-            return;
-          }
-          final email = _email.value.text;
-          final password = _password.value.text;
-          userService.signIn(email, password);
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ));
-        });
+   class LoginForm extends StatelessWidget {
+     LoginForm({Key? key}) : super(key: key);
+     final _formKey = GlobalKey<FormState>();
+
+     @override
+     Widget build(BuildContext context) {
+       return BlocListener<LoginCubit, LoginState>(
+         listener: (context, state) {
+           if (state.status == LoginStatus.error) {
+             ScaffoldMessenger.of(context).showSnackBar(
+                 SnackBar(
+                   content: Text("Login Failed"),
+                   backgroundColor: Colors.red,
+                 )
+             );
+
+           }
+         },
+         child: Form(
+           key: _formKey,
+           child: Column(
+             children: [
+               SizedBox(height: 15),
+               emailInput(),
+               SizedBox(height: 30),
+               passwordInput(),
+               const SizedBox(height: 32),
+               loginBtn(),
+               SizedBox(height: 15),
+               newUserBtn(),
+               btnGoogle(context),
+             ],
+           ),
+         ),
+       );
+     }
+   }
+
+  class loginBtn extends StatelessWidget  {
+    @override
+    Widget build(BuildContext context){
+    return BlocBuilder<LoginCubit, LoginState>(
+        buildWhen: (previous, current) => previous.status != current.status,
+        builder: (context, status){
+      return ElevatedButton(
+          style: ButtonStyle(
+              fixedSize: MaterialStatePropertyAll(Size.fromWidth(150))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text('Login',
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(width: 8),
+              Icon(Icons.arrow_forward),
+            ],
+          ),
+          onPressed: () async {
+            context.read<LoginCubit>().logInWithCredentials();;
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const homeScreen(),
+            ));
+          });
+    });
+  }
   }
 
-  ElevatedButton newUserBtn(BuildContext context) {
+class newUserBtn extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
           fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
+      child: const Text(
+        'Sign up here',
+        style: TextStyle(fontSize: 20),
       ),
-        child: const Text('Sign up here', style: TextStyle(fontSize: 20),),
-        onPressed: () {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => const registerScreen(),
-          ));
+      onPressed: () => Navigator.of(context).push<void>(registerScreen.route()),
+    );
+  }
+}
+
+
+class emailInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginCubit, LoginState>(
+        buildWhen: (previous, current) => previous.email != current.email,
+        builder: (context, state) {
+          return TextFormField(
+            keyboardType: TextInputType.emailAddress,
+            onChanged: (email) {
+              context.read<LoginCubit>().emailChanged(email);
+            },
+            decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.email),
+                label: Text(
+                  'Email',
+                  style: TextStyle(fontSize: 20),
+                )),
+            validator: (value) => (value == null || !value.contains('@'))
+                ? 'Email required'
+                : null,
+          );
         });
   }
+}
 
-  TextFormField emailInput() {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      controller: _email,
-      decoration: const InputDecoration(
-          prefixIcon: Icon(Icons.email),
-          label: Text(
-            'Email',
-            style: TextStyle(fontSize: 20),
-          )),
-      validator: (value) =>
-          (value == null || !value.contains('@')) ? 'Email required' : null,
+class passwordInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginCubit, LoginState>(
+        buildWhen: (previous, current) => previous.password != current.password,
+        builder: (context, state) {
+          return TextFormField(
+            onChanged: (password) {
+              context.read<LoginCubit>().passwordChanged(password);
+            },
+            decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.lock),
+                label: Text(
+                  'Password',
+                  style: TextStyle(fontSize: 20),
+                )),
+            obscureText: true,
+            validator: (value) =>
+            (value == null || value.length < 6)
+                ? 'Password required (min 6 chars)'
+                : null,
+          );
+        }
     );
   }
-
-  TextFormField passwordInput() {
-    return TextFormField(
-      controller: _password,
-      decoration: const InputDecoration(
-          prefixIcon: Icon(Icons.lock),
-          label: Text(
-            'Password',
-            style: TextStyle(fontSize: 20),
-          )),
-      obscureText: true,
-      validator: (value) => (value == null || value.length < 6)
-          ? 'Password required (min 6 chars)'
-          : null,
-    );
-  }
+}
 
   Widget btnGoogle(BuildContext buildContext) {
     return Padding(
@@ -133,7 +185,7 @@ class _loginScreenState extends State<loginScreen> {
           child: ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(
-                  Theme.of(context).primaryColorLight),
+                  Theme.of(buildContext).primaryColorLight),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0),
@@ -151,20 +203,18 @@ class _loginScreenState extends State<loginScreen> {
                       }
                   });
             },
-            child: Row(
-              children: [
-                Text(
-                  'Log in with Google',
-                  style: TextStyle(
-                      fontSize: 18, color: Theme.of(context).primaryColorDark),
-                ),
-              ],
+            child: Text(
+              'Log in with Google',
+              style: TextStyle(
+                  fontSize: 18, color: Theme.of(buildContext).primaryColorDark),
             ),
           ),
         ));
   }
 
   loginWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final _auth = FirebaseAuth.instance;
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
     final GoogleSignInAuthentication? googleSignInAuthentication =
@@ -178,4 +228,4 @@ class _loginScreenState extends State<loginScreen> {
 
     return authResult;
   }
-}
+
