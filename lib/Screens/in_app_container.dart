@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tuple/tuple.dart';
 
 import '../Widgets/animated_indexed_stack.dart';
+import '../bloc/AppBloc.dart';
+import '../bloc/AppEvent.dart';
 import 'homescreen.dart';
 import 'join_screen.dart';
 
@@ -30,12 +33,17 @@ class _InAppContainerState extends State<InAppContainer> {
       _selectedIndex = index;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: _widgetOptions[_selectedIndex].item2
+        title: _widgetOptions[_selectedIndex].item2,
+          actions: [
+            IconButton(onPressed: () {
+              context.read<AppBloc>().add(AppLogOutRequested());
+            }, icon: const Icon(Icons.exit_to_app))
+          ],
+
         ),
       body: AnimatedIndexedStack(
         duration: const Duration(milliseconds: 200),
