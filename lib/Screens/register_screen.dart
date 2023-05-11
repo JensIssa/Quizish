@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/FireServices/AuthService.dart';
-import 'package:quizish/FireServices/UserService.dart';
 import 'package:quizish/Screens/login_screen.dart';
 import 'package:quizish/widgets/Appbar.dart';
 import '../bloc/register_bloc/RegisterCubit.dart';
@@ -16,13 +15,6 @@ class registerScreen extends StatelessWidget {
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => registerScreen());
   }
-
-  final _formKey = GlobalKey<FormState>();
-  final _username = TextEditingController();
-  final _password = TextEditingController();
-  final _email = TextEditingController();
-  final _auth = FirebaseAuth.instance;
-  final userService = UserService();
 
   @override
   Widget build(BuildContext context) {
@@ -110,9 +102,7 @@ class registerScreen extends StatelessWidget {
       return BlocBuilder<RegisterCubit, RegisterState>(
           buildWhen: (previous, current) => previous.status != current.status,
           builder: (context, state) {
-            return state.status == RegisterStatus.submitting ?
-            const CircularProgressIndicator() :
-            ElevatedButton(
+           return ElevatedButton(
                 style: ButtonStyle(
                   fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
                   backgroundColor: MaterialStateColor.resolveWith(
@@ -121,10 +111,12 @@ class registerScreen extends StatelessWidget {
                 child: const Text('New User', style: TextStyle(fontSize: 20)),
                 onPressed: () async {
                   context.read<RegisterCubit>().registerFormSubmitted();
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                        builder: (context) => loginScreen()),
-                  );
+                  if(state.status == RegisterStatus.success) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                          builder: (context) => loginScreen()),
+                    );
+                  }
                 });
           });
     }

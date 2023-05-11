@@ -35,12 +35,15 @@ class RegisterCubit extends Cubit<RegisterState> {
   }
 
   Future<void> registerFormSubmitted() async {
-    if (state.status == RegisterStatus.submitting) return;
-    emit(state.copyWith(status: RegisterStatus.submitting));
+    if (state.status == RegisterStatus.submitting) {
+      emit(state.copyWith(status: RegisterStatus.submitting));
+    }
     try {
       await _authService.signUp(email: state.email, password: state.password, displayName: state.displayName);
           emit(state.copyWith(status: RegisterStatus.success));
-    } catch (_) {}
+    } catch (_) {
+      emit(state.copyWith(status: RegisterStatus.error));
+    }
   }
 
 }

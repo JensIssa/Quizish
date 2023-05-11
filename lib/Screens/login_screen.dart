@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/FireServices/AuthService.dart';
-import 'package:quizish/FireServices/UserService.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quizish/Screens/register_screen.dart';
@@ -14,7 +13,6 @@ import 'package:quizish/widgets/Appbar.dart';
 
 class loginScreen extends StatelessWidget {
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  final userService = UserService();
 
   loginScreen({Key? key}) : super(key: key);
 
@@ -53,11 +51,10 @@ class loginScreen extends StatelessWidget {
            if (state.status == LoginStatus.error) {
              ScaffoldMessenger.of(context).showSnackBar(
                  SnackBar(
-                   content: Text("Login Failed"),
+                   content: Text("Login Failed - Please provide correct E-mail and password"),
                    backgroundColor: Colors.red,
                  )
              );
-
            }
          },
          child: Form(
@@ -107,7 +104,7 @@ class loginScreen extends StatelessWidget {
           });
     });
   }
-  }
+}
 
 class newUserBtn extends StatelessWidget {
   @override
