@@ -1,6 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_Auth;
-import 'package:quizish/FireServices/UserService.dart';
-
 import '../models/User.dart';
 
 class AuthService{

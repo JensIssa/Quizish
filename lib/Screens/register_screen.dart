@@ -10,10 +10,11 @@ import '../bloc/register_bloc/RegisterCubit.dart';
 import '../bloc/register_bloc/RegisterState.dart';
 
 
-class registerScreen extends StatelessWidget{
-   registerScreen({Key? key}) : super(key: key);
+class registerScreen extends StatelessWidget {
+  registerScreen({Key? key}) : super(key: key);
+
   static Route route() {
-    return MaterialPageRoute<void>(builder: (_) =>  registerScreen());
+    return MaterialPageRoute<void>(builder: (_) => registerScreen());
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -41,35 +42,39 @@ class registerScreen extends StatelessWidget{
       ),
     );
   }
+}
 
-  BlocListener RegisterForm(BuildContext context) {
-    return BlocListener<RegisterCubit, RegisterState>(
-        listener: (context, state) {
-          if (state.status == RegisterStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Registration failed'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-        },
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 15),
-              usernameInput(),
-              SizedBox(height: 30),
-              emailInput(),
-              SizedBox(height: 30),
-              passwordInput(),
-              const SizedBox(height: 32),
-              registerBtn(context),
-              backBtn(context)
-            ],
-          ),
-        ));
+  class RegisterForm extends StatelessWidget {
+     RegisterForm({Key? key}): super(key: key)
+   @override
+    Widget build(BuildContext context) {
+      return BlocListener<RegisterCubit, RegisterState>(
+          listener: (context, state) {
+            if (state.status == RegisterStatus.error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Registration failed'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
+          child: Form(
+            child: Column(
+              children: [
+                SizedBox(height: 15),
+                usernameInput(),
+                SizedBox(height: 30),
+                emailInput(),
+                SizedBox(height: 30),
+                passwordInput(),
+                const SizedBox(height: 32),
+                registerBtn(context),
+                backBtn(context)
+              ],
+            ),
+          ));
+    }
   }
 
   ElevatedButton backBtn(BuildContext context) {
@@ -110,10 +115,6 @@ class registerScreen extends StatelessWidget{
                   return;
                 }
                 context.read<RegisterCubit>().registerFormSubmitted();
-                final email = _email.value.text;
-                final password = _password.value.text;
-                final username = _username.value.text;
-                userService.signUp(email, password, username);
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => const loginScreen()),
                 );
@@ -123,6 +124,7 @@ class registerScreen extends StatelessWidget{
 
   TextFormField usernameInput() {
     return TextFormField(
+
       controller: _username,
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.account_circle),
