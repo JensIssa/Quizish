@@ -111,9 +111,7 @@ class registerScreen extends StatelessWidget {
       return BlocBuilder<RegisterCubit, RegisterState>(
           buildWhen: (previous, current) => previous.status != current.status,
           builder: (context, state) {
-            return state.status == RegisterStatus.submitting ?
-            const CircularProgressIndicator() :
-            ElevatedButton(
+           return ElevatedButton(
                 style: ButtonStyle(
                   fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
                   backgroundColor: MaterialStateColor.resolveWith(
@@ -122,10 +120,19 @@ class registerScreen extends StatelessWidget {
                 child: const Text('New User', style: TextStyle(fontSize: 20)),
                 onPressed: () async {
                   context.read<RegisterCubit>().registerFormSubmitted();
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                        builder: (context) => loginScreen()),
-                  );
+                  if(state.status == RegisterStatus.success) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                          builder: (context) => loginScreen()),
+                    );
+                  } else if (state.status == RegisterStatus.error){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Registration failed'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 });
           });
     }
