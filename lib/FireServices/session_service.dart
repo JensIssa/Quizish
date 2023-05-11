@@ -53,8 +53,16 @@ class SessionService {
     final session = await sessionRef.get();
     final currentSession = GameSession.fromMap(session.id, session.data()!);
     final currentQuestion = currentSession.quiz.questions[currentSession.currentQuestion];
-    final correctAnswer = currentQuestion.correctAnswer;
-    if (answer == correctAnswer) {
+    final correctAnswer = currentQuestion.correctAnswers;
+
+    bool userAnswerIsCorrect = false;
+    for (var i = 0; i < correctAnswer.length; i++) { //At most a length of 4
+      if (answer == correctAnswer[i]) {
+        userAnswerIsCorrect = true;
+      }
+    }
+
+    if (userAnswerIsCorrect) {
       final scores = currentSession.scores;
       scores[currentSession.host] = scores[currentSession.host]! + 1;
       await sessionRef.update({'scores': scores});

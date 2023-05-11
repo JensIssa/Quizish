@@ -48,8 +48,9 @@ class Quiz {
 class Answers {
   String answer;
   bool isCorrect;
+  int index = 0;
 
-  Answers({required this.answer, required this.isCorrect});
+  Answers({required this.answer, required this.index, required this.isCorrect});
 
   Answers.fromMap(Map<String, dynamic> data)
       : answer = data['answer'],
@@ -64,27 +65,58 @@ class Answers {
 }
 
 class Question {
+  int index = -1;
   String question;
   List<Answers> answers;
   String? imgUrl;
+  int timer = 20;
 
+  Question.emptyWithIndex(this.index)
+      : question = '',
+        answers = [
+          Answers(answer: '', isCorrect: false, index: 0),
+          Answers(answer: '', isCorrect: false, index: 1),
+          Answers(answer: '', isCorrect: false, index: 2),
+          Answers(answer: '', isCorrect: false, index: 3),
+        ];
 
   Question.empty()
       : question = '',
-        answers = [];
+        answers = [
+          Answers(answer: '', isCorrect: false, index: 0),
+          Answers(answer: '', isCorrect: false, index: 1),
+          Answers(answer: '', isCorrect: false, index: 2),
+          Answers(answer: '', isCorrect: false, index: 3),
+        ];
 
-  Question({required this.question, required this.answers, this.imgUrl});
+  Question({required this.index, required this.question, required this.answers, this.imgUrl, required this.timer});
+
+  Question.noImgOrTimer({required this.index, required this.question, required this.answers});
+
+  Question.noImg({required this.index, required this.question, required this.answers, required this.timer});
 
   Question.fromMap(Map<String, dynamic> data)
-      : question = data['question'],
-        answers = data['answers'];
+      : index = data['index'],
+        question = data['question'],
+        answers = data['answers'],
+        imgUrl = data['imgUrl'],
+        timer = data['timer'];
 
-  get correctAnswer => answers.firstWhere((element) => element.isCorrect);
+  Question.fromMapNoImg(Map<String, dynamic> data)
+      : index = data['index'],
+        question = data['question'],
+        answers = data['answers'],
+        timer = data['timer'];
+
+  get correctAnswers => answers.where((answer) => answer.isCorrect);
 
   Map<String, dynamic> toMap() {
     return {
+      'index': index,
       'question': question,
       'answers': answers,
+      'imgUrl': imgUrl,
+      'timer': timer,
     };
   }
 }

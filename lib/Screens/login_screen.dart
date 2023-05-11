@@ -12,6 +12,7 @@ import 'package:quizish/widgets/Appbar.dart';
 
 
 class loginScreen extends StatelessWidget {
+  final googleIcon = Image.network("https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg");
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   loginScreen({Key? key}) : super(key: key);
@@ -114,7 +115,8 @@ class newUserBtn extends StatelessWidget {
           fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
       ),
       child: const Text(
-        'Sign up here',
+        'Sign up',
+        textAlign: TextAlign.center,
         style: TextStyle(fontSize: 20),
       ),
       onPressed: () => Navigator.of(context).push<void>(registerScreen.route()),
@@ -182,12 +184,10 @@ class passwordInput extends StatelessWidget {
           height: 60,
           child: ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(
-                  Theme.of(buildContext).primaryColorLight),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0),
-                    side: BorderSide(color: Colors.red)),
+                    side: const BorderSide(color: Colors.white70)),
               ),
             ),
             onPressed: () {
@@ -201,13 +201,29 @@ class passwordInput extends StatelessWidget {
                       }
                   });
             },
-            child: Text(
-              'Log in with Google',
-              style: TextStyle(
-                  fontSize: 18, color: Theme.of(buildContext).primaryColorDark),
+            child: SizedBox(
+              width: 182,
+              child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/google_logo.png',
+                        fit: BoxFit.contain,
+                        height: 32,
+                        isAntiAlias: true,
+                    ),
+                    const SizedBox(width: 16),
+                    const Text(
+                      'Google Sign-In',
+                      style: TextStyle(
+                          fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ));
+        );
   }
 
   loginWithGoogle() async {

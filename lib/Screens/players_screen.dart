@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quizish/Widgets/InGameAppBarWidget.dart';
+import 'package:quizish/Widgets/in_game_appbar.dart';
 
 class PlayersScreen extends StatelessWidget {
   const PlayersScreen({Key? key}) : super(key: key);
