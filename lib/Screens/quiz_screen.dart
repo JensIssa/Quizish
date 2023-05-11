@@ -107,8 +107,8 @@ class _QuizScreenState extends State<QuizScreen> {
         children: [
           Expanded(
               child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: QuizButton(
+              padding: const EdgeInsets.all(5),
+              child: QuizButton(
               text: quiz.questions[currentQuestion].answers[0].answer,
               onPressed: () {
                 _countDownController.pause();
