@@ -16,7 +16,7 @@ class LoginCubit extends Cubit<LoginState>{
     emit(state.copyWith(password: value, status: LoginStatus.initial));
   }
   Future<void> logInWithCredentials() async {
-    if (state.status == LoginStatus.submitting) return;
+    if (state.status == LoginStatus.submitting)
     emit(state.copyWith(status: LoginStatus.submitting));
     try {
       await _authService.loginWithEmailAndPassword(
@@ -24,6 +24,8 @@ class LoginCubit extends Cubit<LoginState>{
         password: state.password,
       );
       emit(state.copyWith(status: LoginStatus.succes));
-    } catch (_) {}
+    } catch (_) {
+      emit(state.copyWith(status: LoginStatus.error));
+    }
   }
   }

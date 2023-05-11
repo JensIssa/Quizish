@@ -51,11 +51,10 @@ class loginScreen extends StatelessWidget {
            if (state.status == LoginStatus.error) {
              ScaffoldMessenger.of(context).showSnackBar(
                  SnackBar(
-                   content: Text("Login Failed"),
+                   content: Text("Login Failed - Please provide correct E-mail and password"),
                    backgroundColor: Colors.red,
                  )
              );
-
            }
          },
          child: Form(
@@ -100,14 +99,14 @@ class loginScreen extends StatelessWidget {
             ],
           ),
           onPressed: () async {
-            context.read<LoginCubit>().logInWithCredentials();;
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const homeScreen(),
-            ));
+            context.read<LoginCubit>().logInWithCredentials();
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const homeScreen(),
+              ));
           });
     });
   }
-  }
+}
 
 class newUserBtn extends StatelessWidget {
   @override
