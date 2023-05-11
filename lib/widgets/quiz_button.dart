@@ -23,7 +23,6 @@ class QuizButton extends Material {
           ),
         ),
       ),
-
   );
 
 }

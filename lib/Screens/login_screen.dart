@@ -20,9 +20,9 @@ class loginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurpleAppBar(
-        title: 'Quizish Login',
-        backgroundColor: Color(0xFF7885b2),
+      appBar: AppBar(
+        title: Text('Quizish Login'),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -85,8 +85,6 @@ class loginScreen extends StatelessWidget {
         builder: (context, status){
       return ElevatedButton(
           style: ButtonStyle(
-              backgroundColor:
-              MaterialStateColor.resolveWith((states) => Color(0xFF7885b2)),
               fixedSize: MaterialStatePropertyAll(Size.fromWidth(150))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -99,10 +97,10 @@ class loginScreen extends StatelessWidget {
             ],
           ),
           onPressed: () async {
-            context.read<LoginCubit>().logInWithCredentials();
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const homeScreen(),
-              ));
+            context.read<LoginCubit>().logInWithCredentials();;
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ));
           });
     });
   }
@@ -114,8 +112,7 @@ class newUserBtn extends StatelessWidget {
     return ElevatedButton(
       style: ButtonStyle(
           fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
-          backgroundColor:
-              MaterialStateColor.resolveWith((states) => Color(0xFF7885b2))),
+      ),
       child: const Text(
         'Sign up here',
         style: TextStyle(fontSize: 20),

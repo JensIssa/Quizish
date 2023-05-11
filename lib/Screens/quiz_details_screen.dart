@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quizish/widgets/Appbar.dart';
 import 'package:quizish/widgets/quiz_button.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
 
-import '../widgets/bottom_navigation_bar.dart';
 
 class QuizDetailsScreen extends StatelessWidget {
 
@@ -11,20 +9,16 @@ class QuizDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PurpleAppBar(title: 'Quiz Details',
-        backgroundColor: Color(0xFF7885b2),
-      ),
-      bottomNavigationBar: PurpleNavigationBar(
-        onPressed: () {},
-      ),
-      body: Container(
-        color: Colors.black,
+    return Material(
         child: Column(
           children: [
             Container(
-                child: QuizNameBox(quizName: '', questionAmount: '', joinCode: ''),
-              height: 250,
+                height: 250,
+                child: QuizNameBox(
+                  quizName: '',
+                  questionAmount: '',
+                  joinCode: '',
+                ),
             ),
             Text('Description', style: TextStyle(fontSize: 24,
                 fontWeight: FontWeight.bold, color: Colors.white),
@@ -33,8 +27,8 @@ class QuizDetailsScreen extends StatelessWidget {
               style: TextStyle(fontSize: 16, color: Colors.white),
             ),
             ),
-            Container(child:
-            QuizButton(text:'Start', onPressed: () {}, color: Colors.green),
+            Container(
+              child: QuizButton(text:'Start', onPressed: () {}, color: Colors.green),
             height: 130,
             width: 150,
             alignment: Alignment.center,
@@ -42,7 +36,7 @@ class QuizDetailsScreen extends StatelessWidget {
             )
           ],
         ),
-      ),
     );
   }
+
 }

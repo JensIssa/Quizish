@@ -29,18 +29,12 @@ class Leaderboard extends StatefulWidget {
 }
 
 class _LeaderboardState extends State<Leaderboard> {
+
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.white,
-        accentColor: Colors.blue,
-      ),
-      child: Scaffold(
-        appBar: PurpleAppBar(
-          title: 'Leader board',
-          backgroundColor: Color(0xFF7885b2),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Leaderboard'),
         ),
         body: ListView.separated(
           separatorBuilder: (context, index) => const Divider(
@@ -57,11 +51,15 @@ class _LeaderboardState extends State<Leaderboard> {
               title: Text(data.name, style: TextStyle(fontWeight: FontWeight.bold)),
               trailing: Text('${data.score}', style: TextStyle(fontSize: 20.0)),
               contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              tileColor: index == 0 ? Colors.yellow[600]: index == 1 ? Colors.grey[700] : index == 2 ? Colors.brown : index % 2 == 0 ? Colors.black12 : Colors.black12,
+              tileColor: index == 0 ? _tileColor(context, 0.9): index == 1 ? _tileColor(context, 0.6) : index == 2 ? _tileColor(context, 0.3) : index % 2 == 0 ? _tileColor(context, 0) : _tileColor(context, 0),
             );
           },
         ),
-      ),
     );
   }
+
+  _tileColor(BuildContext context, double opacity) {
+    return Theme.of(context).colorScheme.secondary.withOpacity(opacity);
+  }
+
 }

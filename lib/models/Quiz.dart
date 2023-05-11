@@ -69,6 +69,10 @@ class Question {
   String? imgUrl;
 
 
+  Question.empty()
+      : question = '',
+        answers = [];
+
   Question({required this.question, required this.answers, this.imgUrl});
 
   Question.fromMap(Map<String, dynamic> data)
