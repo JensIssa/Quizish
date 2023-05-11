@@ -117,13 +117,6 @@ class registerScreen extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => loginScreen()),
                     );
-                  } else if (state.status == RegisterStatus.error){
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Registration failed'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
                   }
                 });
           });
