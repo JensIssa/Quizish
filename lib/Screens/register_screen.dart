@@ -27,9 +27,9 @@ class registerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurpleAppBar(
-        title: 'Register your user',
-        backgroundColor: Color(0xFF7885b2),
+      appBar: AppBar(
+        title: Text('Quizish Register'),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -43,6 +43,7 @@ class registerScreen extends StatelessWidget {
     );
   }
 }
+
 
   class RegisterForm extends StatelessWidget {
     RegisterForm({Key? key}) : super(key: key);
@@ -93,8 +94,6 @@ class registerScreen extends StatelessWidget {
         },
         style: ButtonStyle(
           fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
-          backgroundColor:
-          MaterialStateColor.resolveWith((states) => Color(0xFF7885b2)),
         ),
         label: Text(
           'Back',

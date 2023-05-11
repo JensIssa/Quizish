@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/Screens/quiz_details_screen.dart';
+import 'package:quizish/Widgets/bottom_navigation_bar.dart';
 import 'package:quizish/bloc/AppBloc.dart';
 import 'package:quizish/widgets/bottom_navigation_bar.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
@@ -9,27 +10,22 @@ import 'package:quizish/widgets/quiz_name_box.dart';
 import '../widgets/Appbar.dart';
 
 
-class homeScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
 
-  const homeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<homeScreen> createState() => _homeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
+
+
 }
 
-class _homeScreenState extends State<homeScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
 
     const spacing = 5.0;
-    return Scaffold(
-      appBar: PurpleAppBar(title: 'Homescreen',
-        backgroundColor: Color(0xFF7885b2),
-      ),
-      bottomNavigationBar: PurpleNavigationBar(onPressed: () {  },
-      ),
-      body: Container(
-        color: Colors.black,
+    return Container(
         child: GridView.count(
           crossAxisCount: 2,
           mainAxisSpacing: spacing,
@@ -50,7 +46,6 @@ class _homeScreenState extends State<homeScreen> {
             ),
           ),
         ),
-      ),
     );
   }
 }
