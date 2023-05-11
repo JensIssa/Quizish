@@ -6,9 +6,8 @@ import 'package:quizish/widgets/quiz_name_box.dart';
 import '../widgets/bottom_navigation_bar.dart';
 
 class QuizDetailsScreen extends StatelessWidget {
-  final int index;
 
-  const QuizDetailsScreen(this.index, {Key? key}) : super(key: key);
+  const QuizDetailsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

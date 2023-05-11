@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/Screens/quiz_details_screen.dart';
+import 'package:quizish/bloc/AppBloc.dart';
 import 'package:quizish/widgets/bottom_navigation_bar.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
 
@@ -18,6 +20,7 @@ class homeScreen extends StatefulWidget {
 class _homeScreenState extends State<homeScreen> {
   @override
   Widget build(BuildContext context) {
+
     const spacing = 5.0;
     return Scaffold(
       appBar: PurpleAppBar(title: 'Homescreen',
@@ -36,7 +39,7 @@ class _homeScreenState extends State<homeScreen> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => QuizDetailsScreen(index),
+                            builder: (context) => QuizDetailsScreen(),
                         ),
                     );
                 },
