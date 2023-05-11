@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_Auth;
 import '../models/User.dart';
 
@@ -19,17 +20,30 @@ class AuthService{
 
   }
 
-   Future<void> signUp({
-   required String email,
-   required String password,
- }) async {
-    try{
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+  Future<void> signUp({
+    required String email,
+    required String password,
+    required String displayName,
+  }) async {
+    try {
+      // Create the user account using Firebase Authentication.
+      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // Create a new user profile with the display name and user ID.
+      final userProfile = {
+        'displayName': displayName,
+        'email': email,
+        'userId': userCredential.user!.uid,
+      };
+      // Add the user profile to the 'users' collection in Firebase Firestore.
+      await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set(userProfile);
     } on firebase_Auth.FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
-   }
+  }
+
 
   Future<void> loginWithEmailAndPassword({
   required String email,

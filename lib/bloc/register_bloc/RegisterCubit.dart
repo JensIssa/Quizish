@@ -26,12 +26,19 @@ class RegisterCubit extends Cubit<RegisterState> {
       ),
     );
   }
+  void displayNameChanged(String value){
+    emit(state.copyWith
+      (displayName: value,
+        status: RegisterStatus.initial,
+      ),
+    );
+  }
 
   Future<void> registerFormSubmitted() async {
     if (state.status == RegisterStatus.submitting) return;
     emit(state.copyWith(status: RegisterStatus.submitting));
     try {
-      await _authService.signUp(email: state.email, password: state.password);
+      await _authService.signUp(email: state.email, password: state.password, displayName: state.displayName);
           emit(state.copyWith(status: RegisterStatus.success));
     } catch (_) {}
   }

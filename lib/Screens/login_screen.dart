@@ -13,9 +13,6 @@ import 'package:quizish/widgets/Appbar.dart';
 
 
 class loginScreen extends StatelessWidget {
-
-  final _password = TextEditingController();
-  final _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final userService = UserService();
 
@@ -60,6 +57,7 @@ class loginScreen extends StatelessWidget {
                    backgroundColor: Colors.red,
                  )
              );
+
            }
          },
          child: Form(
@@ -83,7 +81,6 @@ class loginScreen extends StatelessWidget {
    }
 
   class loginBtn extends StatelessWidget  {
-    final _formKey = GlobalKey<FormState>();
     @override
     Widget build(BuildContext context){
     return BlocBuilder<LoginCubit, LoginState>(
@@ -105,9 +102,6 @@ class loginScreen extends StatelessWidget {
             ],
           ),
           onPressed: () async {
-            if (!_formKey.currentState!.validate()) {
-              return;
-            }
             context.read<LoginCubit>().logInWithCredentials();;
             Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => const homeScreen(),
