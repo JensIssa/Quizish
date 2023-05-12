@@ -14,64 +14,80 @@ class _AccountDetailsState extends State<AccountDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView(
-      children: [
-        SizedBox(height: 30),
-        buildTextField('Fullname', 'name', false),
-        buildTextField('Email', 'name@gmail.com', false),
-        buildTextField('Passowrd', '******', true),
-        SizedBox(height: 30),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Center(
+      child: Container(
+        width: 400,
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: ListView(
         children: [
-          OutlinedButton(onPressed: () {},
-              child: const Text('Cancel', style: TextStyle(
-                fontSize: 15,
-                letterSpacing: 2,
-                color: Colors.black
-              )),
-            style: OutlinedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 50),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))
+          SizedBox(height: 45),
+          buildTextField('Fullname', false),
+          SizedBox(height: 45),
+          buildTextField('E-mail', false),
+          SizedBox(height: 45),
+          buildTextField('Password', true),
+          SizedBox(height: 45),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 1,
+            child: ElevatedButton(onPressed: () {},
+                child: const Text('Cancel', style: TextStyle(
+                  fontSize: 22,
+                  letterSpacing: 2,
+                  color: Colors.white
+                  ),
+                ),
+              ),
             ),
-          ),
-          ElevatedButton(
-              onPressed: () {},
-              child: Text("Save", style: TextStyle(
-                fontSize: 15,
-                letterSpacing: 2,
-                color: Colors.white
-              )),
-            ),
+            SizedBox(width: 60),
+            Expanded(
+              flex: 1,
+            child: ElevatedButton(
+                onPressed: () {},
+                child: Text("Save", style: TextStyle(
+                  fontSize: 22,
+                  letterSpacing: 2,
+                  color: Colors.white
+                )),
+              ),
+            )
+          ],
+          )
         ],
         )
-      ],
-      )
+      ),
     );
   }
-
-  Widget buildTextField(String labelText, String placeholder,
-      bool isPasswordTextfield) {
-      return Padding(
-        padding: EdgeInsets.only(bottom: 30),
-        child: TextField(
-          obscureText: isPasswordTextfield ? isObscurePassword : false,
-          decoration: InputDecoration(
-            suffixIcon: isPasswordTextfield ?
-                IconButton(
-                    icon: Icon(Icons.remove_red_eye, color: Colors.grey),
-                    onPressed: () {}
-                  ): null,
-            contentPadding: EdgeInsets.only(bottom: 5),
-            labelText: labelText,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-            hintStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey
-            )
-          ),
+  Widget buildTextField(String labelText, bool isPasswordTextfield) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 30),
+      child: TextField(
+        style: TextStyle(
+          fontSize: 20,
         ),
-      );
+        obscureText: isPasswordTextfield ? isObscurePassword : false,
+        decoration: InputDecoration(
+          suffixIcon: isPasswordTextfield
+              ? IconButton(
+            icon: Icon(
+              isObscurePassword
+                  ? Icons.remove_red_eye
+                  : Icons.visibility_off,
+              color: Colors.grey,
+            ),
+            onPressed: () {
+              setState(() {
+                isObscurePassword = !isObscurePassword;
+              });
+            },
+          )
+              : null,
+          contentPadding: EdgeInsets.only(bottom: 5),
+          labelText: labelText,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+        ),
+      ),
+    );
   }
 }
