@@ -12,12 +12,11 @@ class QuizCreationScreen extends StatefulWidget {
 
 
 //TODO: Post quiz to firebase
-//TODO: Fix question numbers after deletion
-//TODO: Fix insert animation
- ///https://api.flutter.dev/flutter/widgets/AnimatedList-class.html
 
 class _QuizCreationScreenState extends State<QuizCreationScreen> {
   Quiz quiz = Quiz.empty();
+
+  Color deleteBgColor = Colors.red;
 
   final  GlobalKey<AnimatedListState> _animatedListKey = GlobalKey<AnimatedListState>();
   final _formKey = GlobalKey<FormState>();
@@ -57,6 +56,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   Widget build(BuildContext context) {
 
     backgroundColor = _backgroundColor(context);
+    deleteBgColor = _backgroundColor(context);
 
     var ui = Scaffold(
       appBar: AppBar(
@@ -75,19 +75,15 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
               const SizedBox(height: 40),
               Expanded(
                 child: AnimatedList(
-                  key: UniqueKey(),
+                  key: _animatedListKey,
+                  initialItemCount: quiz.questions.length,
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (BuildContext context, int index, Animation<double> animation) {
-                      return SlideTransition(
-                          position: animation.drive(Tween<Offset>(
-                            begin: const Offset(1, 0),
-                            end: const Offset(0, 0),
-                          )
-                          ),
+                      return SizeTransition(
+                          sizeFactor: animation,
                           child: _questionWidget(quiz.questions[index], index),
                       );
                   },
-                  initialItemCount: quiz.questions.length,
                 )
               ),
               Padding(
@@ -98,8 +94,8 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                     onPressed: () {
                       setState(() {
                         int index = quiz.questions.length;
-                        _animatedListKey.currentState?.insertItem(index);
                         quiz.questions.add(Question.emptyWithIndex(index));
+                        _animatedListKey.currentState?.insertItem(index);
                         //_animatedListKey.currentState?.insertItem(index);
                       });
                     },
@@ -128,29 +124,11 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
 
   }
 
-  _questionWidget(Question question, index) {
-    return Dismissible(
-      key: UniqueKey(),
-      background: Container(
-        color: Colors.red,
-        child: const Icon(Icons.delete),
-      ),
-      onDismissed: (direction) {
-        setState(() {
-          quiz.questions.removeAt(index);
-          AnimatedList.of(context).removeItem(
-            question.index,
-                (context, animation) => _questionWidget(question, index), duration: const Duration(milliseconds: 200)
-          );
-          for (int i = 0; i < quiz.questions.length; i++) {
-            quiz.questions[i].index = i;
-          }
-        });
-      },
-      child: Column(
+  _questionWidget(Question question, int index) {
+    return Column(
         children: [
           Row(
-            children: [_questionNumber(question), _questionInput(question), _timeInput(question)],
+            children: [_questionNumber(question), _questionInput(question), _timeInput(question), _deleteBtn(question, index)],
           ),
           Padding(
             padding: const EdgeInsets.all(5),
@@ -158,8 +136,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
           ),
           const SizedBox(height: 20)
         ],
-      ),
-    );
+      );
   }
 
   _questionNumber(Question question) {
@@ -264,6 +241,43 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
               ),
             ),
           )),
+    );
+  }
+
+  _deleteBtn(Question question, int index) {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: SizedBox(
+          width: 60,
+          height: 50,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: backgroundColor
+            ),
+            child: IconButton(
+                icon: const Icon(Icons.delete),
+                tooltip: 'Delete question',
+
+                onPressed: () {
+                  setState(() {
+                    int removedIndex = index;
+                    quiz.questions.removeAt(index);
+                    for (int i = 0; i < quiz.questions.length; i++) { //Redo the indexes
+                      quiz.questions[i].index = i;
+                    }
+
+                    _animatedListKey.currentState?.removeItem(removedIndex, (context, animation) =>
+                        SizeTransition(
+                          sizeFactor: animation,
+                          child: _questionWidget(quiz.questions[removedIndex], removedIndex),
+                        ));
+
+                  });
+                },
+              ),
+            ),
+          ),
     );
   }
 
@@ -456,5 +470,6 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         ? modifiedColor
         : Colors.grey[300];
   }
+
 
 }
