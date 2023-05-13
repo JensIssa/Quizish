@@ -40,8 +40,14 @@ class Quiz {
       'description': description,
       'author': author,
       'questions': questions,
-
     };
+  }
+
+  @override
+  String toString() {
+    var baseInfo = 'Quiz{title: $title, id: $id, description: $description, author: $author}';
+    var questionsString = questions.fold('', (prev, element) => prev + element.toString());
+    return "$baseInfo | $questionsString";
   }
 }
 
@@ -61,6 +67,11 @@ class Answers {
       'answer': answer,
       'isCorrect': isCorrect,
     };
+  }
+
+  @override
+  String toString() {
+    return 'Answers{answer: $answer, isCorrect: $isCorrect, index: $index}';
   }
 }
 
@@ -118,5 +129,12 @@ class Question {
       'imgUrl': imgUrl,
       'timer': timer,
     };
+  }
+
+  @override
+  String toString() {
+    var baseInfo = 'Question{index: $index, question: $question, imgUrl: $imgUrl, timer: $timer}';
+    var answersString = answers.fold('', (prev, element) => prev + element.toString());
+    return baseInfo + answersString;
   }
 }

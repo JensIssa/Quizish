@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quizish/FireServices/quiz_service.dart';
 
 import '../models/Quiz.dart';
 
@@ -22,32 +23,32 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _quizTitle = TextEditingController();
   final _quizDescription = TextEditingController();
-  Map<String, TextEditingController> questionControllers = {};
+
   Color backgroundColor = Colors.grey[800]!;
 
   //Use the index of the question for name field, with "a, b, c, d" to get the answer fields, and index + "_t" for time field
 
 
-  _saveQuiz() {
+  _saveQuiz(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       quiz.title = _quizTitle.text;
       quiz.description = _quizDescription.text;
-      quiz.questions = [];
-      questionControllers.forEach((key, value) {
-        quiz.questions.add(Question(
-            index: quiz.questions.length,
-            question: value.text,
-            timer: 10,
-            imgUrl: '',
-            answers: [
-              Answers(answer: "answer 1", isCorrect: true, index: 0),
-              Answers(answer: "answer", isCorrect: false, index: 1),
-              Answers(answer: "answer", isCorrect: false, index: 2),
-              Answers(answer: "answer", isCorrect: false, index: 3),
-            ]));
-      });
-      Navigator.pop(context, quiz);
+
+      for (var question in quiz.questions) {
+        var correctAnswers = question.answers.where((element) => element.isCorrect);
+        if (correctAnswers.isEmpty) {
+          SnackBar snackBar = SnackBar(
+            content: Text("Question ${question.index + 1} does not have a correct answer"),
+            backgroundColor: Colors.red,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          return;
+        }
+      }
+
+      //QuizService().postQuiz(quiz);
+      _showOnSavedDialog(context);
     }
   }
 
@@ -184,6 +185,11 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
               }
               return null;
             },
+            onChanged: (value) {
+              setState(() {
+                question.question = value;
+              });
+            },
           ),
         ),
       ),
@@ -250,33 +256,33 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
       child: SizedBox(
           width: 60,
           height: 50,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: backgroundColor
-            ),
-            child: IconButton(
-                icon: const Icon(Icons.delete),
-                tooltip: 'Delete question',
+          child: Material(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(10),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              hoverColor: Colors.red,
+              child: const Icon(Icons.delete),
+              onTap: () {
+                setState(() {
+                  int removedIndex = index;
+                  quiz.questions.removeAt(index);
+                  for (int i = 0; i < quiz.questions.length; i++) { //Redo the indexes
+                    quiz.questions[i].index = i;
+                  }
 
-                onPressed: () {
-                  setState(() {
-                    int removedIndex = index;
-                    quiz.questions.removeAt(index);
-                    for (int i = 0; i < quiz.questions.length; i++) { //Redo the indexes
-                      quiz.questions[i].index = i;
-                    }
-
-                    _animatedListKey.currentState?.removeItem(removedIndex, (context, animation) =>
-                        SizeTransition(
-                          sizeFactor: animation,
-                          child: _questionWidget(quiz.questions[removedIndex], removedIndex),
-                        ));
-
-                  });
-                },
+                  _animatedListKey.currentState?.removeItem(
+                      removedIndex, (context, animation) =>
+                      SizeTransition(
+                        sizeFactor: animation,
+                        child: _questionWidget(
+                            question, removedIndex),
+                      ));
+                }
+                );
+              },
               ),
-            ),
+          ),
           ),
     );
   }
@@ -365,7 +371,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                   ),
-                  onPressed: () => _saveQuiz(),
+                  onPressed: () => _saveQuiz(context),
                   child: Row(children: const [
                     Icon(Icons.save,
                         size: 20,
@@ -450,6 +456,20 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                       ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an answer';
+                      }
+                      else if (value.length > 50) {
+                        return 'Answer must be less than 50 characters';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        question.answers[answerIndex].answer = value;
+                      });
+                    },
                     ),
               ),
             ],
@@ -469,6 +489,54 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     return Theme.of(context).brightness == Brightness.dark
         ? modifiedColor
         : Colors.grey[300];
+  }
+
+  _showOnSavedDialog(BuildContext context) {
+    return showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text('Quiz saved! 🎉',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )
+              ),
+              const Text("Create another quiz or continue working on this one?"),
+              const SizedBox(height: 15),
+              SizedBox(
+                width: 350,
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Keep working 💪'),
+                      ),
+                      const SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Create another! 🔨'),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+    ),
+    );
   }
 
 
