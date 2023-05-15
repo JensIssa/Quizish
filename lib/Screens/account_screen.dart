@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quizish/FireServices/AuthService.dart';
 
 class AccountDetails extends StatefulWidget {
 
@@ -10,9 +11,21 @@ class AccountDetails extends StatefulWidget {
 }
 
 class _AccountDetailsState extends State<AccountDetails> {
+  final TextEditingController _displaynameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
   bool isObscurePassword = true;
 
   @override
+  void dispose() {
+    _displaynameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Center(
       child: Container(
@@ -21,11 +34,11 @@ class _AccountDetailsState extends State<AccountDetails> {
         child: ListView(
         children: [
           SizedBox(height: 45),
-          buildTextField('Fullname', false),
+          buildTextField('Displayname', false, _displaynameController),
           SizedBox(height: 45),
-          buildTextField('E-mail', false),
+          buildTextField('E-mail', false, _emailController),
           SizedBox(height: 45),
-          buildTextField('Password', true),
+          buildTextField('Password', true, _passwordController),
           SizedBox(height: 45),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -44,7 +57,9 @@ class _AccountDetailsState extends State<AccountDetails> {
             Expanded(
               flex: 1,
             child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  updateAccountDetails();
+                },
                 child: Text("Save", style: TextStyle(
                   fontSize: 22,
                   letterSpacing: 2,
@@ -59,10 +74,12 @@ class _AccountDetailsState extends State<AccountDetails> {
       ),
     );
   }
-  Widget buildTextField(String labelText, bool isPasswordTextfield) {
+  Widget buildTextField(String labelText, bool isPasswordTextfield,
+      TextEditingController textEditingController) {
     return Padding(
       padding: EdgeInsets.only(bottom: 30),
       child: TextField(
+        controller: textEditingController,
         style: TextStyle(
           fontSize: 20,
         ),
@@ -89,5 +106,50 @@ class _AccountDetailsState extends State<AccountDetails> {
         ),
       ),
     );
+  }
+
+  void updateAccountDetails() async {
+    final String newDisplayname = _displaynameController.text.trim();
+    final String newEmail = _emailController.text.trim();
+    final String newPassword = _passwordController.text;
+
+    try {
+      if (newDisplayname.isNotEmpty) {
+        await _authService.updateDisplayName(newDisplayname);
+      }
+      if(newEmail.isNotEmpty) {
+        await _authService.updateEmail(newEmail);
+      }
+      if(newPassword.isNotEmpty) {
+        await _authService.updatePassword(newPassword);
+      }
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Success'),
+            content: Text('Account details updated succesfully.'),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Okay'),
+              ),
+            ],
+          ),
+      );
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to update your account details.'),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Okay'),
+              )
+            ],
+          ),
+      );
+    }
   }
 }

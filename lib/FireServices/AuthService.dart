@@ -48,9 +48,6 @@ class AuthService{
     try {
       await _firebaseAuth.currentUser?.updatePassword(newPassword);
       // Update the user's email in the 'users' collection in Firebase Firestore.
-      await FirebaseFirestore.instance.collection('users')
-          .doc(_firebaseAuth.currentUser!.uid)
-          .update({'password': newPassword});
     } on firebase_Auth.FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
