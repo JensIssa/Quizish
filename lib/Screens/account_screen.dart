@@ -111,42 +111,20 @@ class _AccountDetailsState extends State<AccountDetails> {
   void updateAccountDetails() async {
     final String newDisplayname = _displaynameController.text.trim();
     final String newEmail = _emailController.text.trim();
-    final String newPassword = _passwordController.text.trim();
-
-    bool isUpdated = false;
+    final String newPassword = _passwordController.text;
 
     try {
       if (newDisplayname.isNotEmpty) {
         await _authService.updateDisplayName(newDisplayname);
-        isUpdated = true;
       }
       if (newEmail.isNotEmpty) {
         await _authService.updateEmail(newEmail);
-        isUpdated = true;
       }
-      if (newPassword.isNotEmpty) {
+      if (newDisplayname.isNotEmpty) {
         await _authService.updatePassword(newPassword);
-        isUpdated = true;
       }
-      if (isUpdated == true) {
-        final snackBar = SnackBar(
-          content: Text('Account details updated successfully.'),
-          duration: const Duration(seconds: 2),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      } else {
-        final snackBar = SnackBar(
-            content: Text('No changes to update.'),
-            duration: const Duration(seconds: 2)
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
-    }catch (e) {
-      final snackBar = SnackBar(
-        content: Text('Failed to update your account details.'),
-        duration: const Duration(seconds: 2),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } catch (e) {
+      print('gg');
     }
   }
 }

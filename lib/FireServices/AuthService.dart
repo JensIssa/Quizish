@@ -47,7 +47,6 @@ class AuthService{
   Future<void> updatePassword(String newPassword) async {
     try {
       await _firebaseAuth.currentUser?.updatePassword(newPassword);
-      // Update the user's email in the 'users' collection in Firebase Firestore.
     } on firebase_Auth.FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
