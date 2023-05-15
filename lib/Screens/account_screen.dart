@@ -120,11 +120,45 @@ class _AccountDetailsState extends State<AccountDetails> {
       if (newEmail.isNotEmpty) {
         await _authService.updateEmail(newEmail);
       }
-      if (newDisplayname.isNotEmpty) {
+      if (newPassword.isNotEmpty) {
         await _authService.updatePassword(newPassword);
       }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('Account details updated successfully.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
-      print('gg');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred while updating account details.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }
+
