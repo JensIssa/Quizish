@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,12 +7,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/Session.dart';
 
 class GameSessionService {
-  final DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
+  final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
+
+  String generateRandomId(int length) {
+    final random = Random();
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    String result = '';
+    for (int i = 0; i < length; i++) {
+      result += chars[random.nextInt(chars.length)];
+    }
+    return result;
+  }
 
   Future<void> createGameSession(GameSession gameSession) async {
     try {
-      final sessionRef = _databaseReference.child('gameSessions').child(gameSession.id);
-
+      String gamesessionId = generateRandomId(5);
+      final sessionRef = _databaseReference.child('gameSessions').child(gamesessionId);
       await sessionRef.set(gameSession.toMap());
     } catch (e) {
       print('Error creating game session: $e');
@@ -20,7 +31,6 @@ class GameSessionService {
 
   Stream<DatabaseEvent> listenForChanges(String sessionId) {
     final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
-
     return sessionRef.onValue;
   }
 
@@ -28,7 +38,7 @@ class GameSessionService {
     try {
       final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
 
-      DataSnapshot sessionSnapshot = await sessionRef.once();
+      DataSnapshot sessionSnapshot = await sessionRef.get();
       if (sessionSnapshot.value != null) {
         final data = sessionSnapshot.value as Map<dynamic, dynamic>;
         final scores = data['scores'] as Map<dynamic, dynamic>;
@@ -48,7 +58,7 @@ class GameSessionService {
     try {
       final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
 
-      DataSnapshot sessionSnapshot = await sessionRef.once();
+      DataSnapshot sessionSnapshot = await sessionRef.get();
       if (sessionSnapshot.value != null) {
         final data = sessionSnapshot.value as Map<dynamic, dynamic>;
         final scores = data['scores'] as Map<dynamic, dynamic>;
