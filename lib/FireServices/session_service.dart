@@ -66,15 +66,12 @@ class SessionService {
   }
 
   Future<void> removePlayer(User user) async {
-    final sessionRef = FirebaseFirestore.instance.collection(CollectionNames.sessions).doc(_currentSession!.id);
+    final sessionRef = FirebaseFirestore.instance.collection(
+        CollectionNames.sessions).doc(_currentSession!.id);
     final session = await sessionRef.get();
     final currentSession = GameSession.fromMap(session.id, session.data()!);
-    final players = currentSession.players;
-    players.remove(user);
-    await sessionRef.update({'players': players});
+    final scores = currentSession.scores;
   }
-
-
 
 
 

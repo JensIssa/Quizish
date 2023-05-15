@@ -6,7 +6,6 @@ class GameSession {
   String id;
   String gameID;
   User host;
-  List<User> players; //Duplicate data, use the players in the scores map instead
   Quiz quiz;
   int currentQuestion;
   Map<User, int> scores;
@@ -15,7 +14,6 @@ class GameSession {
       {required this.id,
       required this.gameID,
       required this.host,
-      required this.players,
       required this.quiz,
       required this.currentQuestion,
       required this.scores});
@@ -23,7 +21,6 @@ class GameSession {
   GameSession.fromMap(this.id, Map<String, dynamic> data)
       : gameID = data['gameID'],
         host = data['host'],
-        players = data['players'],
         quiz = data['quiz'],
         currentQuestion = data['currentQuestion'],
         scores = data['scores'];
@@ -32,7 +29,6 @@ class GameSession {
     return {
       'gameID': gameID,
       'host': host,
-      'players': players,
       'quiz': quiz,
       'currentQuestion': currentQuestion,
       'scores': scores,

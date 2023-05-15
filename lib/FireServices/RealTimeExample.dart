@@ -1,0 +1,68 @@
+import 'dart:html';
+
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../models/Session.dart';
+
+class GameSessionService {
+  final DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
+
+  Future<void> createGameSession(GameSession gameSession) async {
+    try {
+      final sessionRef = _databaseReference.child('gameSessions').child(gameSession.id);
+
+      await sessionRef.set(gameSession.toMap());
+    } catch (e) {
+      print('Error creating game session: $e');
+    }
+  }
+
+  Stream<DatabaseEvent> listenForChanges(String sessionId) {
+    final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
+
+    return sessionRef.onValue;
+  }
+
+  Future<void> addUserToSession(String sessionId, User user) async {
+    try {
+      final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
+
+      DataSnapshot sessionSnapshot = await sessionRef.once();
+      if (sessionSnapshot.value != null) {
+        final data = sessionSnapshot.value as Map<dynamic, dynamic>;
+        final scores = data['scores'] as Map<dynamic, dynamic>;
+
+        // Add the user to the scores map with an initial score of 0
+        scores[user.uid] = 0;
+
+        // Update the scores field in the database
+        await sessionRef.child('scores').set(scores);
+      }
+    } catch (e) {
+      print('Error adding user to game session: $e');
+    }
+  }
+
+  Future<void> removeUserFromSession(String sessionId, User user) async {
+    try {
+      final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
+
+      DataSnapshot sessionSnapshot = await sessionRef.once();
+      if (sessionSnapshot.value != null) {
+        final data = sessionSnapshot.value as Map<dynamic, dynamic>;
+        final scores = data['scores'] as Map<dynamic, dynamic>;
+
+        // Remove the user from the scores map
+        scores.remove(user.uid);
+
+        // Update the scores field in the database
+        await sessionRef.child('scores').set(scores);
+      }
+    } catch (e) {
+      print('Error removing user from game session: $e');
+    }
+  }
+
+// Other methods...
+}
