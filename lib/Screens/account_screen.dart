@@ -111,45 +111,42 @@ class _AccountDetailsState extends State<AccountDetails> {
   void updateAccountDetails() async {
     final String newDisplayname = _displaynameController.text.trim();
     final String newEmail = _emailController.text.trim();
-    final String newPassword = _passwordController.text;
+    final String newPassword = _passwordController.text.trim();
+
+    bool isUpdated = false;
 
     try {
       if (newDisplayname.isNotEmpty) {
         await _authService.updateDisplayName(newDisplayname);
+        isUpdated = true;
       }
-      if(newEmail.isNotEmpty) {
+      if (newEmail.isNotEmpty) {
         await _authService.updateEmail(newEmail);
+        isUpdated = true;
       }
-      if(newPassword.isNotEmpty) {
+      if (newPassword.isNotEmpty) {
         await _authService.updatePassword(newPassword);
+        isUpdated = true;
       }
-      showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: Text('Success'),
-            content: Text('Account details updated succesfully.'),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Okay'),
-              ),
-            ],
-          ),
+      if (isUpdated == true) {
+        final snackBar = SnackBar(
+          content: Text('Account details updated successfully.'),
+          duration: const Duration(seconds: 2),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else {
+        final snackBar = SnackBar(
+            content: Text('No changes to update.'),
+            duration: const Duration(seconds: 2)
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }catch (e) {
+      final snackBar = SnackBar(
+        content: Text('Failed to update your account details.'),
+        duration: const Duration(seconds: 2),
       );
-    } catch (e) {
-      showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: Text('Error'),
-            content: Text('Failed to update your account details.'),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text('Okay'),
-              )
-            ],
-          ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 }
