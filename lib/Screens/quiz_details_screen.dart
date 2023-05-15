@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quizish/FireServices/RealTimeExample.dart';
+import 'package:quizish/models/Session.dart';
 import 'package:quizish/widgets/quiz_button.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
 
@@ -7,8 +9,10 @@ class QuizDetailsScreen extends StatelessWidget {
 
   const QuizDetailsScreen({Key? key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
+    final  GameSessionService gameSessionService = GameSessionService();
     return Material(
         child: Column(
           children: [
@@ -28,11 +32,13 @@ class QuizDetailsScreen extends StatelessWidget {
             ),
             ),
             Container(
-              child: QuizButton(text:'Start', onPressed: () {}, color: Colors.green),
-            height: 130,
+              height: 130,
             width: 150,
             alignment: Alignment.center,
             padding: EdgeInsets.only(top: 70),
+              child: QuizButton(text:'Start', onPressed: () {
+                gameSessionService.createGameSession();
+              }, color: Colors.green),
             )
           ],
         ),

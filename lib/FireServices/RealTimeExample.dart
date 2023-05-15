@@ -1,6 +1,6 @@
-import 'dart:html';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -19,10 +19,13 @@ class GameSessionService {
     return result;
   }
 
-  Future<void> createGameSession(GameSession gameSession) async {
+  Future<void> createGameSession() async {
     try {
-      String gamesessionId = generateRandomId(5);
-      final sessionRef = _databaseReference.child('gameSessions').child(gamesessionId);
+      String gameSessionId = generateRandomId(5);
+      GameSession gameSession = GameSession(id: gameSessionId, host: null, quiz: null, currentQuestion: 0, scores: null);
+      gameSession.id = gameSessionId;
+      FirebaseFirestore.instance.collection('gamesessions').doc();
+      final sessionRef = _databaseReference.child('gameSessions').child(gameSessionId);
       await sessionRef.set(gameSession.toMap());
     } catch (e) {
       print('Error creating game session: $e');
@@ -42,11 +45,7 @@ class GameSessionService {
       if (sessionSnapshot.value != null) {
         final data = sessionSnapshot.value as Map<dynamic, dynamic>;
         final scores = data['scores'] as Map<dynamic, dynamic>;
-
-        // Add the user to the scores map with an initial score of 0
         scores[user.uid] = 0;
-
-        // Update the scores field in the database
         await sessionRef.child('scores').set(scores);
       }
     } catch (e) {

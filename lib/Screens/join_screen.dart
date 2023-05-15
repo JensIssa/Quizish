@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:quizish/Widgets/quiz_button.dart';
 import 'package:quizish/widgets/Appbar.dart';
 
+import '../FireServices/RealTimeExample.dart';
+
 
 
 class JoinScreen extends StatefulWidget  {
@@ -15,6 +17,7 @@ class JoinScreen extends StatefulWidget  {
 }
 
 class _JoinScreenState extends State<JoinScreen> {
+  final  GameSessionService gameSessionService = GameSessionService();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -51,7 +54,9 @@ class _JoinScreenState extends State<JoinScreen> {
               height: 50,
               child: QuizButton(
                 text: 'Join',
-                onPressed: () {},
+                onPressed: () {
+                  //gameSessionService.addUserToSession(sessionId, user)
+                },
                 color: Colors.green,
               ),
             )

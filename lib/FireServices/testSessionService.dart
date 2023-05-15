@@ -3,7 +3,7 @@ import '../models/Session.dart';
 import '../models/Quiz.dart';
 import '../models/User.dart';
 
-class GameSessionService {
+class GameTest {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> addUserToSession(String sessionId, User user) async {
