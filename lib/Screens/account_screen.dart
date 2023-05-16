@@ -15,7 +15,6 @@ class _AccountDetailsState extends State<AccountDetails> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
-
   bool isObscurePassword = true;
 
   @override
@@ -113,16 +112,43 @@ class _AccountDetailsState extends State<AccountDetails> {
     final String newEmail = _emailController.text.trim();
     final String newPassword = _passwordController.text;
 
+    bool isUpdated = false;
+
+    if (newDisplayname.isEmpty && newEmail.isEmpty && newPassword.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please enter at least one field to update.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     try {
       if (newDisplayname.isNotEmpty) {
         await _authService.updateDisplayName(newDisplayname);
+        isUpdated = true;
       }
       if (newEmail.isNotEmpty) {
         await _authService.updateEmail(newEmail);
+        isUpdated = true;
       }
       if (newPassword.isNotEmpty) {
         await _authService.updatePassword(newPassword);
+        isUpdated = true;
       }
+      if(isUpdated == true)
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -141,6 +167,7 @@ class _AccountDetailsState extends State<AccountDetails> {
         },
       );
     } catch (e) {
+      if(isUpdated == false)
       showDialog(
         context: context,
         builder: (BuildContext context) {
