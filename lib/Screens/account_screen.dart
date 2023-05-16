@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quizish/FireServices/AuthService.dart';
 
 class AccountDetails extends StatefulWidget {
 
@@ -10,9 +11,21 @@ class AccountDetails extends StatefulWidget {
 }
 
 class _AccountDetailsState extends State<AccountDetails> {
+  final TextEditingController _displaynameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
   bool isObscurePassword = true;
 
   @override
+  void dispose() {
+    _displaynameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Center(
       child: Container(
@@ -21,48 +34,39 @@ class _AccountDetailsState extends State<AccountDetails> {
         child: ListView(
         children: [
           SizedBox(height: 45),
-          buildTextField('Fullname', false),
+          buildTextField('Displayname', false, _displaynameController),
           SizedBox(height: 45),
-          buildTextField('E-mail', false),
+          buildTextField('E-mail', false, _emailController),
           SizedBox(height: 45),
-          buildTextField('Password', true),
+          buildTextField('Password', true, _passwordController),
           SizedBox(height: 45),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 1,
-            child: ElevatedButton(onPressed: () {},
-                child: const Text('Cancel', style: TextStyle(
-                  fontSize: 22,
-                  letterSpacing: 2,
-                  color: Colors.white
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 60),
-            Expanded(
-              flex: 1,
-            child: ElevatedButton(
-                onPressed: () {},
-                child: Text("Save", style: TextStyle(
-                  fontSize: 22,
-                  letterSpacing: 2,
-                  color: Colors.white
-                )),
-              ),
-            )
-          ],
-          )
+         Align(
+           alignment: Alignment.center,
+           child: ElevatedButton(
+             onPressed: () {
+               updateAccountDetails();
+             },
+             child: Text(
+               "Save",
+               style: TextStyle(
+                 fontSize: 22,
+                 letterSpacing: 2,
+                 color: Colors.white,
+               ),
+             ),
+           ),
+         )
         ],
         )
       ),
     );
   }
-  Widget buildTextField(String labelText, bool isPasswordTextfield) {
+  Widget buildTextField(String labelText, bool isPasswordTextfield,
+      TextEditingController textEditingController) {
     return Padding(
       padding: EdgeInsets.only(bottom: 30),
       child: TextField(
+        controller: textEditingController,
         style: TextStyle(
           fontSize: 20,
         ),
@@ -90,4 +94,86 @@ class _AccountDetailsState extends State<AccountDetails> {
       ),
     );
   }
+
+  void updateAccountDetails() async {
+    final String newDisplayname = _displaynameController.text.trim();
+    final String newEmail = _emailController.text.trim();
+    final String newPassword = _passwordController.text;
+
+    bool isUpdated = false;
+
+    if (newDisplayname.isEmpty && newEmail.isEmpty && newPassword.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please enter at least one field to update.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    try {
+      if (newDisplayname.isNotEmpty) {
+        await _authService.updateDisplayName(newDisplayname);
+        isUpdated = true;
+      }
+      if (newEmail.isNotEmpty) {
+        await _authService.updateEmail(newEmail);
+        isUpdated = true;
+      }
+      if (newPassword.isNotEmpty) {
+        await _authService.updatePassword(newPassword);
+        isUpdated = true;
+      }
+      if(isUpdated == true)
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('Account details updated successfully.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      if(isUpdated == false)
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred while updating account details.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 }
+

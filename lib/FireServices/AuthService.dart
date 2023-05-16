@@ -46,13 +46,7 @@ class AuthService{
 
   Future<void> updatePassword(String newPassword) async {
     try {
-      // Update the email address of the currently authenticated user.
       await _firebaseAuth.currentUser?.updatePassword(newPassword);
-      // Update the user's email in the 'users' collection in Firebase Firestore.
-      await FirebaseFirestore.instance.collection('users')
-          .doc(_firebaseAuth.currentUser!.uid)
-          .update({'password': newPassword});
-      // Update the current user's email in the local currentUser variable.
     } on firebase_Auth.FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
@@ -60,14 +54,11 @@ class AuthService{
   
   Future<void> updateDisplayName(String newDisplayName) async {
     try {
-      // Update the email address of the currently authenticated user.
       await _firebaseAuth.currentUser?.updateDisplayName(newDisplayName);
 
-      // Update the user's email in the 'users' collection in Firebase Firestore.
       await FirebaseFirestore.instance.collection('users')
           .doc(_firebaseAuth.currentUser!.uid)
           .update({'displayName': newDisplayName});
-      // Update the current user's email in the local currentUser variable.
       currentUser = currentUser.copyWith(displayName: newDisplayName);
     } on firebase_Auth.FirebaseAuthException catch (e) {
       throw Exception(e.message);
@@ -78,14 +69,11 @@ class AuthService{
 
   Future<void> updateEmail(String newEmail) async {
     try {
-      // Update the email address of the currently authenticated user.
       await _firebaseAuth.currentUser?.updateEmail(newEmail);
 
-      // Update the user's email in the 'users' collection in Firebase Firestore.
       await FirebaseFirestore.instance.collection('users')
           .doc(_firebaseAuth.currentUser!.uid)
           .update({'email': newEmail});
-      // Update the current user's email in the local currentUser variable.
       currentUser = currentUser.copyWith(email: newEmail);
     } on firebase_Auth.FirebaseAuthException catch (e) {
       throw Exception(e.message);
