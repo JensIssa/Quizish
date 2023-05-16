@@ -20,6 +20,11 @@ class AuthService{
 
   }
 
+  firebase_Auth.User? getCurrentFirebaseUser() {
+    return _firebaseAuth.currentUser;
+  }
+
+
   Future<void> signUp({
     required String email,
     required String password,
@@ -66,6 +71,7 @@ class AuthService{
     }
   }
 }
+
 extension on firebase_Auth.User {
   User get toUser {
     return User(

@@ -22,31 +22,40 @@ class GameSessionService {
   Future<void> createGameSession() async {
     try {
       String gameSessionId = generateRandomId(5);
-      GameSession gameSession = GameSession(id: gameSessionId, host: null, quiz: null, currentQuestion: 0, scores: null);
-      gameSession.id = gameSessionId;
-      FirebaseFirestore.instance.collection('gamesessions').doc();
-      final sessionRef = _databaseReference.child('gameSessions').child(gameSessionId);
+      GameSession gameSession = GameSession(
+        id: gameSessionId,
+        host: null,
+        quiz: null,
+        currentQuestion: 0,
+        scores: null,
+      );
+      final sessionRef =
+      _databaseReference.child('gameSessions').child(gameSessionId);
       await sessionRef.set(gameSession.toMap());
     } catch (e) {
       print('Error creating game session: $e');
     }
   }
 
+
   Stream<DatabaseEvent> listenForChanges(String sessionId) {
     final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
     return sessionRef.onValue;
   }
 
-  Future<void> addUserToSession(String sessionId, User user) async {
+  Future<void> addUserToSession(String sessionId, User? user) async {
     try {
-      final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
-
+      final sessionRef =
+          _databaseReference.child('gameSessions').child(sessionId);
       DataSnapshot sessionSnapshot = await sessionRef.get();
-      if (sessionSnapshot.value != null) {
-        final data = sessionSnapshot.value as Map<dynamic, dynamic>;
-        final scores = data['scores'] as Map<dynamic, dynamic>;
-        scores[user.uid] = 0;
+      final dynamic sessionValue = sessionSnapshot.value;
+
+      if (sessionValue != null && sessionValue is Map<dynamic, dynamic>) {
+        final scores = sessionValue['scores'] as Map<dynamic, dynamic>;
+        scores[user?.uid] = 0;
         await sessionRef.child('scores').set(scores);
+      } else {
+        print('Error: Invalid data or session does not exist');
       }
     } catch (e) {
       print('Error adding user to game session: $e');

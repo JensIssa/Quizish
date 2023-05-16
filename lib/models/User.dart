@@ -13,6 +13,14 @@ class User extends Equatable {
 
   bool get isNotEmpty => this != User.empty;
 
+  Map<dynamic, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'email': email,
+      'display': displayName,
+    };
+  }
+
   @override
   List<Object?> get props => [uid, email, displayName];
 }

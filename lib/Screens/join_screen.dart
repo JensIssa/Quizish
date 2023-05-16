@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/Widgets/quiz_button.dart';
 import 'package:quizish/widgets/Appbar.dart';
 
@@ -17,7 +18,10 @@ class JoinScreen extends StatefulWidget  {
 }
 
 class _JoinScreenState extends State<JoinScreen> {
+
+  final sessionController = TextEditingController();
   final  GameSessionService gameSessionService = GameSessionService();
+  final AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,21 +35,7 @@ class _JoinScreenState extends State<JoinScreen> {
           ),
           const SizedBox(height: 40),
           Center(
-            child: TextField(
-              style: TextStyle(fontSize: 20, color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Enter Session Code',
-                hintStyle: TextStyle(fontSize: 20, color: Colors.white),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
+            child: SessionInput(),
           ),
           const SizedBox(height: 400),
           Center(
@@ -55,7 +45,8 @@ class _JoinScreenState extends State<JoinScreen> {
               child: QuizButton(
                 text: 'Join',
                 onPressed: () {
-                  //gameSessionService.addUserToSession(sessionId, user)
+                  gameSessionService.addUserToSession(sessionController.text, authService.getCurrentFirebaseUser());
+                  print(authService.getCurrentFirebaseUser());
                 },
                 color: Colors.green,
               ),
@@ -63,5 +54,24 @@ class _JoinScreenState extends State<JoinScreen> {
             ),
         ],
     );
+  }
+
+  TextField SessionInput() {
+    return TextField(
+            controller: sessionController,
+            style: TextStyle(fontSize: 20, color: Colors.white),
+            decoration: InputDecoration(
+              hintText: 'Enter Session Code',
+              hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
   }
 }
