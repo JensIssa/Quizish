@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "939193095617",
+    "firebase_url": "https://quizish-ee75f-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "quizish-ee75f",
     "storage_bucket": "quizish-ee75f.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "939193095617-jgufenjm457u1if8p282e2l5s8ts0oij.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quizish",
+            "certificate_hash": "0e2ec298cb578b30a2ac005fa5731c5e57331d6b"
+          }
+        },
         {
           "client_id": "939193095617-c60554s40cslb958k7sun0124sokeo4l.apps.googleusercontent.com",
           "client_type": 3
