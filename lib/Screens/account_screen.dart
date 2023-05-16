@@ -9,19 +9,20 @@ class AccountDetails extends StatelessWidget {
 
   AccountDetails({super.key});
 
+  @override
   Widget build(BuildContext context) {
     return Container(
         width: 400,
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ListView(
           children: [
-            SizedBox(height: 45),
-            buildTextField('Displayname', false, _displaynameController),
-            SizedBox(height: 45),
+            const SizedBox(height: 45),
+            buildTextField('Display-name', false, _displaynameController),
+            const SizedBox(height: 45),
             buildTextField('E-mail', false, _emailController),
-            SizedBox(height: 45),
+            const SizedBox(height: 45),
             buildTextField('Password', true, _passwordController),
-            SizedBox(height: 45),
+            const SizedBox(height: 45),
             Align(
               alignment: Alignment.center,
               child: ElevatedButton(
@@ -33,7 +34,7 @@ class AccountDetails extends StatelessWidget {
                     _authService,
                   );
                 },
-                child: Text(
+                child: const Text(
                   "Save",
                   style: TextStyle(
                     fontSize: 22,
@@ -48,32 +49,26 @@ class AccountDetails extends StatelessWidget {
     );
   }
 
-  Widget buildTextField(String labelText,
+  Widget buildTextField(
+      String labelText,
       bool isPasswordTextfield,
-      TextEditingController textEditingController) {
+      TextEditingController textEditingController
+      ) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 30),
+      padding: const EdgeInsets.only(bottom: 30),
       child: TextField(
         controller: textEditingController,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
         ),
         obscureText: isPasswordTextfield,
         decoration: InputDecoration(
-          suffixIcon: isPasswordTextfield
-              ? IconButton(
-            icon: Icon(
-              isPasswordTextfield
-                  ? Icons.remove_red_eye
-                  : Icons.visibility_off,
-              color: Colors.grey,
-            ),
-            onPressed: () {},
-          )
-              : null,
-          contentPadding: EdgeInsets.only(bottom: 5),
+          contentPadding: const EdgeInsets.only(bottom: 5),
           labelText: labelText,
           floatingLabelBehavior: FloatingLabelBehavior.always,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF7885b2)),
+          )
         ),
       ),
     );
@@ -84,22 +79,22 @@ class AccountDetails extends StatelessWidget {
       TextEditingController emailController,
       TextEditingController passwordController,
       AuthService authService) async {
-    final String newDisplayname = displayNameController.text.trim();
+    final String newDisplayName = displayNameController.text.trim();
     final String newEmail = emailController.text.trim();
     final String newPassword = passwordController.text;
 
     bool isUpdated = false;
 
-    if (newDisplayname.isEmpty && newEmail.isEmpty && newPassword.isEmpty) {
+    if (newDisplayName.isEmpty && newEmail.isEmpty && newPassword.isEmpty) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error'),
-            content: Text('Please enter at least one field to update.'),
+            title: const Text('Error'),
+            content: const Text('Please enter at least one field to update.'),
             actions: [
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -112,8 +107,8 @@ class AccountDetails extends StatelessWidget {
     }
 
     try {
-      if (newDisplayname.isNotEmpty) {
-        await authService.updateDisplayName(newDisplayname);
+      if (newDisplayName.isNotEmpty) {
+        await authService.updateDisplayName(newDisplayName);
         isUpdated = true;
       }
       if (newEmail.isNotEmpty) {
@@ -147,11 +142,11 @@ class AccountDetails extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error'),
-            content: Text('An error occurred while updating account details.'),
+            title: const Text('Error'),
+            content: const Text('An error occurred while updating account details.'),
             actions: [
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
