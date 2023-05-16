@@ -5,6 +5,7 @@ import 'package:tuple/tuple.dart';
 import '../Widgets/animated_indexed_stack.dart';
 import '../bloc/AppBloc.dart';
 import '../bloc/AppEvent.dart';
+import 'account_screen.dart';
 import 'homescreen.dart';
 import 'join_screen.dart';
 
@@ -23,7 +24,7 @@ class _InAppContainerState extends State<InAppContainer> {
     Tuple2(Placeholder(), Text("My Quizzes: Placeholder")),
     Tuple2(JoinScreen(), Text('Join Quiz')),
     Tuple2(Placeholder(), Text("Favorites: Placeholder")),
-    Tuple2(Placeholder(), Text("User: Placeholder")),
+    Tuple2(AccountDetails(), Text("Update your account details")),
     //QuizCreationScreen
   ];
 
