@@ -19,6 +19,7 @@ class GameSessionService {
     return result;
   }
 
+  //Have host and quiz as parameters.
   Future<void> createGameSession() async {
     try {
       String gameSessionId = generateRandomId(5);
@@ -35,12 +36,6 @@ class GameSessionService {
     } catch (e) {
       print('Error creating game session: $e');
     }
-  }
-
-
-  Stream<DatabaseEvent> listenForChanges(String sessionId) {
-    final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
-    return sessionRef.onValue;
   }
 
   Future<void> addUserToSession(String sessionId, User? user) async {
@@ -70,17 +65,11 @@ class GameSessionService {
       if (sessionSnapshot.value != null) {
         final data = sessionSnapshot.value as Map<dynamic, dynamic>;
         final scores = data['scores'] as Map<dynamic, dynamic>;
-
-        // Remove the user from the scores map
         scores.remove(user.uid);
-
-        // Update the scores field in the database
         await sessionRef.child('scores').set(scores);
       }
     } catch (e) {
-      print('Error removing user from game session: $e');
+      print('Cant remove the player from the session $e');
     }
   }
-
-// Other methods...
 }
