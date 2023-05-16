@@ -46,6 +46,7 @@ class _JoinScreenState extends State<JoinScreen> {
                 text: 'Join',
                 onPressed: () {
                   gameSessionService.addUserToSession(sessionController.text, authService.getCurrentFirebaseUser());
+                  print(sessionController.text);
                   print(authService.getCurrentFirebaseUser());
                 },
                 color: Colors.green,

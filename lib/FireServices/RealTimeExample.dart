@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -37,18 +36,17 @@ class GameSessionService {
       print('Error creating game session: $e');
     }
   }
-
   Future<void> addUserToSession(String sessionId, User? user) async {
     try {
-      final sessionRef =
-          _databaseReference.child('gameSessions').child(sessionId);
+      final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
       DataSnapshot sessionSnapshot = await sessionRef.get();
       final dynamic sessionValue = sessionSnapshot.value;
 
       if (sessionValue != null && sessionValue is Map<dynamic, dynamic>) {
-        final scores = sessionValue['scores'] as Map<dynamic, dynamic>;
-        scores[user?.uid] = 0;
-        await sessionRef.child('scores').set(scores);
+        final scores = sessionValue['scores'];
+        final updatedScores = scores != null ? Map.from(scores) : {}; // Initialize scores if null
+        updatedScores[user?.uid] = 0;
+        await sessionRef.child('scores').set(updatedScores);
       } else {
         print('Error: Invalid data or session does not exist');
       }

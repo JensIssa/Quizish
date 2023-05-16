@@ -7,7 +7,7 @@ class GameSession {
   User? host;
   Quiz? quiz;
   int? currentQuestion;
-  Map<User, int>? scores;
+  Map<User?, int>? scores;
 
   GameSession(
       {required this.id,
