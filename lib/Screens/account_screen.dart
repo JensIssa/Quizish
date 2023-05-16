@@ -15,6 +15,7 @@ class _AccountDetailsState extends State<AccountDetails> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
+
   bool isObscurePassword = true;
 
   @override
@@ -39,35 +40,22 @@ class _AccountDetailsState extends State<AccountDetails> {
           SizedBox(height: 45),
           buildTextField('Password', true, _passwordController),
           SizedBox(height: 45),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 1,
-            child: ElevatedButton(onPressed: () {},
-                child: const Text('Cancel', style: TextStyle(
-                  fontSize: 22,
-                  letterSpacing: 2,
-                  color: Colors.white
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 60),
-            Expanded(
-              flex: 1,
-            child: ElevatedButton(
-                onPressed: () {
-                  updateAccountDetails();
-                },
-                child: Text("Save", style: TextStyle(
-                  fontSize: 22,
-                  letterSpacing: 2,
-                  color: Colors.white
-                )),
-              ),
-            )
-          ],
-          )
+         Align(
+           alignment: Alignment.center,
+           child: ElevatedButton(
+             onPressed: () {
+               updateAccountDetails();
+             },
+             child: Text(
+               "Save",
+               style: TextStyle(
+                 fontSize: 22,
+                 letterSpacing: 2,
+                 color: Colors.white,
+               ),
+             ),
+           ),
+         )
         ],
         )
       ),
