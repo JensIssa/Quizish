@@ -27,19 +27,41 @@ class Quiz {
         author = null,
         questions = [];
 
-  Quiz.fromMap(this.id, Map<String, dynamic> data)
+
+  Quiz.fromMap(Map<String, dynamic> data)
+      : id = data['id'],
+        title = data['title'],
+        description = data['description'],
+        author = data['author'],
+        questions = _getQuestions(data['questions']);
+
+  Quiz.fromMapNoID(this.id, Map<String, dynamic> data)
       : title = data['title'],
         description = data['description'],
         author = data['author'],
-        questions = data['questions'];
+        questions = _getQuestions(data['questions']);
+
+  static _getQuestions(Map<String, dynamic> data) {
+    List<Question> questions = [];
+    data.forEach((key, value) {
+      questions.add(Question.fromMap(value));
+    });
+    return questions;
+  }
 
   Map<String, dynamic> toMap() {
+    var questionsMap = new Map();
+    questions.forEach((element) {
+      questionsMap.addAll(
+          element.toMap());
+    });
+
     return {
       'title': title,
       'id': id,
       'description': description,
       'author': author,
-      'questions': questions,
+      'questions': questionsMap,
     };
   }
 
@@ -60,12 +82,14 @@ class Answers {
 
   Answers.fromMap(Map<String, dynamic> data)
       : answer = data['answer'],
-        isCorrect = data['isCorrect'];
+        isCorrect = data['isCorrect'],
+        index = data['index'];
 
   Map<String, dynamic> toMap() {
     return {
       'answer': answer,
       'isCorrect': isCorrect,
+      'index': index,
     };
   }
 
@@ -106,26 +130,40 @@ class Question {
 
   Question.noImg({required this.index, required this.question, required this.answers, required this.timer});
 
-  Question.fromMap(Map<String, dynamic> data)
-      : index = data['index'],
+  Question.fromMap(Map<String, dynamic> data) :
+        index = data['index'],
         question = data['question'],
-        answers = data['answers'],
+        answers = _getAnswers(data['answers']),
         imgUrl = data['imgUrl'],
         timer = data['timer'];
+
+  static _getAnswers(Map<String, dynamic> data) {
+    List<Answers> answersList = [];
+    data.forEach((key, value) {
+      answersList.add(Answers.fromMap(value));
+    });
+    return answersList;
+  }
+
 
   Question.fromMapNoImg(Map<String, dynamic> data)
       : index = data['index'],
         question = data['question'],
-        answers = data['answers'],
+        answers = _getAnswers(data['answers']),
         timer = data['timer'];
 
   get correctAnswers => answers.where((answer) => answer.isCorrect);
 
   Map<String, dynamic> toMap() {
+    var answersMap = new Map();
+    answers.forEach((element) {
+      answersMap.addAll(
+          element.toMap());
+    });
     return {
       'index': index,
       'question': question,
-      'answers': answers,
+      'answers': answersMap,
       'imgUrl': imgUrl,
       'timer': timer,
     };
