@@ -20,8 +20,9 @@ class _InAppContainerState extends State<InAppContainer> {
 
   static final List<Tuple2<Widget, Text>> _widgetOptions = [
     Tuple2(HomeScreen(), Text('Home')),
-    Tuple2(Placeholder(), Text("My Quizzes: Placeholder")),
+    Tuple2(Placeholder(), Text("Create a Quiz")),
     Tuple2(JoinScreen(), Text('Join Quiz')),
+    Tuple2(Placeholder(), Text("User: Placeholder")),
     Tuple2(Placeholder(), Text("Favorites: Placeholder")),
     Tuple2(AccountDetails(), Text("Update your account details")),
     //QuizCreationScreen
@@ -58,8 +59,8 @@ class _InAppContainerState extends State<InAppContainer> {
               label: 'Home',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.quiz),
-            label: 'Quiz',
+            icon: Icon(Icons.add_circle_outline),
+            label: 'Quiz Creator',
           ),
           BottomNavigationBarItem(
               icon: Stack(alignment: Alignment.center,
@@ -69,10 +70,6 @@ class _InAppContainerState extends State<InAppContainer> {
                 ],
               ),
               label: 'Join'
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorite',
           ),
           const BottomNavigationBarItem(
               icon: Icon(Icons.account_circle),

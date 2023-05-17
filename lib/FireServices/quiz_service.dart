@@ -27,12 +27,26 @@ class QuizService {
 
   Stream<List<Quiz>> get quizzes => _quizzesController.stream;
 
-
   Future<void> createQuiz(Quiz quiz) async {
     final quizRef = FirebaseFirestore.instance.collection('quizzes').doc();
     quiz.id = quizRef.id;
     await quizRef.set(quiz.toMap());
   }
 
+  Future<void> getQuizzes() async {
+    final quizRef = FirebaseFirestore.instance.collection('quizzes');
+    final quiz = await quizRef.get();
+    _quizzes = quiz.docs.map((doc) => Quiz.fromMap(doc.id, doc.data())).toList();
+    _quizzesController.add(_quizzes);
+  }
 
+  Future<void> deleteQuiz(String quizId) async {
+    final quizRef = FirebaseFirestore.instance.collection('quizzes').doc(quizId);
+    await quizRef.delete();
+  }
+
+  Future<void> getIndividualQuiz(String quizId) async{
+    final quizRef = FirebaseFirestore.instance.collection('quizzes').doc(quizId);
+    await quizRef.get(); //Get the quiz from the database
+  }
 }

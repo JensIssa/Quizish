@@ -26,24 +26,24 @@ class _QuizScreenState extends State<QuizScreen> {
         id: "-1",
         description: "description",
         questions: [
-          Question(question: "question", imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/1200px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
+          Question(index: 0, question: "question", timer: 20, imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/1200px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
               answers: [
-            Answers(answer: "answer 1", isCorrect: true),
-            Answers(answer: "answer", isCorrect: false),
-            Answers(answer: "answer", isCorrect: false),
-            Answers(answer: "answer", isCorrect: false),
+            Answers(answer: "answer 1", isCorrect: true, index: 0),
+            Answers(answer: "answer", isCorrect: false, index: 1),
+            Answers(answer: "answer", isCorrect: false, index: 2),
+            Answers(answer: "answer", isCorrect: false, index: 3),
           ]),
-          Question(question: "question", answers: [
-            Answers(answer: "answer", isCorrect: false),
-            Answers(answer: "answer 2", isCorrect: true),
-            Answers(answer: "answer", isCorrect: false),
-            Answers(answer: "answer", isCorrect: false),
+          Question.noImgOrTimer(index: 1, question: "question", answers: [
+            Answers(answer: "answer", isCorrect: false, index: 0),
+            Answers(answer: "answer 2", isCorrect: true, index: 1),
+            Answers(answer: "answer", isCorrect: false, index: 2),
+            Answers(answer: "answer", isCorrect: false, index: 3),
           ]),
-          Question(question: "question", answers: [
-            Answers(answer: "answer", isCorrect: false),
-            Answers(answer: "answer", isCorrect: false),
-            Answers(answer: "answer 3", isCorrect: true),
-            Answers(answer: "answer", isCorrect: false),
+          Question.noImgOrTimer(index: 2, question: "question", answers: [
+            Answers(answer: "answer", isCorrect: false, index: 0),
+            Answers(answer: "answer", isCorrect: false, index: 1),
+            Answers(answer: "answer 3", isCorrect: true, index: 2),
+            Answers(answer: "answer", isCorrect: false, index: 3),
           ]),
         ]);
   }

@@ -11,6 +11,7 @@ import 'package:quizish/bloc/login_bloc/LoginState.dart';
 import 'package:quizish/main.dart';
 
 class loginScreen extends StatelessWidget {
+  final googleIcon = Image.network("https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg");
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   loginScreen({Key? key}) : super(key: key);
@@ -108,7 +109,8 @@ class newUserBtn extends StatelessWidget {
         fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
       ),
       child: const Text(
-        'Sign up here',
+        'Sign up',
+        textAlign: TextAlign.center,
         style: TextStyle(fontSize: 20),
       ),
       onPressed: () => Navigator.of(context).push<void>(registerScreen.route()),
@@ -166,53 +168,70 @@ class passwordInput extends StatelessWidget {
   }
 }
 
-Widget btnGoogle(BuildContext buildContext) {
-  return Padding(
-      padding: EdgeInsets.only(top: 128),
-      child: Container(
-        height: 60,
-        child: ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-                Theme.of(buildContext).primaryColorLight),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24.0),
-                  side: BorderSide(color: Colors.red)),
+  Widget btnGoogle(BuildContext buildContext) {
+    return Padding(
+        padding: EdgeInsets.only(top: 128),
+        child: Container(
+          height: 60,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                    side: const BorderSide(color: Colors.white70)),
+              ),
+            ),
+            onPressed: () {
+              loginWithGoogle().then((value) => {
+                    if (value != null)
+                      {
+                        Navigator.of(buildContext)
+                            .pushReplacement(MaterialPageRoute(
+                          builder: (context) => const Placeholder(),
+                        ))
+                      }
+                  });
+            },
+            child: SizedBox(
+              width: 182,
+              child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/google_logo.png',
+                        fit: BoxFit.contain,
+                        height: 32,
+                        isAntiAlias: true,
+                    ),
+                    const SizedBox(width: 16),
+                    const Text(
+                      'Google Sign-In',
+                      style: TextStyle(
+                          fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-          onPressed: () {
-            loginWithGoogle().then((value) => {
-                  if (value != null)
-                    {
-                      Navigator.of(buildContext)
-                          .pushReplacement(MaterialPageRoute(
-                        builder: (context) => const Placeholder(),
-                      ))
-                    }
-                });
-          },
-          child: Text(
-            'Log in with Google',
-            style: TextStyle(
-                fontSize: 18, color: Theme.of(buildContext).primaryColorDark),
-          ),
-        ),
-      ));
+        );
+  }
+
+  loginWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final _auth = FirebaseAuth.instance;
+    final GoogleSignInAccount? googleSignInAccount =
+        await googleSignIn.signIn();
+    final GoogleSignInAuthentication? googleSignInAuthentication =
+        await googleSignInAccount?.authentication;
+    final AuthCredential authCredential = GoogleAuthProvider.credential(
+      accessToken: googleSignInAuthentication?.accessToken,
+      idToken: googleSignInAuthentication?.idToken,
+    );
+    final UserCredential authResult =
+        await _auth.signInWithCredential(authCredential);
+
+    return authResult;
+  }
 }
 
-loginWithGoogle() async {
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  final _auth = FirebaseAuth.instance;
-  final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-  final GoogleSignInAuthentication? googleSignInAuthentication =
-      await googleSignInAccount?.authentication;
-  final AuthCredential authCredential = GoogleAuthProvider.credential(
-    accessToken: googleSignInAuthentication?.accessToken,
-    idToken: googleSignInAuthentication?.idToken,
-  );
-  final UserCredential authResult =
-      await _auth.signInWithCredential(authCredential);
-
-  return authResult;
-}

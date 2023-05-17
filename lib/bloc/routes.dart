@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'package:quizish/Screens/in_app_container.dart';
 import 'package:quizish/Screens/login_screen.dart';
+import 'package:quizish/Screens/quiz_creation_screen.dart';
 import 'package:quizish/bloc/app_state.dart';
 
 List<Page> onGenerateAppViewPages(AppState state, List<Page<dynamic>> pages) {
@@ -17,7 +18,7 @@ List<Page> onGenerateAppViewPages(AppState state, List<Page<dynamic>> pages) {
     default:
       return [
         MaterialPage(
-          child: loginScreen(),
+          child: QuizCreationScreen(),
         ),
       ];
   }

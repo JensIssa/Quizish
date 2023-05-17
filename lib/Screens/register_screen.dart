@@ -105,8 +105,6 @@ class registerScreen extends StatelessWidget {
            return ElevatedButton(
                 style: ButtonStyle(
                   fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
-                  backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Color(0xFF7885b2)),
                 ),
                 child: const Text('New User', style: TextStyle(fontSize: 20)),
                 onPressed: () async {
