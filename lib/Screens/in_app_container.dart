@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/Screens/account_screen.dart';
+import 'package:quizish/Screens/quiz_creation_screen.dart';
 import 'package:tuple/tuple.dart';
 import '../Widgets/animated_indexed_stack.dart';
 import '../bloc/AppBloc.dart';
@@ -20,7 +21,7 @@ class _InAppContainerState extends State<InAppContainer> {
 
   static final List<Tuple2<Widget, Text>> _widgetOptions = [
     Tuple2(HomeScreen(), Text('Home')),
-    Tuple2(Placeholder(), Text("Create a Quiz")),
+    Tuple2(QuizCreationScreen(), Text("Create a Quiz")),
     Tuple2(JoinScreen(), Text('Join Quiz')),
     Tuple2(Placeholder(), Text("User: Placeholder")),
     Tuple2(Placeholder(), Text("Favorites: Placeholder")),
