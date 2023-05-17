@@ -81,24 +81,24 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                 );
               },
             )),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Align(
+              Align(
                 alignment: Alignment.bottomRight,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      int index = quiz.questions.length;
-                      quiz.questions.add(Question.emptyWithIndex(index));
-                      _animatedListKey.currentState?.insertItem(index);
-                      //_animatedListKey.currentState?.insertItem(index);
-                    });
-                  },
-                  backgroundColor: Colors.green,
-                  child: const Icon(Icons.add),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      setState(() {
+                        int index = quiz.questions.length;
+                        quiz.questions.add(Question.emptyWithIndex(index));
+                        _animatedListKey.currentState?.insertItem(index);
+                        //_animatedListKey.currentState?.insertItem(index);
+                      });
+                    },
+                    backgroundColor: Colors.green,
+                    child: const Icon(Icons.add),
+                  ),
                 ),
               ),
-            ),
           ]),
         ),
       ),

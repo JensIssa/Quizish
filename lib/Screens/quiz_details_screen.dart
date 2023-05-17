@@ -16,13 +16,16 @@ class QuizDetailsScreen extends StatelessWidget {
     return Material(
         child: Column(
           children: [
-            Container(
-                height: 250,
-                child: QuizNameBox(
-                  quizName: '',
-                  questionAmount: '',
-                  joinCode: '',
-                ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                  height: 250,
+                  child: QuizNameBox(
+                    quizName: '',
+                    questionAmount: '',
+                    joinCode: '',
+                  ),
+              ),
             ),
             Text('Description', style: TextStyle(fontSize: 24,
                 fontWeight: FontWeight.bold, color: Colors.white),

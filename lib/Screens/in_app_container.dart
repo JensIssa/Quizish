@@ -29,6 +29,7 @@ class _InAppContainerState extends State<InAppContainer> {
     //QuizCreationScreen
   ];
 
+  //TODO: Consider provider to fix appbar and bottom nav bar not showing on first view
 
   void _onItemTapped(int index) {
     setState(() {
@@ -45,7 +46,6 @@ class _InAppContainerState extends State<InAppContainer> {
               context.read<AppBloc>().add(AppLogOutRequested());
             }, icon: const Icon(Icons.exit_to_app))
           ],
-
         ),
       body: AnimatedIndexedStack(
         duration: const Duration(milliseconds: 200),
