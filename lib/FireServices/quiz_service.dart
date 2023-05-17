@@ -36,7 +36,7 @@ class QuizService {
   Future<void> getQuizzes() async {
     final quizRef = FirebaseFirestore.instance.collection('quizzes');
     final quiz = await quizRef.get();
-    _quizzes = quiz.docs.map((doc) => Quiz.fromMap(doc.id, doc.data())).toList();
+    _quizzes = quiz.docs.map((doc) => Quiz.fromMapWithID(doc.id, doc.data())).toList();
     _quizzesController.add(_quizzes);
   }
 

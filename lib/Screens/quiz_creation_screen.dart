@@ -516,17 +516,12 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
                         child: const Text('Keep working 💪'),
                       ),
                       const SizedBox(width: 10),
                       TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
+                        onPressed: () => _createNewQuiz(context),
                         child: const Text('Create another! 🔨'),
                       ),
                     ],
@@ -537,6 +532,15 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         ),
     ),
     );
+  }
+
+  _createNewQuiz(BuildContext context) {
+    setState(() {
+      _quizTitle.clear();
+      _quizDescription.clear();
+      this.quiz = Quiz.empty();
+    });
+    Navigator.of(context, rootNavigator: true).pop();
   }
 
 

@@ -35,7 +35,7 @@ class Quiz {
         author = data['author'],
         questions = _getQuestions(data['questions']);
 
-  Quiz.fromMapNoID(this.id, Map<String, dynamic> data)
+  Quiz.fromMapWithID(this.id, Map<String, dynamic> data)
       : title = data['title'],
         description = data['description'],
         author = data['author'],
