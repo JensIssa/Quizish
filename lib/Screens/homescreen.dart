@@ -1,13 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/Screens/quiz_details_screen.dart';
-import 'package:quizish/Widgets/bottom_navigation_bar.dart';
-import 'package:quizish/bloc/AppBloc.dart';
-import 'package:quizish/widgets/bottom_navigation_bar.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
-
-import '../widgets/Appbar.dart';
 
 
 class HomeScreen extends StatefulWidget {

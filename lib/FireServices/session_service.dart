@@ -77,9 +77,4 @@ class SessionService {
     players.remove(user);
     await sessionRef.update({'players': players});
   }
-
-
-
-
-
 }

@@ -8,15 +8,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quizish/Screens/register_screen.dart';
 import 'package:quizish/bloc/login_bloc/LoginCubit.dart';
 import 'package:quizish/bloc/login_bloc/LoginState.dart';
-import 'package:quizish/widgets/Appbar.dart';
-
+import 'package:quizish/main.dart';
 
 class loginScreen extends StatelessWidget {
   final googleIcon = Image.network("https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg");
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   loginScreen({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -29,81 +27,77 @@ class loginScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: BlocProvider(
-              create: (_) =>
-                  LoginCubit(
-                      context.read<AuthService>()
-                  ),
-              child: LoginForm()
-          ),
+              create: (_) => LoginCubit(context.read<AuthService>()),
+              child: LoginForm()),
         ),
       ),
     );
   }
 }
 
-   class LoginForm extends StatelessWidget {
-     LoginForm({Key? key}) : super(key: key);
-     final _formKey = GlobalKey<FormState>();
+class LoginForm extends StatelessWidget {
+  LoginForm({Key? key}) : super(key: key);
+  final _formKey = GlobalKey<FormState>();
 
-     @override
-     Widget build(BuildContext context) {
-       return BlocListener<LoginCubit, LoginState>(
-         listener: (context, state) {
-           if (state.status == LoginStatus.error) {
-             ScaffoldMessenger.of(context).showSnackBar(
-                 SnackBar(
-                   content: Text("Login Failed - Please provide correct E-mail and password"),
-                   backgroundColor: Colors.red,
-                 )
-             );
-           }
-         },
-         child: Form(
-           key: _formKey,
-           child: Column(
-             children: [
-               SizedBox(height: 15),
-               emailInput(),
-               SizedBox(height: 30),
-               passwordInput(),
-               const SizedBox(height: 32),
-               loginBtn(),
-               SizedBox(height: 15),
-               newUserBtn(),
-               btnGoogle(context),
-             ],
-           ),
-         ),
-       );
-     }
-   }
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<LoginCubit, LoginState>(
+      listener: (context, state) {
+        if (state.status == LoginStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                "Login Failed - Please provide correct E-mail and password"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      },
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            SizedBox(height: 15),
+            emailInput(),
+            SizedBox(height: 30),
+            passwordInput(),
+            const SizedBox(height: 32),
+            loginBtn(),
+            SizedBox(height: 15),
+            newUserBtn(),
+            btnGoogle(context),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-  class loginBtn extends StatelessWidget  {
-    @override
-    Widget build(BuildContext context){
+class loginBtn extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
         buildWhen: (previous, current) => previous.status != current.status,
-        builder: (context, status){
-      return ElevatedButton(
-          style: ButtonStyle(
-              fixedSize: MaterialStatePropertyAll(Size.fromWidth(150))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text('Login',
-                style: TextStyle(fontSize: 20),
+        builder: (context, status) {
+          return ElevatedButton(
+              style: ButtonStyle(
+                  fixedSize: MaterialStatePropertyAll(Size.fromWidth(150))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    'Login',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_forward),
+                ],
               ),
-              SizedBox(width: 8),
-              Icon(Icons.arrow_forward),
-            ],
-          ),
-          onPressed: () async {
-            context.read<LoginCubit>().logInWithCredentials();;
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const HomeScreen(),
-            ));
-          });
-    });
+              onPressed: () async {
+                await context.read<LoginCubit>().logInWithCredentials();
+                navigatorKey.currentState?.pushReplacement(MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ));
+              });
+        });
   }
 }
 
@@ -112,7 +106,7 @@ class newUserBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-          fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
+        fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
       ),
       child: const Text(
         'Sign up',
@@ -123,7 +117,6 @@ class newUserBtn extends StatelessWidget {
     );
   }
 }
-
 
 class emailInput extends StatelessWidget {
   @override
@@ -167,13 +160,11 @@ class passwordInput extends StatelessWidget {
                   style: TextStyle(fontSize: 20),
                 )),
             obscureText: true,
-            validator: (value) =>
-            (value == null || value.length < 6)
+            validator: (value) => (value == null || value.length < 6)
                 ? 'Password required (min 6 chars)'
                 : null,
           );
-        }
-    );
+        });
   }
 }
 
@@ -242,4 +233,5 @@ class passwordInput extends StatelessWidget {
 
     return authResult;
   }
+}
 

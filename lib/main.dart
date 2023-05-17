@@ -64,6 +64,10 @@ class MyApp extends StatelessWidget {
   }
   
 }
+
+final navigatorKey = GlobalKey<NavigatorState>();
+
+
 class AppView extends StatelessWidget {
   const AppView({Key? key, required this.theme}) : super(key: key);
   final ThemeData theme;
@@ -71,6 +75,7 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  MaterialApp(
+      navigatorKey: navigatorKey,
       theme: theme,
       home: FlowBuilder(
           state: context.select((AppBloc bloc) => bloc.state),

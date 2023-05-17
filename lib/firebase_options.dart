@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '939193095617',
     projectId: 'quizish-ee75f',
     authDomain: 'quizish-ee75f.firebaseapp.com',
+    databaseURL: 'https://quizish-ee75f-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'quizish-ee75f.appspot.com',
   );
 
@@ -57,6 +58,7 @@ class DefaultFirebaseOptions {
     appId: '1:939193095617:android:26ddd11762488e5f404b40',
     messagingSenderId: '939193095617',
     projectId: 'quizish-ee75f',
+    databaseURL: 'https://quizish-ee75f-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'quizish-ee75f.appspot.com',
   );
 
@@ -65,7 +67,9 @@ class DefaultFirebaseOptions {
     appId: '1:939193095617:ios:b1df43857f6c66c8404b40',
     messagingSenderId: '939193095617',
     projectId: 'quizish-ee75f',
+    databaseURL: 'https://quizish-ee75f-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'quizish-ee75f.appspot.com',
+    androidClientId: '939193095617-jgufenjm457u1if8p282e2l5s8ts0oij.apps.googleusercontent.com',
     iosClientId: '939193095617-2ok35a5h6bpgaqvfcvm72j5g7sg99ai4.apps.googleusercontent.com',
     iosBundleId: 'com.example.quizish',
   );
@@ -75,7 +79,9 @@ class DefaultFirebaseOptions {
     appId: '1:939193095617:ios:b1df43857f6c66c8404b40',
     messagingSenderId: '939193095617',
     projectId: 'quizish-ee75f',
+    databaseURL: 'https://quizish-ee75f-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'quizish-ee75f.appspot.com',
+    androidClientId: '939193095617-jgufenjm457u1if8p282e2l5s8ts0oij.apps.googleusercontent.com',
     iosClientId: '939193095617-2ok35a5h6bpgaqvfcvm72j5g7sg99ai4.apps.googleusercontent.com',
     iosBundleId: 'com.example.quizish',
   );

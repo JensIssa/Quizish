@@ -20,6 +20,11 @@ class AuthService{
 
   }
 
+  firebase_Auth.User? getCurrentFirebaseUser() {
+    return _firebaseAuth.currentUser;
+  }
+
+
   Future<void> signUp({
     required String email,
     required String password,
@@ -44,6 +49,44 @@ class AuthService{
     }
   }
 
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _firebaseAuth.currentUser?.updatePassword(newPassword);
+    } on firebase_Auth.FirebaseAuthException catch (e) {
+      throw Exception(e.message);
+    }
+  }
+  
+  Future<void> updateDisplayName(String newDisplayName) async {
+    try {
+      await _firebaseAuth.currentUser?.updateDisplayName(newDisplayName);
+
+      await FirebaseFirestore.instance.collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .update({'displayName': newDisplayName});
+      currentUser = currentUser.copyWith(displayName: newDisplayName);
+    } on firebase_Auth.FirebaseAuthException catch (e) {
+      throw Exception(e.message);
+    }
+  }
+
+
+
+  Future<void> updateEmail(String newEmail) async {
+    try {
+      await _firebaseAuth.currentUser?.updateEmail(newEmail);
+
+      await FirebaseFirestore.instance.collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .update({'email': newEmail});
+      currentUser = currentUser.copyWith(email: newEmail);
+    } on firebase_Auth.FirebaseAuthException catch (e) {
+      throw Exception(e.message);
+    }
+  }
+
+
+
 
   Future<void> loginWithEmailAndPassword({
   required String email,
@@ -66,6 +109,7 @@ class AuthService{
     }
   }
 }
+
 extension on firebase_Auth.User {
   User get toUser {
     return User(
