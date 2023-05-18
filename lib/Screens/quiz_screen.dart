@@ -1,257 +1,315 @@
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/models/Quiz.dart';
+import 'package:quizish/provider/quiz_notifier_model.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 import '../widgets/quiz_button.dart';
 
 class QuizScreen extends StatefulWidget {
-  const QuizScreen({Key? key}) : super(key: key);
+  final Quiz quiz;
+  const QuizScreen(this.quiz, {Key? key}) : super(key: key);
 
   @override
-  State<QuizScreen> createState() => _QuizScreenState();
+  State<QuizScreen> createState() => _QuizScreenState(quiz);
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  final int _duration = 10;
-  final CountDownController _countDownController = CountDownController();
-  int currentQuestion = 0;
-  late Quiz quiz;
+  Quiz quiz;
+
+  _QuizScreenState(this.quiz);
 
   @override
   void initState() {
     super.initState();
-    //
-    // quiz = Quiz.noAuthor(
-    //     title: "quiz title",
-    //     id: "-1",
-    //     description: "description",
-    //     questions: [
-    //       Question(index: 0, question: "question", timer: 20, imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/1200px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
-    //           answers: [
-    //         Answers(answer: "answer 1", isCorrect: true, index: 0),
-    //         Answers(answer: "answer", isCorrect: false, index: 1),
-    //         Answers(answer: "answer", isCorrect: false, index: 2),
-    //         Answers(answer: "answer", isCorrect: false, index: 3),
-    //       ]),
-    //       Question.noImgOrTimer(index: 1, question: "question", answers: [
-    //         Answers(answer: "answer", isCorrect: false, index: 0),
-    //         Answers(answer: "answer 2", isCorrect: true, index: 1),
-    //         Answers(answer: "answer", isCorrect: false, index: 2),
-    //         Answers(answer: "answer", isCorrect: false, index: 3),
-    //       ]),
-    //       Question.noImgOrTimer(index: 2, question: "question", answers: [
-    //         Answers(answer: "answer", isCorrect: false, index: 0),
-    //         Answers(answer: "answer", isCorrect: false, index: 1),
-    //         Answers(answer: "answer 3", isCorrect: true, index: 2),
-    //         Answers(answer: "answer", isCorrect: false, index: 3),
-    //       ]),
-    //     ]);
+
+    quiz = Quiz.noAuthor(
+        title: "quiz title",
+        id: "-1",
+        description: "description",
+        questions: [
+          Question.noImg(index: 0, question: "question", timer: 20, answers: [
+                Answers(answer: "answer q0 1", isCorrect: true, index: 0),
+                Answers(answer: "answer q0 2", isCorrect: false, index: 1),
+                Answers(answer: "answer q0 3", isCorrect: false, index: 2),
+                Answers(answer: "answer q0 4", isCorrect: false, index: 3),
+              ]),
+          Question.noImg(index: 1, question: "question 1", answers: [
+            Answers(answer: "answer q1 1", isCorrect: false, index: 0),
+            Answers(answer: "answer q1 2", isCorrect: true, index: 1),
+            Answers(answer: "answer q1 3", isCorrect: false, index: 2),
+            Answers(answer: "answer q1 4", isCorrect: false, index: 3),
+          ], timer: 10),
+          Question.noImg(index: 2, question: "question 2", answers: [
+            Answers(answer: "answer q2 1", isCorrect: false, index: 0),
+            Answers(answer: "answer q2 2", isCorrect: false, index: 1),
+            Answers(answer: "answer q2 3", isCorrect: true, index: 2),
+            Answers(answer: "answer q2 4", isCorrect: false, index: 3),
+          ], timer: 10),
+        ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Quiz'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.exit_to_app),
-              onPressed: () {},
-            )
-          ],
-        ),
-        body: Column(children: [
-          Flex(
-            direction: Axis.horizontal,
-            children: [
-              Text(
-                '${currentQuestion + 1}/${quiz.questions.length}',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
+    return ChangeNotifierProvider(
+      create: (_) => QuizNotifierModel.notifier(quiz),
+      child: Consumer<QuizNotifierModel>(
+        builder: (context, quizModel, child) => Scaffold(
+            appBar: AppBar(
+              title: const Text('Quiz'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.exit_to_app),
+                  onPressed: () => _leaveQuizDialog(quizModel),
+                )
+              ],
+            ),
+            body: Column(children: [
+              Flex(
+                direction: Axis.horizontal,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      quizModel.quizProgress,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
+                    ),
+                  ),
+                  const Spacer(),
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      quizModel.quizTitle,
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w200),
+                    ),
+                  ),
+                  const Spacer(),
+                  _timer(context, quizModel),
+                ],
               ),
-              const Spacer(),
-              _timer(),
-            ],
-          ),
-          Text(
-            quiz.questions[currentQuestion].question,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
-          ),
-        //  _imageContainer(),
-          Positioned(
-            bottom: 0,
-            child: _buttonGrid(),
-          ),
-        ]));
+
+              Flexible(
+                child: Center(
+                  child: Text(
+                    quizModel.currentQuestion,
+                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+              _answersOptions(quizModel),
+
+
+
+            ])),
+      ),
+    );
   }
 
- // Widget _imageContainer() {
- //   if (quiz.questions[currentQuestion].imgUrl == null) {
-   //   return SizedBox(
-     //   width: MediaQuery.of(context).size.width,
-       // height: MediaQuery.of(context).size.height / 6,
-      //);
-   // }
-   // return SizedBox(
-     //   width: MediaQuery.of(context).size.width,
-       // height: MediaQuery.of(context).size.height / 3,
-        //child: Image(
-          //image: NetworkImage(
-            //  quiz.questions[currentQuestion].imgUrl.toString()),
-        //));
-  //}
+  _answersOptions(QuizNotifierModel quizModel) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
 
-  _buttonGrid() {
-    return Expanded(
-      child: GridView.count(
-        crossAxisCount: 2,
-        children: [
-          Expanded(
-              child: Padding(
-              padding: const EdgeInsets.all(5),
-              child: QuizButton(
-              text: quiz.questions[currentQuestion].answers[0].answer,
-              onPressed: () {
-                _countDownController.pause();
-              },
-              color: Colors.green,
-            ),
-          )),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: QuizButton(
-              text: quiz.questions[currentQuestion].answers[1].answer,
-              onPressed: () {
-                _countDownController.pause();
-              },
-              color: Colors.red,
-            ),
-          )),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(5),
-              child: QuizButton(
-                text: quiz.questions[currentQuestion].answers[2].answer,
-                onPressed: () {
-                  _countDownController.start();
-                },
-                color: Colors.orange,
-              ),
+    var answerHeight = height / 5;
+    var answerWidth = width / 4;
+
+    if (width > 1200) {
+      width = width / 2;
+    }
+
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(
+            10, 0, 10, 30),
+        child: Positioned(
+          bottom: 10,
+          height: MediaQuery.of(context).size.height / 1.5,
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height / 1.5,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              verticalDirection: VerticalDirection.down,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _answerButton(quizModel.getAnswerText(0), 0, answerHeight, answerWidth, quizModel),
+                    _answerButton(quizModel.getAnswerText(1), 1, answerHeight, answerWidth, quizModel),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _answerButton(quizModel.getAnswerText(2), 2, answerHeight, answerWidth, quizModel),
+                    _answerButton(quizModel.getAnswerText(3), 3, answerHeight, answerWidth, quizModel),
+                  ],
+                ),
+              ],
             ),
           ),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: QuizButton(
-              text: quiz.questions[currentQuestion].answers[3].answer,
-              onPressed: () {
-                _countDownController.pause();
-              },
-              color: Colors.blueAccent,
+        ),
+      );
+
+  }
+
+
+
+  _getAnswerColor(int index) {
+    switch (index) {
+      case 0:
+        return Colors.green;
+      case 1:
+        return Colors.orange;
+      case 2:
+        return Colors.blue;
+      case 3:
+        return Colors.red;
+      default:
+        return Colors.blue;
+    }
+  }
+
+
+  _answerButton(String text, int index, double height, double width, QuizNotifierModel quizModel) {
+    return Expanded(
+      flex: 1,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Padding(
+          padding: const EdgeInsets.all(5),
+          child: QuizButton(
+            text: text,
+            onPressed: () => quizModel.answerQuestion(index),
+            color: _getAnswerColor(index),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _timer(BuildContext context, QuizNotifierModel quizModel) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            border: Border.all(
+              width: 2,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white70
+                  : Colors.black54,
             ),
-          )),
+            color: Colors.transparent,
+          ),
+          child: Center(
+            child: Countdown(
+              seconds: quizModel.currentQuestionTimeLimit,
+              build: (BuildContext context, double time) => Text(
+                time.toString(),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black54),
+              ),
+              interval: const Duration(milliseconds: 1000),
+              controller: quizModel.timerController,
+              onFinished: () {
+                //Show correct answer in dialog
+                //Show scoreboard
+                quizModel.onTimerFinished();
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _leaveQuizDialog(QuizNotifierModel quizModel) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Leave Quiz'),
+        content: const Text('Are you sure you want to leave the quiz?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              quizModel.onLeaveQuiz();
+              Navigator.of(context).pop(); //Navigate to home
+            },
+            child: const Text('Yes'),
+          ),
         ],
       ),
     );
   }
 
-  _timer() {
-    return CircularCountDownTimer(
-      // Countdown duration in Seconds.
-      duration: _duration,
 
-      // Countdown initial elapsed Duration in Seconds.
-      initialDuration: 10,
 
-      // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
-      controller: _countDownController,
+  _overlayCorrectAnswer() {
+    //Hero animation for correct answer in pop up dialog
+    //closes after two-three seconds
+  }
 
-      // Width of the Countdown Widget.
-      width: 30,
-
-      // Height of the Countdown Widget.
-      height: 30,
-
-      // Ring Color for Countdown Widget.
-      ringColor: Colors.grey[300]!,
-
-      // Ring Gradient for Countdown Widget.
-      ringGradient: null,
-
-      // Filling Color for Countdown Widget.
-      fillColor: Colors.transparent,
-
-      // Filling Gradient for Countdown Widget.
-      fillGradient: null,
-
-      // Background Color for Countdown Widget.
-      backgroundColor: Colors.transparent,
-
-      // Background Gradient for Countdown Widget.
-      backgroundGradient: null,
-
-      // Border Thickness of the Countdown Ring.
-      strokeWidth: 2.0,
-
-      // Begin and end contours with a flat edge and no extension.
-      strokeCap: StrokeCap.round,
-
-      // Text Style for Countdown Text.
-      textStyle: const TextStyle(
-        fontSize: 14.0,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
+  _overlayScoreboard() {
+    //Show scoreboard as overlay
+    //closes after two-three seconds
+    final overlay = Overlay.of(context);
+    overlay.insert(
+      OverlayEntry(
+        builder: (context) => const Center(
+          child: Leaderboard(),
+        ),
       ),
-
-      // Format for the Countdown Text.
-      textFormat: CountdownTextFormat.S,
-
-      // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
-      isReverse: false,
-
-      // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
-      isReverseAnimation: false,
-
-      // Handles visibility of the Countdown Text.
-      isTimerTextShown: true,
-
-      // Handles the timer start.
-      autoStart: false,
-
-      // This Callback will execute when the Countdown Starts.
-      onStart: () {
-        // Here, do whatever you want
-        debugPrint('Countdown Started');
-      },
-
-      // This Callback will execute when the Countdown Ends.
-      onComplete: () {
-        // Here, do whatever you want
-        debugPrint('Countdown Ended');
-      },
-
-      // This Callback will execute when the Countdown Changes.
-      onChange: (String timeStamp) {
-        // Here, do whatever you want
-        debugPrint('Countdown Changed $timeStamp');
-      },
-
-      /*
-            * Function to format the text.
-            * Allows you to format the current duration to any String.
-            * It also provides the default function in case you want to format specific moments
-              as in reverse when reaching '0' show 'GO', and for the rest of the instances follow
-              the default behavior.
-          */
-      timeFormatterFunction: (defaultFormatterFunction, duration) {
-        if (duration.inSeconds == 0) {
-          // only format for '0'
-          return "Start";
-        } else {
-          // other durations by it's default format
-          return Function.apply(defaultFormatterFunction, [duration]);
-        }
-      },
     );
   }
+
+  _nextQuestionCountDown(QuizNotifierModel quizModel) {
+    //Fill page with overlay and count down to three
+    final overlayEntry = _buildNextQuestionCountdown(() {}, quizModel);
+    final overlayState = Overlay.of(context);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => overlayState.insert(overlayEntry));
+
+    overlayEntry.remove();
+  }
+
+  OverlayEntry _buildNextQuestionCountdown(VoidCallback onFinished, QuizNotifierModel quizModel) {
+    return OverlayEntry(
+      builder: (context) => Center(
+        child: Container(
+            color: Theme.of(context).primaryColor,
+            child: Countdown(
+              controller: quizModel.nextQuestionTimerController,
+              seconds: 3,
+              build: (BuildContext context, double time) => Text(
+                time.toString(),
+                style: TextStyle(
+                    fontSize: 42,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black54),
+              ),
+              interval: const Duration(milliseconds: 1000),
+              onFinished: () => {
+              //Close overlay
+              },
+            )
+        ),
+      ),
+    );
+  }
+
 }
