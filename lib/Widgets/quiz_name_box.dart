@@ -4,7 +4,7 @@ class QuizNameBox extends Material {
   QuizNameBox({
     Key? key,
     required String quizName,
-    required String? questionAmount, // Updated type to String?
+    required String questionAmount, // Updated type to String?
     required String joinCode,
   }) : super(
     color: Colors.transparent,

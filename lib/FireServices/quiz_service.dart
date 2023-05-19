@@ -45,12 +45,31 @@ class QuizService {
 
       await quizRef.set(quiz.toMap());
       // Update the "author" field with the current user's ID
-      await quizRef.update({'author': user.displayName});
+      await quizRef.update({'author': user.uid});
+      String displayName = await getUserDisplayName(user.uid);
+      await quizRef.update({'authorDisplayName': displayName});
 
-      print('Quiz created successfully!');
+      print('Quiz created successfully by!${user.displayName!}');
     } catch (e) {
       print('Error creating quiz: $e');
     }
+  }
+  // Get the display name for a given user ID
+  Future<String> getUserDisplayName(String userId) async {
+    try {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (userSnapshot.exists) {
+        Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+        String displayName = userData['displayName'] ?? '';
+        return displayName;
+      }
+    } catch (e) {
+      print('Error getting user display name: $e');
+    }
+    return '';
   }
 
   Future<List<Quiz>> getQuizzes() async {

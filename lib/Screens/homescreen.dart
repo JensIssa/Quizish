@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 tag: 'quiz-$index',
                 child: QuizNameBox(
                   quizName: quiz.title,
-                  questionAmount: quiz.author?.displayName ?? 'Anonymous',
+                  questionAmount:  quiz.author,
                   joinCode: quiz.id,
                 ),
               ),
