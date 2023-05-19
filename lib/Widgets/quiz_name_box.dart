@@ -7,7 +7,7 @@ class QuizNameBox extends Material {
     required String questionAmount,
     required String joinCode
   }) : super(
-    color: Colors.black,
+    color: Colors.transparent,
     key: key,
     child: Padding(
       padding: const EdgeInsets.all(10),
@@ -18,10 +18,10 @@ class QuizNameBox extends Material {
         ),
         child: Column(
             children: [
-              SizedBox(height: 5,),
+              const SizedBox(height: 5,),
               Center(
                 child: Text(
-                  quizName + ' Quizname',
+                  quizName != "" ? quizName : "Quiz Name",
                   style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -29,16 +29,16 @@ class QuizNameBox extends Material {
                   ),
                 ),
               ),
-              SizedBox(height: 5,),
+              const SizedBox(height: 5,),
               Text(
-                questionAmount +  ' Question',
+                questionAmount != "" ? questionAmount : 'No Questions',
                 style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white
                 ),
               ),
               Text(
-                joinCode + ' Gamepin #',
+                joinCode != "" ? joinCode : "",
                 style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white

@@ -202,11 +202,11 @@ class passwordInput extends StatelessWidget {
                         height: 32,
                         isAntiAlias: true,
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 14),
                     const Text(
                       'Google Sign-In',
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 14,
                       ),
                     ),
                   ],

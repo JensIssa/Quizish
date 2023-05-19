@@ -11,15 +11,16 @@ class QuizCreationScreen extends StatefulWidget {
   State<QuizCreationScreen> createState() => _QuizCreationScreenState();
 }
 
-
 //TODO: Post quiz to firebase
 
 class _QuizCreationScreenState extends State<QuizCreationScreen> {
   Quiz quiz = Quiz.empty();
+  QuizService quizService = QuizService();
 
   Color deleteBgColor = Colors.red;
 
-  final  GlobalKey<AnimatedListState> _animatedListKey = GlobalKey<AnimatedListState>();
+  final GlobalKey<AnimatedListState> _animatedListKey =
+      GlobalKey<AnimatedListState>();
   final _formKey = GlobalKey<FormState>();
   final _quizTitle = TextEditingController();
   final _quizDescription = TextEditingController();
@@ -28,7 +29,6 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
 
   //Use the index of the question for name field, with "a, b, c, d" to get the answer fields, and index + "_t" for time field
 
-
   _saveQuiz(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -36,10 +36,12 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
       quiz.description = _quizDescription.text;
 
       for (var question in quiz.questions) {
-        var correctAnswers = question.answers.where((element) => element.isCorrect);
+        var correctAnswers =
+            question.answers.where((element) => element.isCorrect);
         if (correctAnswers.isEmpty) {
           SnackBar snackBar = SnackBar(
-            content: Text("Question ${question.index + 1} does not have a correct answer"),
+            content: Text(
+                "Question ${question.index + 1} does not have a correct answer"),
             backgroundColor: Colors.red,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -47,50 +49,43 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         }
       }
 
-      //QuizService().postQuiz(quiz);
+      quizService.createQuiz(quiz);
       _showOnSavedDialog(context);
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     backgroundColor = _backgroundColor(context);
     deleteBgColor = _backgroundColor(context);
 
-    var ui = Scaffold(
-      appBar: AppBar(
-        title: const Text('Create a quiz'),
-      ),
-      body:
-      SizedBox(
+    var ui = Center(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width,
         //TODO: Limit size of ui on bigger screens,
         //TODO: replace questionInputs with a "no Questions here" message when empty
         child: Form(
           key: _formKey,
-          child: Column(
-            children: [
-              _quizInfoInput(),
-              const SizedBox(height: 40),
-              Expanded(
+          child: Column(children: [
+            _quizInfoInput(),
+            const SizedBox(height: 40),
+            Expanded(
                 child: AnimatedList(
-                  key: _animatedListKey,
-                  initialItemCount: quiz.questions.length,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index, Animation<double> animation) {
-                      return SizeTransition(
-                          sizeFactor: animation,
-                          child: _questionWidget(quiz.questions[index], index),
-                      );
-                  },
-                )
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Align(
-                  alignment: Alignment.bottomRight,
+              key: _animatedListKey,
+              initialItemCount: quiz.questions.length,
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (BuildContext context, int index,
+                  Animation<double> animation) {
+                return SizeTransition(
+                  sizeFactor: animation,
+                  child: _questionWidget(quiz.questions[index], index),
+                );
+              },
+            )),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: FloatingActionButton(
                     onPressed: () {
                       setState(() {
@@ -105,39 +100,43 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                   ),
                 ),
               ),
-            ]
-          ),
+          ]),
         ),
       ),
     );
 
-
     var windowWidth = MediaQuery.of(context).size.width;
 
     if (windowWidth > 600) {
-      return SizedBox(
-        width: windowWidth/2,
-        child: ui,
+      return Center(
+        child: SizedBox(
+          width: windowWidth / 2,
+          child: ui,
+        ),
       );
     } else {
       return ui;
     }
-
   }
 
   _questionWidget(Question question, int index) {
     return Column(
-        children: [
-          Row(
-            children: [_questionNumber(question), _questionInput(question), _timeInput(question), _deleteBtn(question, index)],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(5),
-            child: _answerInput(question),
-          ),
-          const SizedBox(height: 20)
-        ],
-      );
+      children: [
+        Row(
+          children: [
+            _questionNumber(question),
+            _questionInput(question),
+            _timeInput(question),
+            _deleteBtn(question, index)
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.all(5),
+          child: _answerInput(question),
+        ),
+        const SizedBox(height: 20)
+      ],
+    );
   }
 
   _questionNumber(Question question) {
@@ -148,12 +147,11 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         height: 50,
         child: DecoratedBox(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: backgroundColor
-            ),
+                borderRadius: BorderRadius.circular(10),
+                color: backgroundColor),
             child: Center(
               child: Text(
-                '${question.index+1}',
+                '${question.index + 1}',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -170,9 +168,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         padding: const EdgeInsets.all(5),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: backgroundColor
-          ),
+              borderRadius: BorderRadius.circular(10), color: backgroundColor),
           child: TextFormField(
             decoration: const InputDecoration(
               border: InputBorder.none,
@@ -204,9 +200,8 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
           height: 50,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: backgroundColor
-            ),
+                borderRadius: BorderRadius.circular(10),
+                color: backgroundColor),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: DropdownButtonFormField(
@@ -254,45 +249,42 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: SizedBox(
-          width: 60,
-          height: 50,
-          child: Material(
-            color: backgroundColor,
+        width: 60,
+        height: 50,
+        child: Material(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(10),
+          child: InkWell(
             borderRadius: BorderRadius.circular(10),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(10),
-              hoverColor: Colors.red,
-              child: const Icon(Icons.delete),
-              onTap: () {
-                setState(() {
-                  int removedIndex = index;
-                  quiz.questions.removeAt(index);
-                  for (int i = 0; i < quiz.questions.length; i++) { //Redo the indexes
-                    quiz.questions[i].index = i;
-                  }
-
-                  _animatedListKey.currentState?.removeItem(
-                      removedIndex, (context, animation) =>
-                      SizeTransition(
-                        sizeFactor: animation,
-                        child: _questionWidget(
-                            question, removedIndex),
-                      ));
+            hoverColor: Colors.red,
+            child: const Icon(Icons.delete),
+            onTap: () {
+              setState(() {
+                int removedIndex = index;
+                quiz.questions.removeAt(index);
+                for (int i = 0; i < quiz.questions.length; i++) {
+                  //Redo the indexes
+                  quiz.questions[i].index = i;
                 }
-                );
-              },
-              ),
+
+                _animatedListKey.currentState?.removeItem(
+                    removedIndex,
+                    (context, animation) => SizeTransition(
+                          sizeFactor: animation,
+                          child: _questionWidget(question, removedIndex),
+                        ));
+              });
+            },
           ),
-          ),
+        ),
+      ),
     );
   }
 
   _answerInput(Question question) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: backgroundColor
-      ),
+          borderRadius: BorderRadius.circular(10), color: backgroundColor),
       child: Padding(
         padding: const EdgeInsets.all(5),
         child: Flex(
@@ -327,14 +319,14 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                 decoration: InputDecoration(
                   labelText: 'Quiz title',
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).primaryColorLight),
+                    borderSide:
+                        BorderSide(color: Theme.of(context).primaryColorLight),
                   ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a title';
-                  }
-                  else if (value.length > 50) {
+                  } else if (value.length > 50) {
                     return 'Title must be less than 50 characters';
                   }
                   return null;
@@ -348,15 +340,15 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
               decoration: InputDecoration(
                 labelText: 'Quiz description',
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).primaryColorLight),
+                  borderSide:
+                      BorderSide(color: Theme.of(context).primaryColorLight),
                 ),
               ),
               controller: _quizDescription,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a description';
-                }
-                else if (value.length > 100) {
+                } else if (value.length > 100) {
                   return 'Description must be less than 100 characters';
                 }
                 return null;
@@ -373,17 +365,13 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                   ),
                   onPressed: () => _saveQuiz(context),
                   child: Row(children: const [
-                    Icon(Icons.save,
-                        size: 20,
-                        color: Colors.white
-                    ),
+                    Icon(Icons.save, size: 20, color: Colors.white),
                     SizedBox(width: 5),
                     Text('Save',
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white,
-                        )
-                    ),
+                        )),
                   ])),
             ),
           ),
@@ -414,7 +402,6 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     var hslBorderColor = HSLColor.fromColor(color);
     Color borderColor = hslBorderColor.withLightness(0.4).toColor();
 
-
     return Flexible(
       child: Padding(
         padding: const EdgeInsets.all(2.0),
@@ -439,38 +426,37 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                 ),
               ),
               Center(
-                  child: TextFormField(
-                      maxLength: 50,
-                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      cursorColor: Colors.white,
-                      decoration: InputDecoration(
-                        focusedBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        focusColor: Colors.white,
-                        labelStyle: TextStyle(color: Colors.grey[300]),
-                        labelText: 'Answer option',
-                        contentPadding: const EdgeInsets.all(5),
-                      ),
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                      ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter an answer';
-                      }
-                      else if (value.length > 50) {
-                        return 'Answer must be less than 50 characters';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {
-                        question.answers[answerIndex].answer = value;
-                      });
-                    },
+                child: TextFormField(
+                  maxLength: 50,
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                  cursorColor: Colors.white,
+                  decoration: InputDecoration(
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
                     ),
+                    focusColor: Colors.white,
+                    labelStyle: TextStyle(color: Colors.grey[300]),
+                    labelText: 'Answer option',
+                    contentPadding: const EdgeInsets.all(5),
+                  ),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an answer';
+                    } else if (value.length > 50) {
+                      return 'Answer must be less than 50 characters';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      question.answers[answerIndex].answer = value;
+                    });
+                  },
+                ),
               ),
             ],
           ),
@@ -480,12 +466,10 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   }
 
   _backgroundColor(BuildContext context) {
-    
     var themeColor = Theme.of(context).scaffoldBackgroundColor;
     var hslColorBG = HSLColor.fromColor(themeColor);
     var modifiedColor = hslColorBG.withLightness(0.3).toColor();
-    
-    
+
     return Theme.of(context).brightness == Brightness.dark
         ? modifiedColor
         : Colors.grey[300];
@@ -493,8 +477,8 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
 
   _showOnSavedDialog(BuildContext context) {
     return showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => Dialog(
+      context: context,
+      builder: (BuildContext context) => Dialog(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -505,39 +489,43 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                  )
-              ),
-              const Text("Create another quiz or continue working on this one?"),
+                  )),
+              const Text(
+                  "Create another quiz or continue working on this one?"),
               const SizedBox(height: 15),
               SizedBox(
                 width: 350,
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Keep working 💪'),
-                      ),
-                      const SizedBox(width: 10),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Create another! 🔨'),
-                      ),
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () =>
+                          Navigator.of(context, rootNavigator: true).pop(),
+                      child: const Text('Keep working 💪'),
+                    ),
+                    const SizedBox(width: 10),
+                    TextButton(
+                      onPressed: () => _createNewQuiz(context),
+                      child: const Text('Create another! 🔨'),
+                    ),
+                  ],
                 ),
+              ),
             ],
           ),
         ),
-    ),
+      ),
     );
   }
 
+  _createNewQuiz(BuildContext context) {
+    setState(() {
+      _quizTitle.clear();
+      _quizDescription.clear();
+      quiz = Quiz.empty();
+      quiz.questions.add(Question.emptyWithIndex(0));
 
+    });
+    Navigator.of(context, rootNavigator: true).pop();
+  }
 }

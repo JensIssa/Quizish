@@ -33,27 +33,31 @@ class Quiz {
         title = data['title'],
         description = data['description'],
         author = data['author'],
-        questions = _getQuestions(data['questions']);
+        questions = [..._getQuestions(data['questions'])];
 
-  Quiz.fromMapNoID(this.id, Map<String, dynamic> data)
+  Quiz.fromMapWithID(this.id, Map<String, dynamic> data)
       : title = data['title'],
         description = data['description'],
         author = data['author'],
         questions = _getQuestions(data['questions']);
 
-  static _getQuestions(Map<String, dynamic> data) {
+  static List<Question> _getQuestions(Map<String, dynamic> data) {
     List<Question> questions = [];
     data.forEach((key, value) {
-      questions.add(Question.fromMap(value));
+      // Pass the key (question index) along with the value
+      questions.add(Question.fromMap(value, int.parse(key)));
     });
     return questions;
   }
 
+
+
+
+
   Map<String, dynamic> toMap() {
-    var questionsMap = new Map();
+    var questionsMap = <String, dynamic>{};
     questions.forEach((element) {
-      questionsMap.addAll(
-          element.toMap());
+      questionsMap[element.index.toString()] = element.toMap();
     });
 
     return {
@@ -130,7 +134,7 @@ class Question {
 
   Question.noImg({required this.index, required this.question, required this.answers, required this.timer});
 
-  Question.fromMap(Map<String, dynamic> data) :
+  Question.fromMap(Map<String, dynamic> data, int parse) :
         index = data['index'],
         question = data['question'],
         answers = _getAnswers(data['answers']),
@@ -155,10 +159,9 @@ class Question {
   get correctAnswers => answers.where((answer) => answer.isCorrect);
 
   Map<String, dynamic> toMap() {
-    var answersMap = new Map();
+    var answersMap = <String, dynamic>{};
     answers.forEach((element) {
-      answersMap.addAll(
-          element.toMap());
+      answersMap[element.index.toString()] = element.toMap();
     });
     return {
       'index': index,
@@ -168,6 +171,7 @@ class Question {
       'timer': timer,
     };
   }
+
 
   @override
   String toString() {
