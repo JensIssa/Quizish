@@ -41,10 +41,11 @@ class QuizService {
       FirebaseFirestore.instance.collection('quizzes').doc();
 
       // Set the data for the quiz document
-      await quizRef.set(quiz.toMap());
       quiz.id = quizRef.id;
+
+      await quizRef.set(quiz.toMap());
       // Update the "author" field with the current user's ID
-      await quizRef.update({'author': user.uid});
+      await quizRef.update({'author': user.displayName});
 
       print('Quiz created successfully!');
     } catch (e) {
@@ -52,11 +53,10 @@ class QuizService {
     }
   }
 
-  Future<void> getQuizzes() async {
+  Future<List<Quiz>> getQuizzes() async {
     final quizRef = FirebaseFirestore.instance.collection('quizzes');
-    final quiz = await quizRef.get();
-    _quizzes = quiz.docs.map((doc) => Quiz.fromMapWithID(doc.id, doc.data())).toList();
-    _quizzesController.add(_quizzes);
+    final quiz = await quizRef.withConverter(fromFirestore: (snapshot, options) => Quiz.fromMap(snapshot.data()!), toFirestore: (value, options) => value.toMap());
+    return quiz.get().then((value) => value.docs.map((e) => e.data()).toList());
   }
 
   Future<void> deleteQuiz(String quizId) async {

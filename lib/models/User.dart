@@ -29,6 +29,15 @@ class User extends Equatable {
     );
   }
 
+  static User fromMap(Map<String, dynamic> map) {
+    return User(
+      uid: map['uid'],
+      email: map['email'],
+      displayName: map['displayName'],
+    );
+  }
+
+
   @override
   // TODO: implement props
   List<Object?> get props => [uid, email, displayName];
