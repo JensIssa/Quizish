@@ -15,6 +15,7 @@ class QuizCreationScreen extends StatefulWidget {
 
 class _QuizCreationScreenState extends State<QuizCreationScreen> {
   Quiz quiz = Quiz.empty();
+  QuizService quizService = QuizService();
 
   Color deleteBgColor = Colors.red;
 
@@ -48,7 +49,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         }
       }
 
-      //QuizService().postQuiz(quiz);
+      quizService.createQuiz(quiz);
       _showOnSavedDialog(context);
     }
   }
