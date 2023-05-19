@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/Quiz.dart';
 
@@ -27,10 +28,28 @@ class QuizService {
 
   Stream<List<Quiz>> get quizzes => _quizzesController.stream;
 
+// Create a new quiz in Firebase
   Future<void> createQuiz(Quiz quiz) async {
-    final quizRef = FirebaseFirestore.instance.collection('quizzes').doc();
-    quiz.id = quizRef.id;
-    await quizRef.set(quiz.toMap());
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception('User not authenticated');
+      }
+      // Create a new document in the "quizzes" collection
+      DocumentReference quizRef =
+      FirebaseFirestore.instance.collection('quizzes').doc();
+
+      // Set the data for the quiz document
+      await quizRef.set(quiz.toMap());
+      quiz.id = quizRef.id;
+      // Update the "author" field with the current user's ID
+      await quizRef.update({'author': user.uid});
+
+      print('Quiz created successfully!');
+    } catch (e) {
+      print('Error creating quiz: $e');
+    }
   }
 
   Future<void> getQuizzes() async {
