@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quizish/Screens/correct_answers_quiz_screen.dart';
 import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/models/Quiz.dart';
 import 'package:quizish/provider/quiz_notifier_model.dart';
+import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../widgets/quiz_button.dart';
 
 class QuizScreen extends StatefulWidget {
   final Quiz quiz;
+
   const QuizScreen(this.quiz, {Key? key}) : super(key: key);
 
   @override
@@ -30,23 +33,31 @@ class _QuizScreenState extends State<QuizScreen> {
         description: "description",
         questions: [
           Question.noImg(index: 0, question: "question", timer: 20, answers: [
-                Answers(answer: "answer q0 1", isCorrect: true, index: 0),
-                Answers(answer: "answer q0 2", isCorrect: false, index: 1),
-                Answers(answer: "answer q0 3", isCorrect: false, index: 2),
-                Answers(answer: "answer q0 4", isCorrect: false, index: 3),
-              ]),
-          Question.noImg(index: 1, question: "question 1", answers: [
-            Answers(answer: "answer q1 1", isCorrect: false, index: 0),
-            Answers(answer: "answer q1 2", isCorrect: true, index: 1),
-            Answers(answer: "answer q1 3", isCorrect: false, index: 2),
-            Answers(answer: "answer q1 4", isCorrect: false, index: 3),
-          ], timer: 10),
-          Question.noImg(index: 2, question: "question 2", answers: [
-            Answers(answer: "answer q2 1", isCorrect: false, index: 0),
-            Answers(answer: "answer q2 2", isCorrect: false, index: 1),
-            Answers(answer: "answer q2 3", isCorrect: true, index: 2),
-            Answers(answer: "answer q2 4", isCorrect: false, index: 3),
-          ], timer: 10),
+            Answers(answer: "answer q0 1", isCorrect: true, index: 0),
+            Answers(answer: "answer q0 2", isCorrect: false, index: 1),
+            Answers(answer: "answer q0 3", isCorrect: false, index: 2),
+            Answers(answer: "answer q0 4", isCorrect: false, index: 3),
+          ]),
+          Question.noImg(
+              index: 1,
+              question: "question 1",
+              answers: [
+                Answers(answer: "answer q1 1", isCorrect: false, index: 0),
+                Answers(answer: "answer q1 2", isCorrect: true, index: 1),
+                Answers(answer: "answer q1 3", isCorrect: false, index: 2),
+                Answers(answer: "answer q1 4", isCorrect: false, index: 3),
+              ],
+              timer: 10),
+          Question.noImg(
+              index: 2,
+              question: "question 2",
+              answers: [
+                Answers(answer: "answer q2 1", isCorrect: false, index: 0),
+                Answers(answer: "answer q2 2", isCorrect: false, index: 1),
+                Answers(answer: "answer q2 3", isCorrect: true, index: 2),
+                Answers(answer: "answer q2 4", isCorrect: false, index: 3),
+              ],
+              timer: 10),
         ]);
   }
 
@@ -73,40 +84,48 @@ class _QuizScreenState extends State<QuizScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       quizModel.quizProgress,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w200),
                     ),
                   ),
                   const Spacer(),
                   Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(
                       quizModel.quizTitle,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w200),
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w200),
                     ),
                   ),
                   const Spacer(),
-                  _timer(context, quizModel),
+                  _timer(
+                      context,
+                      quizModel,
+                      quizModel.currentQuestionTimeLimit,
+                      quizModel.timerController,
+                          (){
+                        _overlayCorrectAnswer(quizModel);
+                        quizModel.onTimerFinished();
+
+                  }),
                 ],
               ),
-
               Flexible(
                 child: Center(
                   child: Text(
                     quizModel.currentQuestion,
-                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                        fontSize: 32, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
-              _answersOptions(quizModel),
-
-
-
+              _answersOptionsContainer(quizModel),
             ])),
       ),
     );
   }
 
-  _answersOptions(QuizNotifierModel quizModel) {
+  _answersOptionsContainer(QuizNotifierModel quizModel) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
@@ -117,43 +136,48 @@ class _QuizScreenState extends State<QuizScreen> {
       width = width / 2;
     }
 
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(
-            10, 0, 10, 30),
-        child: Positioned(
-          bottom: 10,
-          height: MediaQuery.of(context).size.height / 1.5,
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 1.5,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              verticalDirection: VerticalDirection.down,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _answerButton(quizModel.getAnswerText(0), 0, answerHeight, answerWidth, quizModel),
-                    _answerButton(quizModel.getAnswerText(1), 1, answerHeight, answerWidth, quizModel),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _answerButton(quizModel.getAnswerText(2), 2, answerHeight, answerWidth, quizModel),
-                    _answerButton(quizModel.getAnswerText(3), 3, answerHeight, answerWidth, quizModel),
-                  ],
-                ),
-              ],
-            ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
+      child: Positioned(
+        bottom: 10,
+        height: height / 1.5,
+        child: SizedBox(
+          width: width,
+          height: height / 1.5,
+          child: _answerOptionsChildren(quizModel, answerHeight, answerWidth),
           ),
         ),
-      );
-
+    );
   }
 
-
+  _answerOptionsChildren(
+      QuizNotifierModel quizModel, double answerHeight, double answerWidth) {
+    return
+      Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        verticalDirection: VerticalDirection.down,
+        children: [
+          Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _answerButton(quizModel.getAnswerText(0), 0, answerHeight,
+                answerWidth, quizModel),
+            _answerButton(quizModel.getAnswerText(1), 1, answerHeight,
+                answerWidth, quizModel),
+          ],
+        ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _answerButton(quizModel.getAnswerText(2), 2, answerHeight,
+              answerWidth, quizModel),
+          _answerButton(quizModel.getAnswerText(3), 3, answerHeight,
+              answerWidth, quizModel),
+        ],
+      ),
+    ]);
+  }
 
   _getAnswerColor(int index) {
     switch (index) {
@@ -170,8 +194,8 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
 
-
-  _answerButton(String text, int index, double height, double width, QuizNotifierModel quizModel) {
+  Widget _answerButton(String text, int index, double height, double width,
+      QuizNotifierModel quizModel) {
     return Expanded(
       flex: 1,
       child: SizedBox(
@@ -179,17 +203,20 @@ class _QuizScreenState extends State<QuizScreen> {
         height: height,
         child: Padding(
           padding: const EdgeInsets.all(5),
-          child: QuizButton(
-            text: text,
-            onPressed: () => quizModel.answerQuestion(index),
-            color: _getAnswerColor(index),
+          child: Hero(
+            tag: index,
+            child: QuizButton(
+              text: text,
+              onPressed: () => quizModel.answerQuestion(index),
+              color: _getAnswerColor(index),
+            ),
           ),
         ),
       ),
     );
   }
 
-  _timer(BuildContext context, QuizNotifierModel quizModel) {
+  _timer(BuildContext context, QuizNotifierModel quizModel, int seconds, CountdownController controller, VoidCallback onFinished) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -208,7 +235,7 @@ class _QuizScreenState extends State<QuizScreen> {
           ),
           child: Center(
             child: Countdown(
-              seconds: quizModel.currentQuestionTimeLimit,
+              seconds: seconds,
               build: (BuildContext context, double time) => Text(
                 time.toString(),
                 style: TextStyle(
@@ -219,12 +246,8 @@ class _QuizScreenState extends State<QuizScreen> {
                         : Colors.black54),
               ),
               interval: const Duration(milliseconds: 1000),
-              controller: quizModel.timerController,
-              onFinished: () {
-                //Show correct answer in dialog
-                //Show scoreboard
-                quizModel.onTimerFinished();
-              },
+              controller: controller,
+              onFinished: onFinished,
             ),
           ),
         ),
@@ -255,12 +278,38 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
+  _correctAnswerOptionsChildren(
+      QuizNotifierModel quizModel, double answerHeight, double answerWidth) {
+    if (quizModel.timerController.isCompleted!) {
+      var correctAnswers = quizModel.currentQuestionCorrectAnswers;
+      List<Widget> answers = [];
 
+      for (Answers answer in correctAnswers) {
+        answers.add(_answerButton(quizModel.getAnswerText(answer.index),
+            answer.index, answerHeight, answerWidth, quizModel));
+      }
+      return
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [...answers],
+        );
 
-  _overlayCorrectAnswer() {
+    }
+  }
+
+  _overlayCorrectAnswer(QuizNotifierModel quizModel) {
     //Hero animation for correct answer in pop up dialog
     //closes after two-three seconds
+    Navigator.push(context, MaterialPageRoute(
+        fullscreenDialog: true,
+        maintainState: false,
+        builder: (BuildContext context) {
+          return CorrectAnswersScreen(quizModel: quizModel);
+        }
+    ));
   }
+
+
 
   _overlayScoreboard() {
     //Show scoreboard as overlay
@@ -280,12 +329,14 @@ class _QuizScreenState extends State<QuizScreen> {
     final overlayEntry = _buildNextQuestionCountdown(() {}, quizModel);
     final overlayState = Overlay.of(context);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => overlayState.insert(overlayEntry));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => overlayState.insert(overlayEntry));
 
     overlayEntry.remove();
   }
 
-  OverlayEntry _buildNextQuestionCountdown(VoidCallback onFinished, QuizNotifierModel quizModel) {
+  OverlayEntry _buildNextQuestionCountdown(
+      VoidCallback onFinished, QuizNotifierModel quizModel) {
     return OverlayEntry(
       builder: (context) => Center(
         child: Container(
@@ -304,12 +355,10 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
               interval: const Duration(milliseconds: 1000),
               onFinished: () => {
-              //Close overlay
+                //Close overlay
               },
-            )
-        ),
+            )),
       ),
     );
   }
-
 }

@@ -6,7 +6,7 @@ import '../models/Quiz.dart';
 class QuizNotifierModel extends ChangeNotifier {
   Quiz quiz;
   int _questionNumber = 0;
-  List<Answers> _selectedAnswers = [];
+  Map<Question, Answers> _selectedAnswers = {};
   int get questionNumber => _questionNumber;
   final CountdownController _timerController = CountdownController(autoStart: true);
   final CountdownController _nextQuestionTimerController = CountdownController(autoStart: true);
@@ -26,17 +26,23 @@ class QuizNotifierModel extends ChangeNotifier {
   }
 
   bool answerQuestion(int answerIndex) {
-    _selectedAnswers.add(quiz.questions[_questionNumber].answers[answerIndex]);
-    incrementQuestionNumber();
-    notifyListeners();
-    return quiz.questions[_questionNumber].answers[answerIndex].isCorrect;
+    if (!timerController.isCompleted!) {
+      _selectedAnswers.putIfAbsent(quiz.questions[_questionNumber], () =>
+          quiz.questions[_questionNumber].answers[answerIndex]);
+      incrementQuestionNumber();
+      notifyListeners();
+      return quiz.questions[_questionNumber].answers[answerIndex].isCorrect;
+    }
+    else {
+      return false;
+    }
   }
 
   bool isLastQuestion() {
     return _questionNumber == quiz.questions.length - 1;
   }
 
-  List<Answers> get selectedAnswers => _selectedAnswers;
+  Map<Question, Answers> get selectedAnswers => _selectedAnswers;
 
   void reset() {
     _questionNumber = 0;
@@ -48,7 +54,9 @@ class QuizNotifierModel extends ChangeNotifier {
 
   get currentQuestionTimeLimit => quiz.questions[_questionNumber].timer;
 
-  get timerController => _timerController;
+  Iterable<Answers> get currentQuestionCorrectAnswers => quiz.questions[_questionNumber].correctAnswers;
+
+  CountdownController get timerController => _timerController;
 
   get quizTitle => quiz.title;
 
@@ -69,6 +77,29 @@ class QuizNotifierModel extends ChangeNotifier {
   endQuiz() {
     _timerController.pause();
     notifyListeners();
+  }
+
+  bool? isAnswerCorrect(){
+    var answer = _selectedAnswers[quiz.questions[_questionNumber]];
+    if (answer != null) {
+      return answer.isCorrect;
+    }
+    else {
+      return null;
+    }
+  }
+
+
+  String getCorrectAnswerText() {
+    bool? isCorrect = isAnswerCorrect();
+    if (isCorrect == null) {
+      return 'You did not answer 👎';
+    } else if (isCorrect) {
+      return 'Correct! 🎈';
+    }
+    else {
+      return 'Wrong... 💀';
+    }
   }
 
   void onLeaveQuiz() {}

@@ -161,7 +161,7 @@ class Question {
         answers = _getAnswers(data['answers']),
         timer = data['timer'];
 
-  get correctAnswers => answers.where((answer) => answer.isCorrect);
+  Iterable<Answers> get correctAnswers => answers.where((answer) => answer.isCorrect);
 
   Map<String, dynamic> toMap() {
     var answersMap = <String, dynamic>{};
