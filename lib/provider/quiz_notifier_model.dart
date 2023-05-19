@@ -10,6 +10,7 @@ class QuizNotifierModel extends ChangeNotifier {
   int get questionNumber => _questionNumber;
   final CountdownController _timerController = CountdownController(autoStart: true);
   final CountdownController _nextQuestionTimerController = CountdownController(autoStart: true);
+  bool _isAnswered = false;
 
   QuizNotifierModel.notifier(this.quiz);
 
@@ -26,16 +27,14 @@ class QuizNotifierModel extends ChangeNotifier {
   }
 
   bool answerQuestion(int answerIndex) {
-    if (!timerController.isCompleted!) {
-      _selectedAnswers.putIfAbsent(quiz.questions[_questionNumber], () =>
-          quiz.questions[_questionNumber].answers[answerIndex]);
-      incrementQuestionNumber();
-      notifyListeners();
-      return quiz.questions[_questionNumber].answers[answerIndex].isCorrect;
-    }
-    else {
+    if (isAnswered()) {
       return false;
     }
+    _selectedAnswers.putIfAbsent(quiz.questions[_questionNumber], () =>
+    quiz.questions[_questionNumber].answers[answerIndex]);
+
+    notifyListeners();
+    return quiz.questions[_questionNumber].answers[answerIndex].isCorrect;
   }
 
   bool isLastQuestion() {
@@ -88,6 +87,14 @@ class QuizNotifierModel extends ChangeNotifier {
       return null;
     }
   }
+
+  bool isAnswered() {
+    return _selectedAnswers.containsKey(quiz.questions[_questionNumber]);
+  }
+
+
+  int? get currentAnswerIndex => _selectedAnswers[quiz.questions[_questionNumber]]?.index;
+
 
 
   String getCorrectAnswerText() {

@@ -73,6 +73,15 @@ class CorrectAnswersScreen extends StatelessWidget {
             ),
           ),
         ),
+        Text(
+          quizModel.getCorrectAnswerText(),
+          style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+              color: _correctAnswerTextColor(quizModel.isAnswerCorrect())
+          ),
+        ),
+        /*
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
           child: SizedBox(
@@ -94,7 +103,9 @@ class CorrectAnswersScreen extends StatelessWidget {
                 ],
               ),
             ),
-        ),
+
+
+        ),*/
       ]),
     );
   }

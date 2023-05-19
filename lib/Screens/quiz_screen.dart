@@ -180,7 +180,7 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   _getAnswerColor(int index) {
-    switch (index) {
+      switch (index) {
       case 0:
         return Colors.green;
       case 1:
@@ -198,22 +198,48 @@ class _QuizScreenState extends State<QuizScreen> {
       QuizNotifierModel quizModel) {
     return Expanded(
       flex: 1,
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Hero(
-            tag: index,
-            child: QuizButton(
-              text: text,
-              onPressed: () => quizModel.answerQuestion(index),
-              color: _getAnswerColor(index),
-            ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: _answerBorderColor(index, quizModel),
+            style: BorderStyle.solid,
+            width: 5,
           ),
         ),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Hero(
+                tag: index,
+                child: QuizButton(
+                  text: text,
+                  onPressed: () => quizModel.answerQuestion(index),
+                  color: _getAnswerColor(index),
+                ),
+              ),
+            ),
+          ),
       ),
+
     );
+  }
+
+
+  _answerBorderColor(int index, QuizNotifierModel quizModel) {
+    var answerIndex = quizModel.currentAnswerIndex;
+
+    if (answerIndex == null) {
+      return Colors.transparent;
+    }
+    else if (answerIndex == index) {
+      return Colors.white;
+    }
+    else {
+      return Colors.transparent;
+    }
   }
 
   _timer(BuildContext context, QuizNotifierModel quizModel, int seconds, CountdownController controller, VoidCallback onFinished) {
@@ -278,24 +304,6 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  _correctAnswerOptionsChildren(
-      QuizNotifierModel quizModel, double answerHeight, double answerWidth) {
-    if (quizModel.timerController.isCompleted!) {
-      var correctAnswers = quizModel.currentQuestionCorrectAnswers;
-      List<Widget> answers = [];
-
-      for (Answers answer in correctAnswers) {
-        answers.add(_answerButton(quizModel.getAnswerText(answer.index),
-            answer.index, answerHeight, answerWidth, quizModel));
-      }
-      return
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [...answers],
-        );
-
-    }
-  }
 
   _overlayCorrectAnswer(QuizNotifierModel quizModel) {
     //Hero animation for correct answer in pop up dialog
@@ -324,41 +332,5 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  _nextQuestionCountDown(QuizNotifierModel quizModel) {
-    //Fill page with overlay and count down to three
-    final overlayEntry = _buildNextQuestionCountdown(() {}, quizModel);
-    final overlayState = Overlay.of(context);
 
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => overlayState.insert(overlayEntry));
-
-    overlayEntry.remove();
-  }
-
-  OverlayEntry _buildNextQuestionCountdown(
-      VoidCallback onFinished, QuizNotifierModel quizModel) {
-    return OverlayEntry(
-      builder: (context) => Center(
-        child: Container(
-            color: Theme.of(context).primaryColor,
-            child: Countdown(
-              controller: quizModel.nextQuestionTimerController,
-              seconds: 3,
-              build: (BuildContext context, double time) => Text(
-                time.toString(),
-                style: TextStyle(
-                    fontSize: 42,
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black54),
-              ),
-              interval: const Duration(milliseconds: 1000),
-              onFinished: () => {
-                //Close overlay
-              },
-            )),
-      ),
-    );
-  }
 }
