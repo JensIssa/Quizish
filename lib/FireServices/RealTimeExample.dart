@@ -31,8 +31,10 @@ class GameSessionService {
       );
       final sessionRef =
       _databaseReference.child('gameSessions').child(gameSessionId);
-      await addQuizToSesion(gameSessionId, quiz);
+      gameSession.id = gameSessionId;
       await sessionRef.set(gameSession.toMap());
+      await addQuizToSesion(gameSessionId, quiz);
+      await addHostToSession(gameSessionId, FirebaseAuth.instance.currentUser!);
     } catch (e) {
       print('Error creating game session: $e');
     }
@@ -77,6 +79,25 @@ class GameSessionService {
       }
     } catch (e) {
       print('Error adding quiz to game session: $e');
+    }
+  }
+  //Add host to session
+  Future<void> addHostToSession(String sessionId, User user) async {
+    try {
+      final sessionRef = _databaseReference.child('gameSessions').child(
+          sessionId);
+      DataSnapshot sessionSnapshot = await sessionRef.get();
+      final dynamic sessionValue = sessionSnapshot.value;
+
+      if (sessionValue != null && sessionValue is Map<dynamic, dynamic>) {
+        final gameSessionMap = Map<String, dynamic>.from(sessionValue);
+        gameSessionMap['host'] = user.uid;
+        await sessionRef.set(gameSessionMap);
+      } else {
+        print('Error: Invalid data or session does not exist');
+      }
+    } catch (e) {
+      print('Error adding host to game session: $e');
     }
   }
 
