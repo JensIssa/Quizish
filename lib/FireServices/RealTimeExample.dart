@@ -22,6 +22,7 @@ class GameSessionService {
   //Have host and quiz as parameters.
   Future<void> createGameSession(Quiz quiz) async {
     try {
+      User? _host = FirebaseAuth.instance.currentUser!;
       String gameSessionId = generateRandomId(5);
       GameSession gameSession = GameSession(
         id: gameSessionId,
@@ -34,7 +35,7 @@ class GameSessionService {
       gameSession.id = gameSessionId;
       await sessionRef.set(gameSession.toMap());
       await addQuizToSesion(gameSessionId, quiz);
-      await addHostToSession(gameSessionId, FirebaseAuth.instance.currentUser!);
+      await addHostToSession(gameSessionId, _host);
     } catch (e) {
       print('Error creating game session: $e');
     }
