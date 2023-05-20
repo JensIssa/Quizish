@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class QuizNameBox extends Material {
   QuizNameBox({
     Key? key,
-    required String quizName,
-    required String questionAmount, // Updated type to String?
-    required String joinCode,
+    required String quizTitle,
+    required String quizAuthor, // Updated type to String?
+    required String quizId,
   }) : super(
     color: Colors.transparent,
     key: key,
@@ -23,7 +23,7 @@ class QuizNameBox extends Material {
             ),
             Center(
               child: Text(
-                quizName != "" ? quizName : "Quiz Name",
+                quizTitle != "" ? quizTitle : "Quiz Name",
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -35,14 +35,14 @@ class QuizNameBox extends Material {
               height: 5,
             ),
             Text(
-              questionAmount != null ? questionAmount : 'No Questions',
+              quizAuthor != null ? quizAuthor : 'No Questions',
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.white,
               ),
             ),
             Text(
-              joinCode != "" ? joinCode : "",
+              quizId != "" ? quizId : "",
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.white,

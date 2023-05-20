@@ -39,7 +39,6 @@ class QuizService {
       // Create a new document in the "quizzes" collection
       DocumentReference quizRef =
       FirebaseFirestore.instance.collection('quizzes').doc();
-
       // Set the data for the quiz document
       quiz.id = quizRef.id;
 

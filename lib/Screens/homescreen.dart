@@ -49,16 +49,16 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => QuizDetailsScreen(),
+                    builder: (context) => QuizDetailsScreen(quiz: _quizzes[index]),
                   ),
                 );
               },
               child: Hero(
                 tag: 'quiz-$index',
                 child: QuizNameBox(
-                  quizName: quiz.title,
-                  questionAmount:  quiz.authorDisplayName,
-                  joinCode: quiz.id,
+                  quizTitle: quiz.title,
+                  quizAuthor:  quiz.authorDisplayName,
+                  quizId: quiz.id,
                 ),
               ),
             );

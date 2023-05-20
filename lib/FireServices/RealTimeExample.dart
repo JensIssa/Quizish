@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quizish/models/Quiz.dart';
 
 import '../models/Session.dart';
 
@@ -19,13 +20,13 @@ class GameSessionService {
   }
 
   //Have host and quiz as parameters.
-  Future<void> createGameSession() async {
+  Future<void> createGameSession(Quiz quiz) async {
     try {
       String gameSessionId = generateRandomId(5);
       GameSession gameSession = GameSession(
         id: gameSessionId,
         host: null,
-        quiz: null,
+        quiz: quiz,
         currentQuestion: 0,
         scores: null,
       );
