@@ -23,10 +23,7 @@ class _InAppContainerState extends State<InAppContainer> {
     Tuple2(HomeScreen(), Text('Home')),
     Tuple2(QuizCreationScreen(), Text("Create a Quiz")),
     Tuple2(JoinScreen(), Text('Join Quiz')),
-    Tuple2(Placeholder(), Text("User: Placeholder")),
-    Tuple2(Placeholder(), Text("Favorites: Placeholder")),
-    Tuple2(AccountDetails(), Text("Update your account details")),
-    //QuizCreationScreen
+    Tuple2(AccountDetails(), Text("User: Update your account details")),
   ];
 
   //TODO: Consider provider to fix appbar and bottom nav bar not showing on first view

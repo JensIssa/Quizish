@@ -4,48 +4,62 @@ import 'package:quizish/models/Session.dart';
 import 'package:quizish/widgets/quiz_button.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
 
+import '../models/Quiz.dart';
+
 
 class QuizDetailsScreen extends StatelessWidget {
 
-  const QuizDetailsScreen({Key? key}) : super(key: key);
+  const QuizDetailsScreen({Key? key, required this.quiz}) : super(key: key);
 
-
+  final Quiz quiz;
   @override
   Widget build(BuildContext context) {
-    final  GameSessionService gameSessionService = GameSessionService();
+    final GameSessionService gameSessionService = GameSessionService();
     return Material(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                  height: 250,
-                  child: QuizNameBox(
-                    quizName: '',
-                    questionAmount: '',
-                    joinCode: '',
-                  ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Container(
+              height: 250,
+              child: QuizNameBox(
+                quizTitle: quiz.title,
+                quizAuthor: quiz.authorDisplayName,
+                quizId: quiz.id,
               ),
             ),
-            Text('Description', style: TextStyle(fontSize: 24,
-                fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          Text(
+            'Description',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-            Container(child: Text('Lorem ipsum dolor sit amet. Aut deserunt consequatur et facere nulla et velit modi et dolor asperiores ea minima vero. Qui praesentium temporibus qui beatae libero est saepe quisquam ut laboriosam eius ea dolores quia aut quia dignissimos. Sed illum quas id nostrum accusamus ut quidem amet qui modi exercitationem ut obcaecati quia quo totam distinctio in inventore saepe. Sed numquam sapiente et consectetur Quis aut consequatur deserunt vel porro voluptatem cum voluptas natus!',
+          ),
+          Container(
+            child: Text(
+              quiz.description, // Use the description from the Quiz object
               style: TextStyle(fontSize: 16, color: Colors.white),
             ),
-            ),
-            Container(
-              height: 130,
+          ),
+          Container(
+            height: 130,
             width: 150,
             alignment: Alignment.center,
             padding: EdgeInsets.only(top: 70),
-              child: QuizButton(text:'Start', onPressed: () {
-                gameSessionService.createGameSession();
-              }, color: Colors.green),
-            )
-          ],
-        ),
+            child: QuizButton(
+              text: 'Start',
+              onPressed: () {
+                gameSessionService.createGameSession(quiz);
+              },
+              color: Colors.green,
+            ),
+          ),
+        ],
+      ),
     );
   }
+
 
 }

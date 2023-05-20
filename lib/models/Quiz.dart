@@ -4,18 +4,23 @@ class Quiz {
   String title;
   String id;
   String description;
-  User? author;
+  String author;
   List<Question> questions;
+  String authorDisplayName;
 
   Quiz(
       {required this.title,
       required this.id,
       required this.description,
       required this.author,
-      required this.questions});
+      required this.questions,
+      required this.authorDisplayName});
 
   Quiz.noAuthor(
-      {required this.title,
+      {
+        required this.author,
+        required this.authorDisplayName,
+        required this.title,
       required this.id,
       required this.description,
       required this.questions});
@@ -24,8 +29,9 @@ class Quiz {
       : title = '',
         id = '',
         description = '',
-        author = null,
-        questions = [];
+        author = '',
+        questions = [],
+     authorDisplayName = 'n';
 
 
   Quiz.fromMap(Map<String, dynamic> data)
@@ -33,10 +39,12 @@ class Quiz {
         title = data['title'],
         description = data['description'],
         author = data['author'],
+        authorDisplayName = data['authorDisplayName'],
         questions = [..._getQuestions(data['questions'])];
 
   Quiz.fromMapWithID(this.id, Map<String, dynamic> data)
       : title = data['title'],
+        authorDisplayName = data['authorDisplayName'],
         description = data['description'],
         author = data['author'],
         questions = _getQuestions(data['questions']);

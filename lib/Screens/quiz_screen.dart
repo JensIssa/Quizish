@@ -20,32 +20,32 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-
-    quiz = Quiz.noAuthor(
-        title: "quiz title",
-        id: "-1",
-        description: "description",
-        questions: [
-          Question(index: 0, question: "question", timer: 20, imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/1200px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
-              answers: [
-            Answers(answer: "answer 1", isCorrect: true, index: 0),
-            Answers(answer: "answer", isCorrect: false, index: 1),
-            Answers(answer: "answer", isCorrect: false, index: 2),
-            Answers(answer: "answer", isCorrect: false, index: 3),
-          ]),
-          Question.noImgOrTimer(index: 1, question: "question", answers: [
-            Answers(answer: "answer", isCorrect: false, index: 0),
-            Answers(answer: "answer 2", isCorrect: true, index: 1),
-            Answers(answer: "answer", isCorrect: false, index: 2),
-            Answers(answer: "answer", isCorrect: false, index: 3),
-          ]),
-          Question.noImgOrTimer(index: 2, question: "question", answers: [
-            Answers(answer: "answer", isCorrect: false, index: 0),
-            Answers(answer: "answer", isCorrect: false, index: 1),
-            Answers(answer: "answer 3", isCorrect: true, index: 2),
-            Answers(answer: "answer", isCorrect: false, index: 3),
-          ]),
-        ]);
+    //
+    // quiz = Quiz.noAuthor(
+    //     title: "quiz title",
+    //     id: "-1",
+    //     description: "description",
+    //     questions: [
+    //       Question(index: 0, question: "question", timer: 20, imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/1200px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
+    //           answers: [
+    //         Answers(answer: "answer 1", isCorrect: true, index: 0),
+    //         Answers(answer: "answer", isCorrect: false, index: 1),
+    //         Answers(answer: "answer", isCorrect: false, index: 2),
+    //         Answers(answer: "answer", isCorrect: false, index: 3),
+    //       ]),
+    //       Question.noImgOrTimer(index: 1, question: "question", answers: [
+    //         Answers(answer: "answer", isCorrect: false, index: 0),
+    //         Answers(answer: "answer 2", isCorrect: true, index: 1),
+    //         Answers(answer: "answer", isCorrect: false, index: 2),
+    //         Answers(answer: "answer", isCorrect: false, index: 3),
+    //       ]),
+    //       Question.noImgOrTimer(index: 2, question: "question", answers: [
+    //         Answers(answer: "answer", isCorrect: false, index: 0),
+    //         Answers(answer: "answer", isCorrect: false, index: 1),
+    //         Answers(answer: "answer 3", isCorrect: true, index: 2),
+    //         Answers(answer: "answer", isCorrect: false, index: 3),
+    //       ]),
+    //     ]);
   }
 
   @override

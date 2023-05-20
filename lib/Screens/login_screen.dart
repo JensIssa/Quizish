@@ -43,13 +43,6 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
-        if (state.status == LoginStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-                "Login Failed - Please provide correct E-mail and password"),
-            backgroundColor: Colors.red,
-          ));
-        }
       },
       child: Form(
         key: _formKey,
@@ -60,7 +53,7 @@ class LoginForm extends StatelessWidget {
             SizedBox(height: 30),
             passwordInput(),
             const SizedBox(height: 32),
-            loginBtn(),
+            LoginBtn(),
             SizedBox(height: 15),
             newUserBtn(),
             btnGoogle(context),
@@ -71,35 +64,51 @@ class LoginForm extends StatelessWidget {
   }
 }
 
-class loginBtn extends StatelessWidget {
+class LoginBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
-        buildWhen: (previous, current) => previous.status != current.status,
-        builder: (context, status) {
-          return ElevatedButton(
-              style: ButtonStyle(
-                  fixedSize: MaterialStatePropertyAll(Size.fromWidth(150))),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    'Login',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward),
-                ],
+      buildWhen: (previous, current) => previous.status != current.status,
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ButtonStyle(
+            fixedSize: MaterialStateProperty.all(Size.fromWidth(150)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text(
+                'Login',
+                style: TextStyle(fontSize: 20),
               ),
-              onPressed: () async {
-                await context.read<LoginCubit>().logInWithCredentials();
-                navigatorKey.currentState?.pushReplacement(MaterialPageRoute(
+              SizedBox(width: 8),
+              Icon(Icons.arrow_forward),
+            ],
+          ),
+          onPressed: () async {
+            await context.read<LoginCubit>().logInWithCredentials();
+            if (state.status == LoginStatus.error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Login failed - please provide correct email and password'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            } else if(state.status == LoginStatus.succes) {
+              navigatorKey.currentState?.pushReplacement(
+                MaterialPageRoute(
                   builder: (context) => const HomeScreen(),
-                ));
-              });
-        });
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
   }
 }
+
+
 
 class newUserBtn extends StatelessWidget {
   @override

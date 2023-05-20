@@ -39,24 +39,42 @@ class QuizService {
       // Create a new document in the "quizzes" collection
       DocumentReference quizRef =
       FirebaseFirestore.instance.collection('quizzes').doc();
-
       // Set the data for the quiz document
-      await quizRef.set(quiz.toMap());
       quiz.id = quizRef.id;
+
+      await quizRef.set(quiz.toMap());
       // Update the "author" field with the current user's ID
       await quizRef.update({'author': user.uid});
+      String displayName = await getUserDisplayName(user.uid);
+      await quizRef.update({'authorDisplayName': displayName});
 
-      print('Quiz created successfully!');
+      print('Quiz created successfully by!${user.displayName!}');
     } catch (e) {
       print('Error creating quiz: $e');
     }
   }
+  // Get the display name for a given user ID
+  Future<String> getUserDisplayName(String userId) async {
+    try {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (userSnapshot.exists) {
+        Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+        String displayName = userData['displayName'] ?? '';
+        return displayName;
+      }
+    } catch (e) {
+      print('Error getting user display name: $e');
+    }
+    return '';
+  }
 
-  Future<void> getQuizzes() async {
+  Future<List<Quiz>> getQuizzes() async {
     final quizRef = FirebaseFirestore.instance.collection('quizzes');
-    final quiz = await quizRef.get();
-    _quizzes = quiz.docs.map((doc) => Quiz.fromMapWithID(doc.id, doc.data())).toList();
-    _quizzesController.add(_quizzes);
+    final quiz = quizRef.withConverter(fromFirestore: (snapshot, options) => Quiz.fromMap(snapshot.data()!), toFirestore: (value, options) => value.toMap());
+    return quiz.get().then((value) => value.docs.map((e) => e.data()).toList());
   }
 
   Future<void> deleteQuiz(String quizId) async {
