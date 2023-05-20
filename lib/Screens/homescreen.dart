@@ -36,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(_fetchQuizzes());
     const spacing = 5.0;
     return Container(
         child: GridView.count(

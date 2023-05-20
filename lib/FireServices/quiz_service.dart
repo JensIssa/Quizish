@@ -73,7 +73,7 @@ class QuizService {
 
   Future<List<Quiz>> getQuizzes() async {
     final quizRef = FirebaseFirestore.instance.collection('quizzes');
-    final quiz = await quizRef.withConverter(fromFirestore: (snapshot, options) => Quiz.fromMap(snapshot.data()!), toFirestore: (value, options) => value.toMap());
+    final quiz = quizRef.withConverter(fromFirestore: (snapshot, options) => Quiz.fromMap(snapshot.data()!), toFirestore: (value, options) => value.toMap());
     return quiz.get().then((value) => value.docs.map((e) => e.data()).toList());
   }
 

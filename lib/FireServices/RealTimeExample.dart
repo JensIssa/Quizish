@@ -81,10 +81,6 @@ class GameSessionService {
   }
 
 
-
-
-
-
   Future<void> updateCurrentQuestion(String sessionId, int currentQuestion) async {
     try {
       final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
@@ -93,8 +89,6 @@ class GameSessionService {
       print('Error updating current question: $e');
     }
   }
-
-
 
 
   Future<void> removeUserFromSession(String sessionId, User user) async {
