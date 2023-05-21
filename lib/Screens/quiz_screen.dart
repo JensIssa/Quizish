@@ -76,7 +76,7 @@ class _QuizScreenState extends State<QuizScreen> {
             quiz.questions[currentQuestion].question,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
           ),
-          _imageContainer(),
+        //  _imageContainer(),
           Positioned(
             bottom: 0,
             child: _buttonGrid(),
@@ -84,21 +84,21 @@ class _QuizScreenState extends State<QuizScreen> {
         ]));
   }
 
-  Widget _imageContainer() {
-    if (quiz.questions[currentQuestion].imgUrl == null) {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height / 6,
-      );
-    }
-    return SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height / 3,
-        child: Image(
-          image: NetworkImage(
-              quiz.questions[currentQuestion].imgUrl.toString()),
-        ));
-  }
+ // Widget _imageContainer() {
+ //   if (quiz.questions[currentQuestion].imgUrl == null) {
+   //   return SizedBox(
+     //   width: MediaQuery.of(context).size.width,
+       // height: MediaQuery.of(context).size.height / 6,
+      //);
+   // }
+   // return SizedBox(
+     //   width: MediaQuery.of(context).size.width,
+       // height: MediaQuery.of(context).size.height / 3,
+        //child: Image(
+          //image: NetworkImage(
+            //  quiz.questions[currentQuestion].imgUrl.toString()),
+        //));
+  //}
 
   _buttonGrid() {
     return Expanded(

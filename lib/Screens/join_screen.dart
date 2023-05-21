@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quizish/FireServices/AuthService.dart';
+import 'package:quizish/Screens/players_screen.dart';
 import 'package:quizish/Widgets/quiz_button.dart';
 import 'package:quizish/widgets/Appbar.dart';
 
@@ -44,10 +45,11 @@ class _JoinScreenState extends State<JoinScreen> {
               height: 50,
               child: QuizButton(
                 text: 'Join',
-                onPressed: () {
+                onPressed: () async {
                   gameSessionService.addUserToSession(sessionController.text, authService.getCurrentFirebaseUser());
-                  print(sessionController.text);
-                  print(authService.getCurrentFirebaseUser());
+                  Navigator.of(context).push(
+                      MaterialPageRoute(
+                      builder: (context) => PlayersScreen(sessionId: sessionController.text)));
                 },
                 color: Colors.green,
               ),

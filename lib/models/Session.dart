@@ -4,26 +4,27 @@ import 'Quiz.dart';
 
 class GameSession {
   String id;
-  User? host;
+  String hostId;
   Quiz? quiz;
   int? currentQuestion;
   Map<User?, int>? scores;
 
   GameSession(
       {required this.id,
-      required this.host,
+      required this.hostId,
       required this.currentQuestion,
-      required this.scores});
+      required this.scores, required  this.quiz});
 
   GameSession.fromMap(Map<String, dynamic> data)
-      :host = data['host'],
+      :hostId = data['hostId'],
         currentQuestion = data['currentQuestion'],
         id = data['id'],
-        scores = data['scores'];
+        scores = data['scores'],
+    quiz = Quiz.fromMap(data['quiz'])
 
   Map<String, dynamic> toMap() {
     return {
-      'host': host,
+      'hostId': hostId,
       'quiz': quiz,
       'currentQuestion': currentQuestion,
       'scores': scores,

@@ -115,7 +115,6 @@ class Question {
   int index = -1;
   String question;
   List<Answers> answers;
-  String? imgUrl;
   int timer = 20;
 
   Question.emptyWithIndex(this.index)
@@ -136,7 +135,7 @@ class Question {
           Answers(answer: '', isCorrect: false, index: 3),
         ];
 
-  Question({required this.index, required this.question, required this.answers, this.imgUrl, required this.timer});
+  Question({required this.index, required this.question, required this.answers, required this.timer});
 
   Question.noImgOrTimer({required this.index, required this.question, required this.answers});
 
@@ -146,7 +145,6 @@ class Question {
         index = data['index'],
         question = data['question'],
         answers = _getAnswers(data['answers']),
-        imgUrl = data['imgUrl'],
         timer = data['timer'];
 
   static _getAnswers(Map<String, dynamic> data) {
@@ -175,7 +173,6 @@ class Question {
       'index': index,
       'question': question,
       'answers': answersMap,
-      'imgUrl': imgUrl,
       'timer': timer,
     };
   }
@@ -183,7 +180,7 @@ class Question {
 
   @override
   String toString() {
-    var baseInfo = 'Question{index: $index, question: $question, imgUrl: $imgUrl, timer: $timer}';
+    var baseInfo = 'Question{index: $index, question: $question, timer: $timer}';
     var answersString = answers.fold('', (prev, element) => prev + element.toString());
     return baseInfo + answersString;
   }
