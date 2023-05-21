@@ -30,7 +30,7 @@ class GameSessionService {
         hostId: _host.uid,
         currentQuestion: 0,
         scores: null,
-        quiz: quiz,
+        quiz: null,
       );
       final sessionRef =
       _databaseReference.child('gameSessions').child(gameSessionId);
@@ -38,6 +38,7 @@ class GameSessionService {
       await sessionRef.set(gameSession.toMap());
       await addQuizToSesion(gameSessionId, quiz);
       await addHostToSession(gameSessionId, _host);
+      gameSession.quiz = quiz;
       return gameSession;
     } catch (e) {
       print('Error creating game session: $e');
@@ -161,9 +162,9 @@ class GameSessionService {
     }
   }
 
-  Future<List<String>> getAllUsersBySession(String sessionId) async {
+  Future<List<String>> getAllUsersBySession(String? sessionId) async {
     try {
-      final gameSessionData = await getGameSessionData(sessionId);
+      final gameSessionData = await getGameSessionData(sessionId!);
 
       if (gameSessionData.isNotEmpty) {
         final scores = gameSessionData['scores'] as Map<dynamic, dynamic>;

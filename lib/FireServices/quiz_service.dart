@@ -48,7 +48,6 @@ class QuizService {
       String displayName = await getUserDisplayName(user.uid);
       await quizRef.update({'authorDisplayName': displayName});
       print(quiz);
-      print('Quiz created successfully by!${user.displayName!}');
     } catch (e) {
       print('Error creating quiz: $e');
     }

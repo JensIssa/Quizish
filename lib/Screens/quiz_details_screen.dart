@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizish/FireServices/RealTimeExample.dart';
+import 'package:quizish/Screens/players_screen.dart';
 import 'package:quizish/models/Session.dart';
 import 'package:quizish/widgets/quiz_button.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
@@ -50,8 +51,16 @@ class QuizDetailsScreen extends StatelessWidget {
             padding: EdgeInsets.only(top: 70),
             child: QuizButton(
               text: 'Start',
-              onPressed: () {
-                gameSessionService.createGameSession(quiz);
+              onPressed: () async {
+                GameSession? createdGameSession = await gameSessionService.createGameSession(quiz);
+                if (createdGameSession != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlayersScreen(gameSession: createdGameSession),
+                    ),
+                  );
+                }
               },
               color: Colors.green,
             ),

@@ -28,7 +28,7 @@ class _JoinScreenState extends State<JoinScreen> {
     return Column(
         children: [
           const SizedBox(height: 40),
-          Center(
+          const Center(
             child: Text(
               'Join Session',
               style: TextStyle(fontSize: 40, color: Colors.white)
@@ -49,7 +49,7 @@ class _JoinScreenState extends State<JoinScreen> {
                   gameSessionService.addUserToSession(sessionController.text, authService.getCurrentFirebaseUser());
                   Navigator.of(context).push(
                       MaterialPageRoute(
-                      builder: (context) => PlayersScreen(sessionId: sessionController.text)));
+                      builder: (context) => PlayersScreen()));
                 },
                 color: Colors.green,
               ),

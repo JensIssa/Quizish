@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:quizish/Widgets/in_game_appbar.dart';
+import 'package:quizish/models/Session.dart';
 import '../FireServices/RealTimeExample.dart'; // Import the GameSessionService
 
 class PlayersScreen extends StatelessWidget {
   final GameSessionService _gameSessionService = GameSessionService();
-  final String sessionId;
+  final GameSession? gameSession;
 
-  PlayersScreen({Key? key, required this.sessionId}) : super(key: key);
+  PlayersScreen({Key? key, this.gameSession}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: InGameAppBar(onLeave: () {}),
       body: FutureBuilder<List<String>>(
-        future: _gameSessionService.getAllUsersBySession(sessionId),
+        future: _gameSessionService.getAllUsersBySession(gameSession?.id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -67,10 +68,10 @@ class PlayersScreen extends StatelessWidget {
   Widget _quizName() {
     return Container(
       child: Column(
-        children: const [
+        children:  [
           Text(
-            'Quiz name',
-            style: TextStyle(
+            gameSession?.quiz?.title ?? 'Loading...',
+            style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -102,7 +103,7 @@ class PlayersScreen extends StatelessWidget {
             ),
           ),
           Text(
-            sessionId,
+            gameSession?.id ?? 'Loading...',
             style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
