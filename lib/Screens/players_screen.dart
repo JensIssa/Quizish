@@ -6,15 +6,16 @@ import '../FireServices/RealTimeExample.dart'; // Import the GameSessionService
 class PlayersScreen extends StatelessWidget {
   final GameSessionService _gameSessionService = GameSessionService();
   final GameSession? gameSession;
+  final String? gamePin;
 
-  PlayersScreen({Key? key, this.gameSession}) : super(key: key);
+  PlayersScreen({Key? key, this.gameSession, this.gamePin}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: InGameAppBar(onLeave: () {}),
       body: FutureBuilder<List<String>>(
-        future: _gameSessionService.getAllUsersBySession(gameSession?.id),
+        future: _gameSessionService.getAllUsersBySession(gamePin),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

@@ -22,6 +22,8 @@ class GameSessionService {
 
   //Have host and quiz as parameters.
   Future<GameSession?> createGameSession(Quiz quiz) async {
+
+
     try {
       User? _host = FirebaseAuth.instance.currentUser!;
       String gameSessionId = generateRandomId(5);

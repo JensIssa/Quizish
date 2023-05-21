@@ -49,7 +49,7 @@ class _JoinScreenState extends State<JoinScreen> {
                   gameSessionService.addUserToSession(sessionController.text, authService.getCurrentFirebaseUser());
                   Navigator.of(context).push(
                       MaterialPageRoute(
-                      builder: (context) => PlayersScreen()));
+                      builder: (context) => PlayersScreen(gamePin: sessionController.text,)));
                 },
                 color: Colors.green,
               ),
