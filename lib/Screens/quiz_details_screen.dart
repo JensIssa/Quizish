@@ -17,8 +17,6 @@ class QuizDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GameSessionService gameSessionService = GameSessionService();
-    final gameSessionProvider = Provider.of<GameSessionProvider>(context);
-
     return Material(
       child: Column(
         children: [
@@ -57,13 +55,17 @@ class QuizDetailsScreen extends StatelessWidget {
               onPressed: () async {
                 GameSession? createdGameSession =
                 await gameSessionService.createGameSession(quiz);
-                gameSessionProvider.setGameSession(createdGameSession);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PlayersScreen(gameSession: createdGameSession),
-                  ),
-                );
+                if (createdGameSession != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlayersScreen(gameSession: createdGameSession),
+                    ),
+                  );
+                } else {
+                  // Handle the case when the game session is null
+                  print('Error: Game session is null');
+                }
               },
               color: Colors.green,
             ),

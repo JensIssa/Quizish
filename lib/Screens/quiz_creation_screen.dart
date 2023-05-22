@@ -48,7 +48,6 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
           return;
         }
       }
-
       quizService.createQuiz(quiz);
       _showOnSavedDialog(context);
     }

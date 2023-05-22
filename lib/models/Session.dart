@@ -7,7 +7,7 @@ class GameSession {
   String hostId;
   Quiz? quiz;
   int? currentQuestion;
-  Map<User?, int>? scores;
+  Map<String?, dynamic>? scores;
 
   GameSession(
       {required this.id,
@@ -17,11 +17,12 @@ class GameSession {
         required this.scores});
 
   GameSession.fromMap(Map<String, dynamic> data)
-      :hostId = data['hostId'],
-        quiz = data['quiz'],
+      : hostId = data['hostId'],
         currentQuestion = data['currentQuestion'],
         id = data['id'],
-        scores = data['scores'];
+        scores = data['scores'] as Map<String?, dynamic>?,
+        quiz = Quiz.fromMap(data['quiz'] as Map<String, dynamic>); // Create a Quiz object from the map
+
 
   Map<String, dynamic> toMap() {
     return {

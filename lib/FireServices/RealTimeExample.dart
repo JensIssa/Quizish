@@ -20,42 +20,38 @@ class GameSessionService {
     return result;
   }
 
-  Future<GameSession?> createGameSession(Quiz quiz) async {
-    try {
-      User? _host = FirebaseAuth.instance.currentUser!;
-      String gameSessionId = generateRandomId(5);
-      GameSession gameSession = GameSession(
-        id: gameSessionId,
-        hostId: _host.uid,
-        currentQuestion: 0,
-        scores: null,
-        quiz: null,
-      );
-      DocumentReference sessionRef = _gameSessionsCollection.doc(gameSessionId);
-      gameSession.id = gameSessionId;
-      await sessionRef.set(gameSession.toMap());
-      await addQuizToSession(gameSessionId, quiz);
-      await addHostToSession(gameSessionId, _host);
-      gameSession.quiz = quiz;
-      return gameSession;
-    } catch (e) {
-      print('Error creating game session: $e');
-    }
-    return null;
+  Future<GameSession> createGameSession(Quiz quiz) async {
+    User? _host = FirebaseAuth.instance.currentUser!;
+    String gameSessionId = generateRandomId(5);
+    Map<String, dynamic> scores = {}; // Empty scores map
+    GameSession gameSession = GameSession(
+      id: gameSessionId,
+      hostId: _host.uid,
+      currentQuestion: 0,
+      scores: scores,
+      quiz: null,
+    );
+    DocumentReference sessionRef = _gameSessionsCollection.doc(gameSessionId);
+    gameSession.id = gameSessionId;
+    await sessionRef.set(gameSession.toMap());
+    await addQuizToSession(gameSessionId, quiz);
+    await addHostToSession(gameSessionId, _host);
+    gameSession.quiz = quiz;
+    return gameSession;
   }
+
 
   Future<GameSession?> getGameSessionByCode(String sessionId) async {
     try {
-      DocumentSnapshot sessionSnapshot =
-      await _gameSessionsCollection.doc(sessionId).get();
+      DocumentSnapshot sessionSnapshot = await _gameSessionsCollection.doc(sessionId).get();
       final dynamic sessionValue = sessionSnapshot.data();
 
       if (sessionValue != null && sessionValue is Map<String, dynamic>) {
         final gameSessionMap = Map<String, dynamic>.from(sessionValue);
         final quizMap = Map<String, dynamic>.from(gameSessionMap['quiz']);
-        final quiz = Quiz.fromMap(quizMap);
+        final quiz = Quiz.fromMap(quizMap); // Ensure Quiz.fromMap returns Quiz?
         final gameSession = GameSession.fromMap(gameSessionMap);
-        gameSession.quiz = quiz;
+        gameSession.quiz = quiz; // Make sure the assignment is compatible
         return gameSession;
       } else {
         print('Error: Invalid data or session does not exist');
@@ -65,6 +61,7 @@ class GameSessionService {
     }
     return null;
   }
+
 
   Future<void> addUserToSession(String sessionId, User? user) async {
     try {
@@ -138,16 +135,25 @@ class GameSessionService {
 
   Future<String?> getUserDisplayName(String userId) async {
     try {
-      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
       if (userSnapshot.exists && userSnapshot.data() != null) {
         final userData = userSnapshot.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>?
-        return userData?['displayName'] as String?;
+        final displayName = userData?['displayName'] as String?;
+        print('Retrieved displayName: $displayName');
+        return displayName;
+      } else {
+        print('User snapshot does not exist or data is null for userId: $userId');
       }
     } catch (e) {
-      print('Error retrieving user display name: $e');
+      print('Error retrieving user display name for userId: $userId - $e');
     }
     return null;
   }
+
+
 
 
   Stream<List<String>> getAllUsersBySession(String? sessionId) async* {
@@ -166,6 +172,7 @@ class GameSessionService {
               }
             }
             yield displayNames;
+            print(displayNames);
           }
         } else {
           yield [];
