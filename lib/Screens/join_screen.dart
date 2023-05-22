@@ -16,7 +16,6 @@ class JoinScreen extends StatelessWidget {
     final sessionController = TextEditingController();
     final GameSessionService gameSessionService = GameSessionService();
     final AuthService authService = AuthService();
-    final gameSession = Provider.of<GameSessionProvider>(context).gameSession;
 
     return Column(
       children: [
@@ -42,6 +41,10 @@ class JoinScreen extends StatelessWidget {
                 gameSessionService.addUserToSession(
                   sessionController.text,
                   authService.getCurrentFirebaseUser(),
+                );
+                GameSession? gameSession =
+                    await gameSessionService.getGameSessionByCode(
+                  sessionController.text,
                 );
                 Navigator.of(context).push(
                   MaterialPageRoute(
