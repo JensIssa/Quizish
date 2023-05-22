@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:quizish/FireServices/RealTimeExample.dart';
-import 'package:quizish/models/Session.dart';
+import 'package:provider/provider.dart';
+import 'package:quizish/models/Quiz.dart';
+import 'package:quizish/Screens/players_screen.dart';
 import 'package:quizish/widgets/quiz_button.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
 
-import '../models/Quiz.dart';
-
+import '../FireServices/RealTimeExample.dart';
+import '../models/Session.dart';
+import 'GameSessionProvider.dart';
 
 class QuizDetailsScreen extends StatelessWidget {
+  final Quiz quiz;
 
   const QuizDetailsScreen({Key? key, required this.quiz}) : super(key: key);
 
-  final Quiz quiz;
   @override
   Widget build(BuildContext context) {
     final GameSessionService gameSessionService = GameSessionService();
@@ -50,8 +52,20 @@ class QuizDetailsScreen extends StatelessWidget {
             padding: EdgeInsets.only(top: 70),
             child: QuizButton(
               text: 'Start',
-              onPressed: () {
-                gameSessionService.createGameSession(quiz);
+              onPressed: () async {
+                GameSession? createdGameSession =
+                await gameSessionService.createGameSession(quiz);
+                if (createdGameSession != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlayersScreen(gameSession: createdGameSession),
+                    ),
+                  );
+                } else {
+                  // Handle the case when the game session is null
+                  print('Error: Game session is null');
+                }
               },
               color: Colors.green,
             ),
@@ -73,6 +87,4 @@ class QuizDetailsScreen extends StatelessWidget {
       ),
     );
   }
-
-
 }

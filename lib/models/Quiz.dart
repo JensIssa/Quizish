@@ -42,12 +42,14 @@ class Quiz {
         authorDisplayName = data['authorDisplayName'],
         questions = [..._getQuestions(data['questions'])];
 
+
   Quiz.fromMapWithID(this.id, Map<String, dynamic> data)
       : title = data['title'],
         authorDisplayName = data['authorDisplayName'],
         description = data['description'],
         author = data['author'],
         questions = _getQuestions(data['questions']);
+
 
   static List<Question> _getQuestions(Map<String, dynamic> data) {
     List<Question> questions = [];
@@ -58,10 +60,6 @@ class Quiz {
     return questions;
   }
 
-
-
-
-
   Map<String, dynamic> toMap() {
     var questionsMap = <String, dynamic>{};
     questions.forEach((element) {
@@ -71,6 +69,7 @@ class Quiz {
     return {
       'title': title,
       'id': id,
+      'authorDisplayName': authorDisplayName,
       'description': description,
       'author': author,
       'questions': questionsMap,
@@ -79,7 +78,7 @@ class Quiz {
 
   @override
   String toString() {
-    var baseInfo = 'Quiz{title: $title, id: $id, description: $description, author: $author}';
+    var baseInfo = 'Quiz{title: $title, id: $id, description: $description, author: $author, authorDisplayName: $authorDisplayName}';
     var questionsString = questions.fold('', (prev, element) => prev + element.toString());
     return "$baseInfo | $questionsString";
   }
@@ -115,7 +114,6 @@ class Question {
   int index = -1;
   String question;
   List<Answers> answers;
-  String? imgUrl;
   int timer = 20;
 
   Question.emptyWithIndex(this.index)
@@ -136,7 +134,7 @@ class Question {
           Answers(answer: '', isCorrect: false, index: 3),
         ];
 
-  Question({required this.index, required this.question, required this.answers, this.imgUrl, required this.timer});
+  Question({required this.index, required this.question, required this.answers, required this.timer});
 
   Question.noImgOrTimer({required this.index, required this.question, required this.answers});
 
@@ -146,7 +144,6 @@ class Question {
         index = data['index'],
         question = data['question'],
         answers = _getAnswers(data['answers']),
-        imgUrl = data['imgUrl'],
         timer = data['timer'];
 
   static _getAnswers(Map<String, dynamic> data) {
@@ -175,7 +172,6 @@ class Question {
       'index': index,
       'question': question,
       'answers': answersMap,
-      'imgUrl': imgUrl,
       'timer': timer,
     };
   }
@@ -183,7 +179,7 @@ class Question {
 
   @override
   String toString() {
-    var baseInfo = 'Question{index: $index, question: $question, imgUrl: $imgUrl, timer: $timer}';
+    var baseInfo = 'Question{index: $index, question: $question, timer: $timer}';
     var answersString = answers.fold('', (prev, element) => prev + element.toString());
     return baseInfo + answersString;
   }
