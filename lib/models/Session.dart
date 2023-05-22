@@ -17,7 +17,7 @@ class GameSession {
         required this.scores});
 
   GameSession.fromMap(Map<String, dynamic> data)
-      :hostId = data['host'],
+      :hostId = data['hostId'],
         quiz = data['quiz'],
         currentQuestion = data['currentQuestion'],
         id = data['id'],
@@ -25,7 +25,7 @@ class GameSession {
 
   Map<String, dynamic> toMap() {
     return {
-      'host': hostId,
+      'hostId': hostId,
       'quiz': quiz,
       'currentQuestion': currentQuestion,
       'scores': scores,

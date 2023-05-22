@@ -53,9 +53,17 @@ class GameSessionService {
       final dynamic sessionValue = sessionSnapshot.value;
       if (sessionValue != null && sessionValue is Map<dynamic, dynamic>) {
         final gameSessionMap = Map<String, dynamic>.from(sessionValue);
-        final quizMap = Map<String, dynamic>.from(gameSessionMap['quiz'] ?? {});
+        print('----------------------');
+        print(gameSessionMap);
+        final quizMap = Map<String, dynamic>.from(gameSessionMap['quiz']);
+        print('--------------------');
+        print(quizMap);
         final quiz = Quiz.fromMap(quizMap);
+        print('---------------------');
+        print(quiz);
         final gameSession = GameSession.fromMap(gameSessionMap);
+        print('----------------------');
+        print(gameSession);
         gameSession.quiz = quiz;
         return gameSession;
       } else {
@@ -98,10 +106,7 @@ class GameSessionService {
 
       if (sessionValue != null && sessionValue is Map<dynamic, dynamic>) {
         final gameSessionMap = Map<String, dynamic>.from(sessionValue);
-        final quizMap = Map<String, dynamic>.from(gameSessionMap['quiz'] ?? {});
-        //quizMap[quiz.id] = quiz.toMap();
         gameSessionMap['quiz'] = quiz.toMap();
-
         await sessionRef.set(gameSessionMap);
       } else {
         print('Error: Invalid data or session does not exist');
@@ -121,7 +126,7 @@ class GameSessionService {
 
       if (sessionValue != null && sessionValue is Map<dynamic, dynamic>) {
         final gameSessionMap = Map<String, dynamic>.from(sessionValue);
-        gameSessionMap['host'] = user.uid;
+        gameSessionMap['hostId'] = user.uid;
         await sessionRef.set(gameSessionMap);
       } else {
         print('Error: Invalid data or session does not exist');

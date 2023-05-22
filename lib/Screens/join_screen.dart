@@ -38,7 +38,7 @@ class JoinScreen extends StatelessWidget {
             child: QuizButton(
               text: 'Join',
               onPressed: () async {
-                gameSessionService.addUserToSession(
+                await gameSessionService.addUserToSession(
                   sessionController.text,
                   authService.getCurrentFirebaseUser(),
                 );

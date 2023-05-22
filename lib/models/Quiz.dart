@@ -71,6 +71,7 @@ class Quiz {
     return {
       'title': title,
       'id': id,
+      'authorDisplayName': authorDisplayName,
       'description': description,
       'author': author,
       'questions': questionsMap,
@@ -79,7 +80,7 @@ class Quiz {
 
   @override
   String toString() {
-    var baseInfo = 'Quiz{title: $title, id: $id, description: $description, author: $author}';
+    var baseInfo = 'Quiz{title: $title, id: $id, description: $description, author: $author, authorDisplayName: $authorDisplayName}';
     var questionsString = questions.fold('', (prev, element) => prev + element.toString());
     return "$baseInfo | $questionsString";
   }
