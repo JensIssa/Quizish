@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quizish/models/Quiz.dart';
 
+
 import '../models/Session.dart';
 
 class GameSessionService {
@@ -39,6 +40,19 @@ class GameSessionService {
     gameSession.quiz = quiz;
     return gameSession;
   }
+
+  Future<void> incrementCurrentQuestion(String sessionId) async {
+    try {
+      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('incrementCurrentQuestion');
+      final Map<String, dynamic> data = {'sessionId': sessionId};
+      final result = await callable.call(data);
+      final int newCurrentQuestion = result.data['currentQuestion'];
+      print('Current question incremented to: $newCurrentQuestion');
+    } catch (e) {
+      print('Error incrementing current question: $e');
+    }
+  }
+
 
 
   Future<GameSession?> getGameSessionByCode(String sessionId) async {
