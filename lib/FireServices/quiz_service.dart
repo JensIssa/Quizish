@@ -41,7 +41,6 @@ class QuizService {
       FirebaseFirestore.instance.collection('quizzes').doc();
       // Set the data for the quiz document
       quiz.id = quizRef.id;
-
       await quizRef.set(quiz.toMap());
       // Update the "author" field with the current user's ID
       await quizRef.update({'author': user.uid});

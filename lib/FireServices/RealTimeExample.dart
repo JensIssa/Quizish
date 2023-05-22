@@ -22,8 +22,6 @@ class GameSessionService {
 
   //Have host and quiz as parameters.
   Future<GameSession?> createGameSession(Quiz quiz) async {
-
-
     try {
       User? _host = FirebaseAuth.instance.currentUser!;
       String gameSessionId = generateRandomId(5);
@@ -101,8 +99,8 @@ class GameSessionService {
       if (sessionValue != null && sessionValue is Map<dynamic, dynamic>) {
         final gameSessionMap = Map<String, dynamic>.from(sessionValue);
         final quizMap = Map<String, dynamic>.from(gameSessionMap['quiz'] ?? {});
-        quizMap[quiz.id] = quiz.toMap();
-        gameSessionMap['quiz'] = quizMap;
+        //quizMap[quiz.id] = quiz.toMap();
+        gameSessionMap['quiz'] = quiz.toMap();
 
         await sessionRef.set(gameSessionMap);
       } else {
