@@ -47,6 +47,7 @@ class QuizService {
       print('Error creating quiz: $e');
     }
   }
+
   // Get the display name for a given user ID
   Future<String> getUserDisplayName(String userId) async {
     try {
