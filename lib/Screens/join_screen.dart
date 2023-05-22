@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/Screens/players_screen.dart';
 import 'package:quizish/Widgets/quiz_button.dart';
+import 'package:quizish/models/Session.dart';
 import 'package:quizish/widgets/Appbar.dart';
 
 import '../FireServices/RealTimeExample.dart';
@@ -23,6 +24,7 @@ class _JoinScreenState extends State<JoinScreen> {
   final sessionController = TextEditingController();
   final  GameSessionService gameSessionService = GameSessionService();
   final AuthService authService = AuthService();
+  GameSession? gameSession;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -49,7 +51,7 @@ class _JoinScreenState extends State<JoinScreen> {
                   gameSessionService.addUserToSession(sessionController.text, authService.getCurrentFirebaseUser());
                   Navigator.of(context).push(
                       MaterialPageRoute(
-                      builder: (context) => PlayersScreen(gamePin: sessionController.text,)));
+                      builder: (context) => PlayersScreen(gameSession: gameSession,)));
                 },
                 color: Colors.green,
               ),
