@@ -114,7 +114,7 @@ class newUserBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ButtonStyle(
+      style: const ButtonStyle(
         fixedSize: MaterialStatePropertyAll(Size.fromWidth(150)),
       ),
       child: const Text(

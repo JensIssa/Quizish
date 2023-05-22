@@ -47,6 +47,7 @@ dependencies:
   flow_builder: ^0.0.9
   equatable: ^2.0.5
   firebase_database: ^10.2.0
+  provider: ^6.0.0
 
 
 dev_dependencies:

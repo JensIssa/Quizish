@@ -17,6 +17,7 @@ class QuizDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GameSessionService gameSessionService = GameSessionService();
+    final gameSessionProvider = Provider.of<GameSessionProvider>(context);
 
     return Material(
       child: Column(
@@ -54,8 +55,6 @@ class QuizDetailsScreen extends StatelessWidget {
             child: QuizButton(
               text: 'Start',
               onPressed: () async {
-                GameSessionProvider gameSessionProvider =
-                Provider.of<GameSessionProvider>(context, listen: false);
                 GameSession? createdGameSession =
                 await gameSessionService.createGameSession(quiz);
                 gameSessionProvider.setGameSession(createdGameSession);

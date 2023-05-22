@@ -5,6 +5,8 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_theme/json_theme.dart';
+import 'package:provider/provider.dart';
+import 'package:quizish/Screens/GameSessionProvider.dart';
 import 'package:quizish/Screens/in_app_container.dart';
 import 'package:quizish/Screens/join_screen.dart';
 import 'package:quizish/Screens/quiz_screen.dart';
@@ -53,16 +55,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-    return RepositoryProvider.value(value: _authService,
-      child: BlocProvider(
-        create: (_) => AppBloc(authService: _authService),
-        child: AppView(theme: theme,),
-      ),
-
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<GameSessionProvider>(
+          create: (_) => GameSessionProvider(),
+        ),
+      ],
+      child: RepositoryProvider.value(
+        value: _authService,
+        child: BlocProvider(
+          create: (_) => AppBloc(authService: _authService),
+          child: AppView(theme: theme,)
+        ),
+      )
     );
   }
-  
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
