@@ -1,77 +1,102 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/Screens/players_screen.dart';
 import 'package:quizish/widgets/quiz_button.dart';
 import '../FireServices/RealTimeExample.dart';
 import '../models/Session.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
-class JoinScreen extends StatelessWidget {
+class JoinScreen extends StatefulWidget {
   const JoinScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final sessionController = TextEditingController();
-    final GameSessionService gameSessionService = GameSessionService();
-    final AuthService authService = AuthService();
+  State<StatefulWidget> createState() => _JoinScreen();
+}
 
-    return Column(
-      children: [
-        const SizedBox(height: 40),
-        const Center(
-          child: Text(
-            'Join Session',
-            style: TextStyle(fontSize: 40, color: Colors.white),
+  class _JoinScreen extends State<JoinScreen> {
+
+  var getResult = 'QR Code Result';
+
+    @override
+    Widget build(BuildContext context) {
+      final sessionController = TextEditingController();
+      final GameSessionService gameSessionService = GameSessionService();
+      final AuthService authService = AuthService();
+
+      return Column(
+        children: [
+          const SizedBox(height: 40),
+          const Center(
+            child: Text(
+              'Join Session',
+              style: TextStyle(fontSize: 40, color: Colors.white),
+            ),
           ),
-        ),
-        const SizedBox(height: 40),
-        Center(
-          child: SessionInput(sessionController),
-        ),
-        const SizedBox(height: 100),
-        Center(
-          child: Container(
-            width: 200,
-            height: 50,
-            child: QuizButton(
-              text: 'Join',
-              onPressed: () async {
-                await gameSessionService.addUserToSession(
-                  sessionController.text,
-                  authService.getCurrentFirebaseUser(),
-                );
-                GameSession? gameSession =
-                    await gameSessionService.getGameSessionByCode(
-                  sessionController.text,
-                );
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => PlayersScreen(
-                      gameSession: gameSession,
+          const SizedBox(height: 40),
+          Center(
+            child: SessionInput(sessionController),
+          ),
+          const SizedBox(height: 100),
+          Center(
+            child: Container(
+              width: 200,
+              height: 50,
+              child: QuizButton(
+                text: 'Join',
+                onPressed: () async {
+                  await gameSessionService.addUserToSession(
+                    sessionController.text,
+                    authService.getCurrentFirebaseUser(),
+                  );
+                  GameSession? gameSession =
+                  await gameSessionService.getGameSessionByCode(
+                    sessionController.text,
+                  );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PlayersScreen(
+                        gameSession: gameSession,
+                      ),
                     ),
-                  ),
-                );
-              },
-              color: Colors.green,
+                  );
+                },
+                color: Colors.green,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 20),
-        Center(
-          child: Container(
-            width: 200,
-            height: 50,
-            child: QuizButton(
-              text: 'Scan QR',
-              onPressed: () async {
+          const SizedBox(height: 20),
+          Center(
+            child: Container(
+              width: 200,
+              height: 50,
+              child: QuizButton(
+                text: 'Scan QR',
+                onPressed: () async {
+                  scanQRCode();
+                }, color: Colors.green,
+              ),
+            ),
+          )
+        ],
+      );
+    }
 
-              }, color: Colors.green,
-            ),
-          ),
-        )
-      ],
-    );
+  void scanQRCode() async {
+    try {
+      final qrCode = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+
+      if(!mounted) return;
+      setState(() {
+        getResult = qrCode;
+      });
+    } on PlatformException {
+      getResult = 'Failed to scan QR Code.';
+    }
   }
+}
+
 
   TextField SessionInput(TextEditingController sessionController) {
     return TextField(
@@ -91,4 +116,4 @@ class JoinScreen extends StatelessWidget {
       ),
     );
   }
-}
+
