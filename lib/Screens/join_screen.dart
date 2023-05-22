@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/Screens/players_screen.dart';
 import 'package:quizish/widgets/quiz_button.dart';
 import '../FireServices/RealTimeExample.dart';
 import '../models/Session.dart';
-import 'GameSessionProvider.dart';
 
 class JoinScreen extends StatelessWidget {
   const JoinScreen({Key? key}) : super(key: key);
@@ -16,7 +14,6 @@ class JoinScreen extends StatelessWidget {
     final sessionController = TextEditingController();
     final GameSessionService gameSessionService = GameSessionService();
     final AuthService authService = AuthService();
-    String cameraScan;
 
     return Column(
       children: [

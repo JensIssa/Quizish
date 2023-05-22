@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:quizish/Widgets/in_game_appbar.dart';
 import 'package:quizish/models/Session.dart';
-import '../FireServices/RealTimeExample.dart'; // Import the GameSessionService
+import '../FireServices/RealTimeExample.dart';
+
 
 class PlayersScreen extends StatelessWidget {
   final GameSessionService _gameSessionService = GameSessionService();
@@ -58,6 +60,8 @@ class PlayersScreen extends StatelessWidget {
                 itemCount: playerNames.length,
               ),
             ),
+            const SizedBox(height: 20),
+            QrButton(gameSessionId: gameSession?.id),
             const SizedBox(height: 20), // Add spacing between the player list and the button
             if (isHost)
               ElevatedButton(
@@ -152,4 +156,47 @@ class PlayersScreen extends StatelessWidget {
   }
 }
 
+class QrButton extends StatelessWidget {
+  final String? gameSessionId;
+  const QrButton({
+    Key? key, this.gameSessionId
+  }) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+      return IconButton(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: Colors.white,
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Scan the QR code to join the game'),
+                      Container(
+                        width: 200,
+                        height: 200,
+                        child: QrImageView(
+                          data: gameSessionId ?? '',
+                          version: QrVersions.auto,
+                          size: 200,
+                        ),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Close'),
+                    )
+                  ],
+                ),
+            );
+          },
+          icon: const Icon(Icons.camera_enhance),
+      );
+    }
+  }
