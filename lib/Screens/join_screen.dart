@@ -8,23 +8,15 @@ import '../FireServices/RealTimeExample.dart';
 import '../models/Session.dart';
 import 'GameSessionProvider.dart';
 
-class JoinScreen extends StatefulWidget {
+class JoinScreen extends StatelessWidget {
   const JoinScreen({Key? key}) : super(key: key);
 
   @override
-  State<JoinScreen> createState() => _JoinScreenState();
-}
-
-class _JoinScreenState extends State<JoinScreen> {
-  final sessionController = TextEditingController();
-  final GameSessionService gameSessionService = GameSessionService();
-  final AuthService authService = AuthService();
-
-  @override
   Widget build(BuildContext context) {
-    GameSessionProvider gameSessionProvider =
-    Provider.of<GameSessionProvider>(context);
-    GameSession? gameSession = gameSessionProvider.gameSession;
+    final sessionController = TextEditingController();
+    final GameSessionService gameSessionService = GameSessionService();
+    final AuthService authService = AuthService();
+    final gameSession = Provider.of<GameSessionProvider>(context).gameSession;
 
     return Column(
       children: [
@@ -37,7 +29,7 @@ class _JoinScreenState extends State<JoinScreen> {
         ),
         const SizedBox(height: 40),
         Center(
-          child: SessionInput(),
+          child: SessionInput(sessionController),
         ),
         const SizedBox(height: 400),
         Center(
@@ -67,7 +59,7 @@ class _JoinScreenState extends State<JoinScreen> {
     );
   }
 
-  TextField SessionInput() {
+  TextField SessionInput(TextEditingController sessionController) {
     return TextField(
       controller: sessionController,
       style: TextStyle(fontSize: 20, color: Colors.white),
