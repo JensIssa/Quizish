@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:quizish/FireServices/RealTimeExample.dart';
+import 'package:provider/provider.dart';
+import 'package:quizish/models/Quiz.dart';
 import 'package:quizish/Screens/players_screen.dart';
-import 'package:quizish/models/Session.dart';
 import 'package:quizish/widgets/quiz_button.dart';
 import 'package:quizish/widgets/quiz_name_box.dart';
 
-import '../models/Quiz.dart';
-
+import '../FireServices/RealTimeExample.dart';
+import '../models/Session.dart';
+import 'GameSessionProvider.dart';
 
 class QuizDetailsScreen extends StatelessWidget {
+  final Quiz quiz;
 
   const QuizDetailsScreen({Key? key, required this.quiz}) : super(key: key);
 
-  final Quiz quiz;
   @override
   Widget build(BuildContext context) {
     final GameSessionService gameSessionService = GameSessionService();
+
     return Material(
       child: Column(
         children: [
@@ -52,15 +54,17 @@ class QuizDetailsScreen extends StatelessWidget {
             child: QuizButton(
               text: 'Start',
               onPressed: () async {
-                GameSession? createdGameSession = await gameSessionService.createGameSession(quiz);
-                if (createdGameSession != null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PlayersScreen(gameSession: createdGameSession),
-                    ),
-                  );
-                }
+                GameSessionProvider gameSessionProvider =
+                Provider.of<GameSessionProvider>(context, listen: false);
+                GameSession? createdGameSession =
+                await gameSessionService.createGameSession(quiz);
+                gameSessionProvider.setGameSession(createdGameSession);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlayersScreen(gameSession: createdGameSession),
+                  ),
+                );
               },
               color: Colors.green,
             ),
@@ -69,6 +73,4 @@ class QuizDetailsScreen extends StatelessWidget {
       ),
     );
   }
-
-
 }
