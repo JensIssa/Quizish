@@ -47,7 +47,6 @@ class GameSessionService {
   }
 
   Future<GameSession?> getGameSessionByCode(String sessionId) async {
-    try {
       final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
       DataSnapshot sessionSnapshot = await sessionRef.get();
       final dynamic sessionValue = sessionSnapshot.value;
@@ -69,9 +68,6 @@ class GameSessionService {
       } else {
         print('Error: Invalid data or session does not exist');
       }
-    } catch (e) {
-      print('Error getting game session: $e');
-    }
     return null;
   }
 

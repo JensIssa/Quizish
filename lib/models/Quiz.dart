@@ -42,12 +42,14 @@ class Quiz {
         authorDisplayName = data['authorDisplayName'],
         questions = [..._getQuestions(data['questions'])];
 
+
   Quiz.fromMapWithID(this.id, Map<String, dynamic> data)
       : title = data['title'],
         authorDisplayName = data['authorDisplayName'],
         description = data['description'],
         author = data['author'],
         questions = _getQuestions(data['questions']);
+
 
   static List<Question> _getQuestions(Map<String, dynamic> data) {
     List<Question> questions = [];
@@ -57,10 +59,6 @@ class Quiz {
     });
     return questions;
   }
-
-
-
-
 
   Map<String, dynamic> toMap() {
     var questionsMap = <String, dynamic>{};

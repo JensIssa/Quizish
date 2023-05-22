@@ -28,7 +28,6 @@ class QuizService {
 
   Stream<List<Quiz>> get quizzes => _quizzesController.stream;
 
-// Create a new quiz in Firebase
   Future<void> createQuiz(Quiz quiz) async {
     try {
       // Get the current user
@@ -36,13 +35,10 @@ class QuizService {
       if (user == null) {
         throw Exception('User not authenticated');
       }
-      // Create a new document in the "quizzes" collection
       DocumentReference quizRef =
       FirebaseFirestore.instance.collection('quizzes').doc();
-      // Set the data for the quiz document
       quiz.id = quizRef.id;
       await quizRef.set(quiz.toMap());
-      // Update the "author" field with the current user's ID
       await quizRef.update({'author': user.uid});
       String displayName = await getUserDisplayName(user.uid);
       await quizRef.update({'authorDisplayName': displayName});
