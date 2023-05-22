@@ -105,8 +105,6 @@ class _QuizScreenState extends State<QuizScreen> {
                       quizModel.timerController,
                           (){
                         _overlayCorrectAnswer(quizModel);
-                        quizModel.onTimerFinished();
-
                   }),
                 ],
               ),
@@ -319,18 +317,6 @@ class _QuizScreenState extends State<QuizScreen> {
 
 
 
-  _overlayScoreboard() {
-    //Show scoreboard as overlay
-    //closes after two-three seconds
-    final overlay = Overlay.of(context);
-    overlay.insert(
-      OverlayEntry(
-        builder: (context) => const Center(
-          child: Leaderboard(),
-        ),
-      ),
-    );
-  }
 
 
 }

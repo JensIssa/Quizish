@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/provider/quiz_notifier_model.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -46,7 +47,13 @@ class CorrectAnswersScreen extends StatelessWidget {
             ),
             const Spacer(),
             _timer(context, quizModel, 3, CountdownController(autoStart: true), () {
-              Navigator.pop(context);
+
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  maintainState: false,
+                  builder: (context) => Leaderboard(quizModel: quizModel),
+                ),
+              );
             }),
           ],
         ),
@@ -69,18 +76,34 @@ class CorrectAnswersScreen extends StatelessWidget {
                 ),
                 const Divider(),
                 _correctAnswerOptionsChildren(quizModel, answerHeight, answerWidth),
+                SizedBox(
+                  height: 100,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Container(
+                    color: _correctAnswerTextColor(quizModel.isAnswerCorrect()),
+                    child: Center(
+                      child: Text(
+                          quizModel.getCorrectAnswerText(),
+                          style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white)
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  'You answered ${quizModel.getCorrectAnswerText()}',
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.w500),
+                ),
               ],
             ),
           ),
         ),
-        Text(
-          quizModel.getCorrectAnswerText(),
-          style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-              color: _correctAnswerTextColor(quizModel.isAnswerCorrect())
-          ),
-        ),
+
         /*
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:quizish/widgets/Appbar.dart';
+import 'package:timer_count_down/timer_controller.dart';
+import 'package:timer_count_down/timer_count_down.dart';
+
+import '../provider/quiz_notifier_model.dart';
 
 class LeaderboardData {
   final String name;
@@ -21,21 +24,49 @@ final leaderboardData = [
   LeaderboardData('Alex', 100),
 ];
 
-class Leaderboard extends StatefulWidget {
-  const Leaderboard({Key? key}) : super(key: key);
 
-  @override
-  _LeaderboardState createState() => _LeaderboardState();
-}
+class Leaderboard extends StatelessWidget {
+  final QuizNotifierModel quizModel;
 
-class _LeaderboardState extends State<Leaderboard> {
+
+  const Leaderboard({Key? key, required this.quizModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var appBarActiveGame = AppBar(
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      automaticallyImplyLeading: false,
+      title: Row(
+        children: [
+            Text('Next question in:',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w200,
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white
+              )
+          ),
+          const SizedBox(width: 10.0),
+          _timer(context, quizModel, 3, CountdownController( autoStart: true ), () {
+            quizModel.onNextQuestion();
+            Navigator.pop(context);
+          })
+        ],
+      ),
+    );
+
+    var appBarEndGame = AppBar(
+      automaticallyImplyLeading: false,
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      title: Row(
+        children: const [
+          Text('Final scores'),
+        ],
+      ),
+    );
+
+
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Leaderboard'),
-        ),
+        appBar: quizModel.isQuizFinished ? appBarEndGame : appBarActiveGame,
         body: ListView.separated(
           separatorBuilder: (context, index) => const Divider(
             color: Colors.white, thickness: 3.0, height: 5,
@@ -46,11 +77,11 @@ class _LeaderboardState extends State<Leaderboard> {
             return ListTile(
               leading: Text(
                 '${index + 1}',
-                style: TextStyle(fontSize: 20.0),
+                style: const TextStyle(fontSize: 20.0),
               ),
-              title: Text(data.name, style: TextStyle(fontWeight: FontWeight.bold)),
-              trailing: Text('${data.score}', style: TextStyle(fontSize: 20.0)),
-              contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              title: Text(data.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+              trailing: Text('${data.score}', style: const TextStyle(fontSize: 20.0)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               tileColor: index == 0 ? _tileColor(context, 0.9): index == 1 ? _tileColor(context, 0.6) : index == 2 ? _tileColor(context, 0.3) : index % 2 == 0 ? _tileColor(context, 0) : _tileColor(context, 0),
             );
           },
@@ -61,5 +92,46 @@ class _LeaderboardState extends State<Leaderboard> {
   _tileColor(BuildContext context, double opacity) {
     return Theme.of(context).colorScheme.secondary.withOpacity(opacity);
   }
+
+
+  _timer(BuildContext context, QuizNotifierModel quizModel, int seconds, CountdownController controller, VoidCallback onFinished) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            border: Border.all(
+              width: 2,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white70
+                  : Colors.black54,
+            ),
+            color: Colors.transparent,
+          ),
+          child: Center(
+            child: Countdown(
+              seconds: seconds,
+              build: (BuildContext context, double time) => Text(
+                time.toString(),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black54),
+              ),
+              interval: const Duration(milliseconds: 1000),
+              controller: controller,
+              onFinished: onFinished,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
 
 }
