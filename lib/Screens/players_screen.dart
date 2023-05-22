@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quizish/Widgets/in_game_appbar.dart';
 import 'package:quizish/models/Session.dart';
@@ -31,41 +32,54 @@ class PlayersScreen extends StatelessWidget {
   }
 
   Widget _buildPlayerList(List<String> playerNames) {
+    final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid; // Assuming you have a getCurrentUserId() function to get the current user's ID
     return Stack(
       children: [
-        Column(children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: _quizName(),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 40),
-            child: _gamePin(),
-          ),
-          const Text(
-            'Players',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: _quizName(),
             ),
-          ),
-          Flexible(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200,
-                childAspectRatio: 3 / 1.5,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 40),
+              child: _gamePin(),
+            ),
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  childAspectRatio: 3 / 1.5,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                ),
+                itemBuilder: (context, index) =>
+                    _playerNameBox(playerNames[index]),
+                itemCount: playerNames.length,
               ),
-              itemBuilder: (context, index) => _playerNameBox(playerNames[index]),
-              itemCount: playerNames.length,
             ),
-          ),
-        ]),
+            const SizedBox(height: 20), // Add spacing between the player list and the button
+            if (isHost)
+              ElevatedButton(
+                onPressed: () {
+                  // Perform the "Play now" action
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green, // Set the button background color to green
+                  minimumSize: const Size(200, 50), // Set the button size
+                ),
+                child: const Text(
+                  'Play now',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+          ],
+        ),
       ],
     );
   }
+
+
   Widget _quizName() {
     return Container(
       child: Column(
