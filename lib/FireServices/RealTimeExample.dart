@@ -163,15 +163,8 @@ class GameSessionService {
     }
   }
 
-  Future<Map<dynamic, dynamic>> getGameSessionData(String sessionId) async {
-    final gameSessionRef = _databaseReference.child('gameSessions').child(sessionId);
-    DataSnapshot gameSessionSnapshot = await gameSessionRef.get();
-
-    if (gameSessionSnapshot.value != null) {
-      return gameSessionSnapshot.value as Map<dynamic, dynamic>;
-    } else {
-      return {}; // Return an empty map if session data is not found
-    }
+  Stream<Map> getGameSessionData(String sessionId) {
+    return _databaseReference.child('gameSessions').child(sessionId).onValue.map((event) => event.snapshot).map((event) => event.value as Map<dynamic, dynamic>);
   }
 
   Future<String?> getUserDisplayName(String userId) async {
@@ -182,35 +175,33 @@ class GameSessionService {
       final userData = userSnapshot.data() as Map<dynamic, dynamic>;
       return userData['displayName'] as String?;
     } else {
-      return null; // Return null if user data is not found
+      return null;
     }
   }
 
-  Future<List<String>> getAllUsersBySession(String? sessionId) async {
+  Stream<List<String>> getAllUsersBySession(String? sessionId) async* {
     try {
-      final gameSessionData = await getGameSessionData(sessionId!);
-
-      if (gameSessionData.isNotEmpty) {
-        final scores = gameSessionData['scores'] as Map<dynamic, dynamic>;
-        final playerIds = scores.keys.cast<String>().toList();
-
-        final displayNames = <String>[];
-        for (var playerId in playerIds) {
-          final displayName = await getUserDisplayName(playerId);
-          if (displayName != null) {
-            displayNames.add(displayName);
+      final gameSessionData = getGameSessionData(sessionId!);
+      await for (final gameSession in gameSessionData) {
+        if (gameSession.isNotEmpty) {
+          final scores = gameSession['scores'] as Map<dynamic, dynamic>;
+          final playerIds = scores.keys.cast<String>().toList();
+          final displayNames = <String>[];
+          for (var playerId in playerIds) {
+            final displayName = await getUserDisplayName(playerId);
+            print('Display name: $displayName');
+            if (displayName != null) {
+              displayNames.add(displayName);
+            }
           }
+          yield displayNames;
+        } else {
+          yield [];
         }
-        return displayNames;
-      } else {
-        return []; // Return an empty list if session data is not found
       }
     } catch (e) {
-      print('Cannot get the users from the session: $e');
-      return []; // Return an empty list on error
+      print('Cannot get the users from the session $e');
+      yield [];
     }
   }
 }
-
-
-

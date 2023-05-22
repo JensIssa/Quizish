@@ -14,8 +14,8 @@ class PlayersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: InGameAppBar(onLeave: () {}),
-      body: FutureBuilder<List<String>>(
-        future: _gameSessionService.getAllUsersBySession(gameSession?.id ),
+      body: StreamBuilder<List<String>>(
+        stream: _gameSessionService.getAllUsersBySession(gameSession?.id ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
