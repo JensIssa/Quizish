@@ -56,6 +56,19 @@ class QuizDetailsScreen extends StatelessWidget {
               color: Colors.green,
             ),
           ),
+          Container(
+            height: 130,
+            width: 150,
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(top: 70),
+            child: QuizButton(
+              text: 'Back',
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              color: Colors.red,
+            ),
+          ),
         ],
       ),
     );
