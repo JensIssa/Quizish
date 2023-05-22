@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/provider/quiz_notifier_model.dart';
 import 'package:timer_count_down/timer_controller.dart';
@@ -8,11 +9,13 @@ import '../Widgets/quiz_button.dart';
 import '../models/Quiz.dart';
 
 class CorrectAnswersScreen extends StatelessWidget {
-  final QuizNotifierModel quizModel;
-  const CorrectAnswersScreen({Key? key, required this.quizModel}) : super(key: key);
+
+  const CorrectAnswersScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var quizModel = Provider.of<QuizNotifierModel>(context, listen: true);
+
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
@@ -51,7 +54,7 @@ class CorrectAnswersScreen extends StatelessWidget {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   maintainState: false,
-                  builder: (context) => Leaderboard(quizModel: quizModel),
+                  builder: (context) => Leaderboard(),
                 ),
               );
             }),
@@ -95,7 +98,7 @@ class CorrectAnswersScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'You answered ${quizModel.getCorrectAnswerText()}',
+                  'You answered ${quizModel.lastAnswerText()}',
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.w500),
                 ),

@@ -63,63 +63,73 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => QuizNotifierModel.notifier(quiz),
-      child: Consumer<QuizNotifierModel>(
-        builder: (context, quizModel, child) => Scaffold(
-            appBar: AppBar(
-              title: const Text('Quiz'),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.exit_to_app),
-                  onPressed: () => _leaveQuizDialog(quizModel),
-                )
-              ],
-            ),
-            body: Column(children: [
-              Flex(
-                direction: Axis.horizontal,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      quizModel.quizProgress,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w200),
-                    ),
-                  ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      quizModel.quizTitle,
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w200),
-                    ),
-                  ),
-                  const Spacer(),
-                  _timer(
-                      context,
-                      quizModel,
-                      quizModel.currentQuestionTimeLimit,
-                      quizModel.timerController,
-                          (){
-                        _overlayCorrectAnswer(quizModel);
-                  }),
-                ],
-              ),
-              Flexible(
-                child: Center(
-                  child: Text(
-                    quizModel.currentQuestion,
-                    style: const TextStyle(
-                        fontSize: 32, fontWeight: FontWeight.w500),
-                  ),
+    QuizNotifierModel quizModel = Provider.of<QuizNotifierModel>(context, listen: true);
+    quizModel.setQuiz(quiz);
+
+    return StreamBuilder<Quiz>(
+      stream: quizModel.quizStream,
+      builder: (context, snapshot) {
+        return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Quiz'),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.exit_to_app),
+                      onPressed: () => _leaveQuizDialog(
+                          () {
+                            quizModel.onLeaveQuiz();
+                            Navigator.of(context).pop();
+                          }
+                      ),
+                    )
+                  ],
                 ),
-              ),
-              _answersOptionsContainer(quizModel),
-            ])),
-      ),
+                body: Column(children: [
+                  Flex(
+                    direction: Axis.horizontal,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          quizModel.quizProgress,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w200),
+                        ),
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          quizModel.quizTitle,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w200),
+                        ),
+                      ),
+                      const Spacer(),
+                      _timer(
+                          context,
+                          quizModel,
+                          quizModel.currentQuestionTimeLimit,
+                          quizModel.timerController,
+                              (){
+                            _overlayCorrectAnswer(quizModel);
+                      }),
+                    ],
+                  ),
+                  Flexible(
+                    child: Center(
+                      child: Text(
+                        quizModel.currentQuestion,
+                        style: const TextStyle(
+                            fontSize: 32, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                  _answersOptionsContainer(quizModel),
+                ],
+          ),
+        );
+      }
     );
   }
 
@@ -279,7 +289,7 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  _leaveQuizDialog(QuizNotifierModel quizModel) {
+  _leaveQuizDialog(VoidCallback onLeaveQuiz) {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -291,10 +301,7 @@ class _QuizScreenState extends State<QuizScreen> {
             child: const Text('No'),
           ),
           TextButton(
-            onPressed: () {
-              quizModel.onLeaveQuiz();
-              Navigator.of(context).pop(); //Navigate to home
-            },
+            onPressed: onLeaveQuiz,
             child: const Text('Yes'),
           ),
         ],
@@ -310,7 +317,7 @@ class _QuizScreenState extends State<QuizScreen> {
         fullscreenDialog: true,
         maintainState: false,
         builder: (BuildContext context) {
-          return CorrectAnswersScreen(quizModel: quizModel);
+          return const CorrectAnswersScreen();
         }
     ));
   }

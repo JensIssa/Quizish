@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -26,13 +27,15 @@ final leaderboardData = [
 
 
 class Leaderboard extends StatelessWidget {
-  final QuizNotifierModel quizModel;
 
 
-  const Leaderboard({Key? key, required this.quizModel}) : super(key: key);
+
+  const Leaderboard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var quizModel = Provider.of<QuizNotifierModel>(context, listen: true);
+
     var appBarActiveGame = AppBar(
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       automaticallyImplyLeading: false,
