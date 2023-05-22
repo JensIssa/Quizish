@@ -48,6 +48,28 @@ class GameSessionService {
     return null;
   }
 
+  Future<GameSession?> getGameSessionByCode(String sessionId) async {
+    try {
+      final sessionRef = _databaseReference.child('gameSessions').child(sessionId);
+      DataSnapshot sessionSnapshot = await sessionRef.get();
+      final dynamic sessionValue = sessionSnapshot.value;
+      if (sessionValue != null && sessionValue is Map<dynamic, dynamic>) {
+        final gameSessionMap = Map<String, dynamic>.from(sessionValue);
+        final quizMap = Map<String, dynamic>.from(gameSessionMap['quiz'] ?? {});
+        final quiz = Quiz.fromMap(quizMap);
+        final gameSession = GameSession.fromMap(gameSessionMap);
+        gameSession.quiz = quiz;
+        return gameSession;
+      } else {
+        print('Error: Invalid data or session does not exist');
+      }
+    } catch (e) {
+      print('Error getting game session: $e');
+    }
+    return null;
+  }
+
+
   Future<void> addUserToSession(String sessionId, User? user) async {
     try {
       final sessionRef = _databaseReference.child('gameSessions').child(
