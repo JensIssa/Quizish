@@ -65,7 +65,6 @@ class QuizNotifierModel extends ChangeNotifier {
 
   get currentQuestion => quiz!.questions[_questionNumber].question;
 
-  get currentQuestionAnswers => quiz!.questions[_questionNumber].answers;
 
   get currentQuestionTimeLimit => quiz!.questions[_questionNumber].timer;
 

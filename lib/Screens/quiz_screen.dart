@@ -63,12 +63,12 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    QuizNotifierModel quizModel = Provider.of<QuizNotifierModel>(context, listen: true);
-    quizModel.setQuiz(quiz);
+    QuizNotifierModel quizProvider = Provider.of<QuizNotifierModel>(context, listen: true);
+    quizProvider.setQuiz(quiz);
 
     return StreamBuilder<Quiz>(
-      stream: quizModel.quizStream,
-      builder: (context, snapshot) {
+      stream: quizProvider.quizStream,
+      builder: (context, quizSnapshot) {
         return Scaffold(
                 appBar: AppBar(
                   title: const Text('Quiz'),
@@ -77,7 +77,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       icon: const Icon(Icons.exit_to_app),
                       onPressed: () => _leaveQuizDialog(
                           () {
-                            quizModel.onLeaveQuiz();
+                            quizProvider.onLeaveQuiz();
                             Navigator.of(context).pop();
                           }
                       ),
@@ -91,7 +91,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          quizModel.quizProgress,
+                          quizProvider.quizProgress, //current question / total questions
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w200),
                         ),
@@ -100,7 +100,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          quizModel.quizTitle,
+                          quizSnapshot.data!.title,
                           style: const TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w200),
                         ),
@@ -108,24 +108,22 @@ class _QuizScreenState extends State<QuizScreen> {
                       const Spacer(),
                       _timer(
                           context,
-                          quizModel,
-                          quizModel.currentQuestionTimeLimit,
-                          quizModel.timerController,
-                              (){
-                            _overlayCorrectAnswer(quizModel);
-                      }),
+                          quizProvider.currentQuestionTimeLimit,
+                          quizProvider.timerController,
+                              (){ _overlayCorrectAnswer(); }
+                      ),
                     ],
                   ),
                   Flexible(
                     child: Center(
                       child: Text(
-                        quizModel.currentQuestion,
+                        quizProvider.currentQuestion,
                         style: const TextStyle(
                             fontSize: 32, fontWeight: FontWeight.w500),
                       ),
                     ),
                   ),
-                  _answersOptionsContainer(quizModel),
+                  _answersOptionsContainer(quizProvider),
                 ],
           ),
         );
@@ -133,7 +131,7 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  _answersOptionsContainer(QuizNotifierModel quizModel) {
+  _answersOptionsContainer(QuizNotifierModel quizProvider) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
@@ -152,14 +150,14 @@ class _QuizScreenState extends State<QuizScreen> {
         child: SizedBox(
           width: width,
           height: height / 1.5,
-          child: _answerOptionsChildren(quizModel, answerHeight, answerWidth),
+          child: _answerOptionsChildren(quizProvider, answerHeight, answerWidth),
           ),
         ),
     );
   }
 
   _answerOptionsChildren(
-      QuizNotifierModel quizModel, double answerHeight, double answerWidth) {
+      QuizNotifierModel quizProvider, double answerHeight, double answerWidth) {
     return
       Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -169,19 +167,19 @@ class _QuizScreenState extends State<QuizScreen> {
           Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _answerButton(quizModel.getAnswerText(0), 0, answerHeight,
-                answerWidth, quizModel),
-            _answerButton(quizModel.getAnswerText(1), 1, answerHeight,
-                answerWidth, quizModel),
+            _answerButton(quizProvider.getAnswerText(0), 0, answerHeight,
+                answerWidth, quizProvider),
+            _answerButton(quizProvider.getAnswerText(1), 1, answerHeight,
+                answerWidth, quizProvider),
           ],
         ),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _answerButton(quizModel.getAnswerText(2), 2, answerHeight,
-              answerWidth, quizModel),
-          _answerButton(quizModel.getAnswerText(3), 3, answerHeight,
-              answerWidth, quizModel),
+          _answerButton(quizProvider.getAnswerText(2), 2, answerHeight,
+              answerWidth, quizProvider),
+          _answerButton(quizProvider.getAnswerText(3), 3, answerHeight,
+              answerWidth, quizProvider),
         ],
       ),
     ]);
@@ -203,14 +201,14 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _answerButton(String text, int index, double height, double width,
-      QuizNotifierModel quizModel) {
+      QuizNotifierModel quizProvider) {
     return Expanded(
       flex: 1,
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           border: Border.all(
-            color: _answerBorderColor(index, quizModel),
+            color: _answerBorderColor(index, quizProvider),
             style: BorderStyle.solid,
             width: 5,
           ),
@@ -224,7 +222,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 tag: index,
                 child: QuizButton(
                   text: text,
-                  onPressed: () => quizModel.answerQuestion(index),
+                  onPressed: () => quizProvider.answerQuestion(index),
                   color: _getAnswerColor(index),
                 ),
               ),
@@ -236,8 +234,8 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
 
-  _answerBorderColor(int index, QuizNotifierModel quizModel) {
-    var answerIndex = quizModel.currentAnswerIndex;
+  _answerBorderColor(int index, QuizNotifierModel quizProvider) {
+    var answerIndex = quizProvider.currentAnswerIndex;
 
     if (answerIndex == null) {
       return Colors.transparent;
@@ -250,7 +248,7 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
 
-  _timer(BuildContext context, QuizNotifierModel quizModel, int seconds, CountdownController controller, VoidCallback onFinished) {
+  _timer(BuildContext context, int seconds, CountdownController controller, VoidCallback onFinished) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -310,7 +308,7 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
 
-  _overlayCorrectAnswer(QuizNotifierModel quizModel) {
+  _overlayCorrectAnswer() {
     //Hero animation for correct answer in pop up dialog
     //closes after two-three seconds
     Navigator.push(context, MaterialPageRoute(

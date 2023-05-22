@@ -28,8 +28,6 @@ final leaderboardData = [
 
 class Leaderboard extends StatelessWidget {
 
-
-
   const Leaderboard({Key? key}) : super(key: key);
 
   @override
