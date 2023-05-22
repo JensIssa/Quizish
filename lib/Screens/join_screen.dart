@@ -16,6 +16,7 @@ class JoinScreen extends StatelessWidget {
     final sessionController = TextEditingController();
     final GameSessionService gameSessionService = GameSessionService();
     final AuthService authService = AuthService();
+    String cameraScan;
 
     return Column(
       children: [
@@ -30,7 +31,7 @@ class JoinScreen extends StatelessWidget {
         Center(
           child: SessionInput(sessionController),
         ),
-        const SizedBox(height: 400),
+        const SizedBox(height: 100),
         Center(
           child: Container(
             width: 200,
@@ -58,6 +59,19 @@ class JoinScreen extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 20),
+        Center(
+          child: Container(
+            width: 200,
+            height: 50,
+            child: QuizButton(
+              text: 'Scan QR',
+              onPressed: () async {
+
+              }, color: Colors.green,
+            ),
+          ),
+        )
       ],
     );
   }
