@@ -5,7 +5,7 @@
 
 Quizish is a result of a exam-project between the subjects Mobile Programming and Fullstack Development, on the 4th semester on EASV.
 
-Some of the features in the App, is:
+Some of the features in the App is:
 * Create a user.
 * Login with a user.
 * Login with Google account.
@@ -15,7 +15,8 @@ Some of the features in the App, is:
 * Host a quiz for others to participate in.
 * See others quizzes and be able to play them.
 
-# Description
+# Short description
+<span style="color:blue">some *blue* text</span>.
 Kahoot is a popular learning tool in which a person, be they a student, teacher, etc., is able to create and host a quiz for others to participate in. Using Kahoot however requires a bigger screen for everyone to view the question they are being quizzed on, with the players answering on their personal device.
 
 The purpose of the application is to create a Kahoot-like platform that will allow users to both view and answer a given question on their personal device, without major compromises on the user experience. The application will require an active game session in which up to 50 players should be able to connect. Google’s Firebase should function as the backend of this system, potentially by using both Cloud Firestore and Realtime Database.
