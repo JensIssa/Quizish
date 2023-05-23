@@ -18,6 +18,7 @@ import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/bloc/AppBloc.dart';
 import 'package:quizish/bloc/routes.dart';
 import 'package:quizish/firebase_options.dart';
+import 'package:quizish/provider/quiz_notifier_model.dart';
 import 'Screens/login_screen.dart';
 import 'bloc_observer.dart';
 
@@ -49,7 +50,8 @@ class MyApp extends StatelessWidget {
   final ThemeData theme;
 
 
-  const MyApp({Key? key, required this.theme, required AuthService authService}) : _authService = authService, super(key: key);
+  const MyApp({Key? key, required this.theme, required AuthService authService})
+      : _authService = authService, super(key: key);
 
   final AuthService _authService;
   // This widget is the root of your application.
