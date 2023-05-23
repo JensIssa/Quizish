@@ -27,7 +27,7 @@ class CorrectAnswersScreen extends StatelessWidget {
     }
 
     return StreamBuilder<int?>(
-      stream: quizModel.questionNumberStream,
+      stream: quizModel.questionNumberStream(),
       builder: (context, questionNumberSnapshot) {
         return Scaffold(
           body: Column(children: [

@@ -87,6 +87,10 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  MaterialApp(
+      initialRoute: "/",
+      routes: {
+        "/home": (context) => InAppContainer(),
+      },
       navigatorKey: navigatorKey,
       theme: theme,
       home: FlowBuilder(

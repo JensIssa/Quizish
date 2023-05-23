@@ -3,139 +3,109 @@ import 'package:provider/provider.dart';
 import 'package:quizish/Screens/correct_answers_quiz_screen.dart';
 import 'package:quizish/Screens/scoboard_screen.dart';
 import 'package:quizish/models/Quiz.dart';
+import 'package:quizish/models/Session.dart';
 import 'package:quizish/provider/quiz_notifier_model.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../widgets/quiz_button.dart';
+import 'in_app_container.dart';
 
 class QuizScreen extends StatefulWidget {
-  final Quiz quiz;
+  final GameSession session;
 
-  const QuizScreen(this.quiz, {Key? key}) : super(key: key);
+  const QuizScreen(this.session, {Key? key}) : super(key: key);
 
   @override
-  State<QuizScreen> createState() => _QuizScreenState(quiz);
+  State<QuizScreen> createState() => _QuizScreenState(session);
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  Quiz quiz;
+  GameSession session;
 
-  _QuizScreenState(this.quiz);
+  _QuizScreenState(this.session);
 
   @override
   void initState() {
     super.initState();
-
-    var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
-    quizProvider.setQuiz(quiz);
-
-    quiz = Quiz.noAuthor(
-        title: "quiz title",
-        id: "-1",
-        author: "author",
-        authorDisplayName: "author display name",
-        description: "description",
-        questions: [
-          Question.noImg(index: 0, question: "question", timer: 20, answers: [
-            Answers(answer: "answer q0 1", isCorrect: true, index: 0),
-            Answers(answer: "answer q0 2", isCorrect: false, index: 1),
-            Answers(answer: "answer q0 3", isCorrect: false, index: 2),
-            Answers(answer: "answer q0 4", isCorrect: false, index: 3),
-          ]),
-          Question.noImg(
-              index: 1,
-              question: "question 1",
-              answers: [
-                Answers(answer: "answer q1 1", isCorrect: false, index: 0),
-                Answers(answer: "answer q1 2", isCorrect: true, index: 1),
-                Answers(answer: "answer q1 3", isCorrect: false, index: 2),
-                Answers(answer: "answer q1 4", isCorrect: false, index: 3),
-              ],
-              timer: 10),
-          Question.noImg(
-              index: 2,
-              question: "question 2",
-              answers: [
-                Answers(answer: "answer q2 1", isCorrect: false, index: 0),
-                Answers(answer: "answer q2 2", isCorrect: false, index: 1),
-                Answers(answer: "answer q2 3", isCorrect: true, index: 2),
-                Answers(answer: "answer q2 4", isCorrect: false, index: 3),
-              ],
-              timer: 10),
-        ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    QuizNotifierModel quizProvider = Provider.of<QuizNotifierModel>(context, listen: true);
+    QuizNotifierModel quizProvider =
+        Provider.of<QuizNotifierModel>(context, listen: true);
 
     return StreamBuilder<int?>(
-      stream: quizProvider.questionNumberStream,
-      builder: (context, questionNumber) {
-        return Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Quiz'),
-                      actions: [
-                        IconButton(
-                          icon: const Icon(Icons.exit_to_app),
-                          onPressed: () => _leaveQuizDialog(
-                              () {
-                                quizProvider.onLeaveQuiz();
-                                Navigator.of(context).pop();
-                              }
-                          ),
-                        )
-                      ],
+        stream: quizProvider.questionNumberStream(),
+        builder: (context, questionNumber) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Quiz'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.exit_to_app),
+                  onPressed: () => _leaveQuizDialog(() {
+                    quizProvider.onLeaveQuiz();
+                    Navigator.of(context).popAndPushNamed(
+                      '/home'
+                    );
+
+                  }),
+                )
+              ],
+            ),
+            body: Column(
+              children: [
+                Flex(
+                  direction: Axis.horizontal,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        quizProvider.quizProgress(questionNumber.data),
+                        //current question / total questions
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w200),
+                      ),
                     ),
-                    body: Column(children: [
-                      Flex(
-                        direction: Axis.horizontal,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              quizProvider.quizProgress(questionNumber.data), //current question / total questions
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w200),
-                            ),
-                          ),
-                          const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              quizProvider.quizTitle,
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w200),
-                            ),
-                          ),
-                          const Spacer(),
-                          _timer(
-                              context,
-                              quizProvider.currentQuestionTimeLimit(questionNumber.data), //current question time limit needs questionNumber
-                              quizProvider.timerController,
-                                  (){ _overlayCorrectAnswer(); }
-                          ),
-                        ],
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        quizProvider.quizTitle,
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w200),
                       ),
-                      Flexible(
-                        child: Center(
-                          child: Text(
-                            quizProvider.currentQuestion(questionNumber.data),
-                            style: const TextStyle(
-                                fontSize: 32, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                      _answersOptionsContainer(quizProvider, questionNumber),
-                    ],
-              ),
-            );
-      }
-    );
+                    ),
+                    const Spacer(),
+                    _timer(
+                        context,
+                        quizProvider
+                            .currentQuestionTimeLimit(questionNumber.data),
+                        //current question time limit needs questionNumber
+                        quizProvider.timerController, () {
+                      _overlayCorrectAnswer();
+                    }),
+                  ],
+                ),
+                Flexible(
+                  child: Center(
+                    child: Text(
+                      quizProvider.currentQuestion(questionNumber.data),
+                      style: const TextStyle(
+                          fontSize: 32, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+                _answersOptionsContainer(quizProvider, questionNumber),
+              ],
+            ),
+          );
+        });
   }
 
-  _answersOptionsContainer(QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
+  _answersOptionsContainer(
+      QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
@@ -154,43 +124,43 @@ class _QuizScreenState extends State<QuizScreen> {
         child: SizedBox(
           width: width,
           height: height / 1.5,
-          child: _answerOptionsChildren(quizProvider, answerHeight, answerWidth, questionNumber),
-          ),
+          child: _answerOptionsChildren(
+              quizProvider, answerHeight, answerWidth, questionNumber),
         ),
+      ),
     );
   }
 
-  _answerOptionsChildren(
-      QuizNotifierModel quizProvider, double answerHeight, double answerWidth, AsyncSnapshot<int?> questionNumber) {
-    return
-      Column(
+  _answerOptionsChildren(QuizNotifierModel quizProvider, double answerHeight,
+      double answerWidth, AsyncSnapshot<int?> questionNumber) {
+    return Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         verticalDirection: VerticalDirection.down,
         children: [
           Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _answerButton(quizProvider.getAnswerText(0, questionNumber.data), 0, answerHeight,
-                answerWidth, quizProvider, questionNumber),
-            _answerButton(quizProvider.getAnswerText(1, questionNumber.data), 1, answerHeight,
-                answerWidth, quizProvider, questionNumber),
-          ],
-        ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _answerButton(quizProvider.getAnswerText(2, questionNumber.data), 2, answerHeight,
-              answerWidth, quizProvider, questionNumber),
-          _answerButton(quizProvider.getAnswerText(3, questionNumber.data), 3, answerHeight,
-              answerWidth, quizProvider, questionNumber),
-        ],
-      ),
-    ]);
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _answerButton(quizProvider.getAnswerText(0, questionNumber.data),
+                  0, answerHeight, answerWidth, quizProvider, questionNumber),
+              _answerButton(quizProvider.getAnswerText(1, questionNumber.data),
+                  1, answerHeight, answerWidth, quizProvider, questionNumber),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _answerButton(quizProvider.getAnswerText(2, questionNumber.data),
+                  2, answerHeight, answerWidth, quizProvider, questionNumber),
+              _answerButton(quizProvider.getAnswerText(3, questionNumber.data),
+                  3, answerHeight, answerWidth, quizProvider, questionNumber),
+            ],
+          ),
+        ]);
   }
 
   _getAnswerColor(int index) {
-      switch (index) {
+    switch (index) {
       case 0:
         return Colors.green;
       case 1:
@@ -212,7 +182,7 @@ class _QuizScreenState extends State<QuizScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           border: Border.all(
-            color: _answerBorderColor(index, quizProvider),
+            color: _answerBorderColor(index, quizProvider, questionNumber),
             style: BorderStyle.solid,
             width: 5,
           ),
@@ -223,36 +193,35 @@ class _QuizScreenState extends State<QuizScreen> {
           child: Padding(
             padding: const EdgeInsets.all(5),
             child: Hero(
-                tag: index,
-                child: QuizButton(
-                  text: text,
-                  onPressed: () => quizProvider.answerQuestion(index, questionNumber.data),
-                  color: _getAnswerColor(index),
-                ),
+              tag: index,
+              child: QuizButton(
+                text: text,
+                onPressed: () =>
+                    quizProvider.answerQuestion(index, questionNumber.data),
+                color: _getAnswerColor(index),
               ),
             ),
           ),
+        ),
       ),
-
     );
   }
 
-
-  _answerBorderColor(int index, QuizNotifierModel quizProvider) {
-    var answerIndex = quizProvider.currentAnswerIndex;
+  _answerBorderColor(int index, QuizNotifierModel quizProvider,
+      AsyncSnapshot<int?> questionNumber) {
+    var answerIndex = quizProvider.currentAnswerIndex(questionNumber.data);
 
     if (answerIndex == null) {
       return Colors.transparent;
-    }
-    else if (answerIndex == index) {
+    } else if (answerIndex == index) {
       return Colors.white;
-    }
-    else {
+    } else {
       return Colors.transparent;
     }
   }
 
-  _timer(BuildContext context, int seconds, CountdownController controller, VoidCallback onFinished) {
+  _timer(BuildContext context, int seconds, CountdownController controller,
+      VoidCallback onFinished) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -304,28 +273,24 @@ class _QuizScreenState extends State<QuizScreen> {
           ),
           TextButton(
             onPressed: onLeaveQuiz,
-            child: const Text('Yes'),
+            child: const Text('Yes'
+            ),
           ),
         ],
       ),
     );
   }
 
-
   _overlayCorrectAnswer() {
     //Hero animation for correct answer in pop up dialog
     //closes after two-three seconds
-    Navigator.push(context, MaterialPageRoute(
-        fullscreenDialog: true,
-        maintainState: false,
-        builder: (BuildContext context) {
-          return const CorrectAnswersScreen();
-        }
-    ));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            fullscreenDialog: true,
+            maintainState: false,
+            builder: (BuildContext context) {
+              return const CorrectAnswersScreen();
+            }));
   }
-
-
-
-
-
 }

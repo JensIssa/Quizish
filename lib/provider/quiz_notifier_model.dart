@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:quizish/models/Session.dart';
 import 'package:timer_count_down/timer_controller.dart';
 
+import '../FireServices/RealTimeExample.dart';
 import '../models/Quiz.dart';
 
 class QuizNotifierModel extends ChangeNotifier {
@@ -11,36 +14,34 @@ class QuizNotifierModel extends ChangeNotifier {
   Map<Question, Answers> _selectedAnswers = {};
   final CountdownController _timerController =
       CountdownController(autoStart: true);
-  final StreamController<int> _questionNumberController =
-      StreamController<int>.broadcast();
-
+  final GameSessionService _gameSessionService = GameSessionService();
+  GameSession? gameSession;
 
   QuizNotifierModel.notifier(this.quiz);
 
   QuizNotifierModel() {
     quiz = null;
-    _questionNumberController.add(0);
+
   }
 
   Future<Quiz?> getQuiz() async {
     return quiz;
   }
 
-  void setQuiz(Quiz? quiz) {
-    if (quiz == null) {
-      return;
-    }
-    this.quiz = quiz;
+  void setGameSession(GameSession gameSession) {
+    this.gameSession = gameSession;
+    quiz = gameSession.quiz;
+
     notifyListeners();
   }
 
-  //TODO: implement this
   void incrementQuestionNumber(int? questionNumber) {
+    String currentUserID = FirebaseAuth.instance.currentUser!.uid;
+
     if (isLastQuestion(questionNumber)) {
       endQuiz();
-    } else {
-      //_questionNumber++;
-      _questionNumberController.sink.add(questionNumber! + 1);
+    } else if (gameSession?.hostId == currentUserID) {
+      _gameSessionService.incrementCurrent(gameSession?.id);
     }
 
     notifyListeners();
@@ -53,7 +54,7 @@ class QuizNotifierModel extends ChangeNotifier {
 
     _selectedAnswers.putIfAbsent(
       quiz!.questions[questionNumber!],
-      () => quiz!.questions[questionNumber!].answers[answerIndex],
+      () => quiz!.questions[questionNumber].answers[answerIndex],
     );
 
     notifyListeners();
@@ -99,7 +100,9 @@ class QuizNotifierModel extends ChangeNotifier {
     }
   }
 
-  Stream<int> get questionNumberStream => _questionNumberController.stream;
+  Stream<int?> questionNumberStream() {
+    return _gameSessionService.getCurrentQuestion(gameSession?.id);
+  }
 
   void onNextQuestion(int? questionNumber) {
     _timerController.restart();
@@ -108,7 +111,13 @@ class QuizNotifierModel extends ChangeNotifier {
   }
 
   bool isQuizFinished(int? questionNumber) {
-    return questionNumber == _quizLength;
+    int currentQuestion = questionNumber! + 1;
+
+    if (currentQuestion == _quizLength) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void endQuiz() {
@@ -143,7 +152,10 @@ class QuizNotifierModel extends ChangeNotifier {
     }
   }
 
-  void onLeaveQuiz() {}
+  void onLeaveQuiz() {
+    _gameSessionService.leaveSessionAsUser(gameSession?.id);
+    resetQuiz();
+  }
 
   Future<bool> resetQuiz() async {
     _selectedAnswers = {};

@@ -21,7 +21,7 @@ List<Page> onGenerateAppViewPages(AppState state, List<Page<dynamic>> pages) {
     default:
       return [
         MaterialPage(
-          child: QuizScreen(TempQuizData.getQuiz()),
+          child: loginScreen(),
         ),
       ];
   }

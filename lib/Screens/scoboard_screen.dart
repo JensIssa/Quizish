@@ -25,24 +25,23 @@ final leaderboardData = [
   LeaderboardData('Alex', 100),
 ];
 
-
 class Leaderboard extends StatelessWidget {
-
   const Leaderboard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var quizModel = Provider.of<QuizNotifierModel>(context, listen: true);
 
-
     return StreamBuilder<int?>(
-      stream: quizModel.questionNumberStream,
-      builder: (context, questionNumberSnapshot) {
-        return Scaffold(
+        stream: quizModel.questionNumberStream(),
+        builder: (context, questionNumberSnapshot) {
+          return Scaffold(
             appBar: appBars(context, questionNumberSnapshot, quizModel),
             body: ListView.separated(
               separatorBuilder: (context, index) => const Divider(
-                color: Colors.white, thickness: 3.0, height: 5,
+                color: Colors.white,
+                thickness: 3.0,
+                height: 5,
               ),
               itemCount: leaderboardData.length,
               itemBuilder: (context, index) {
@@ -52,24 +51,34 @@ class Leaderboard extends StatelessWidget {
                     '${index + 1}',
                     style: const TextStyle(fontSize: 20.0),
                   ),
-                  title: Text(data.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  trailing: Text('${data.score}', style: const TextStyle(fontSize: 20.0)),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  tileColor: index == 0 ? _tileColor(context, 0.9): index == 1 ? _tileColor(context, 0.6) : index == 2 ? _tileColor(context, 0.3) : index % 2 == 0 ? _tileColor(context, 0) : _tileColor(context, 0),
+                  title: Text(data.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  trailing: Text('${data.score}',
+                      style: const TextStyle(fontSize: 20.0)),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
+                  tileColor: index == 0
+                      ? _tileColor(context, 0.9)
+                      : index == 1
+                          ? _tileColor(context, 0.6)
+                          : index == 2
+                              ? _tileColor(context, 0.3)
+                              : index % 2 == 0
+                                  ? _tileColor(context, 0)
+                                  : _tileColor(context, 0),
                 );
               },
             ),
-        );
-      }
-    );
+          );
+        });
   }
 
   _tileColor(BuildContext context, double opacity) {
     return Theme.of(context).colorScheme.secondary.withOpacity(opacity);
   }
 
-
-  AppBar appBars(BuildContext context, AsyncSnapshot<int?> questionNumber, QuizNotifierModel quizModel) {
+  AppBar appBars(BuildContext context, AsyncSnapshot<int?> questionNumber,
+      QuizNotifierModel quizModel) {
     var appBarActiveGame = AppBar(
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       automaticallyImplyLeading: false,
@@ -79,11 +88,14 @@ class Leaderboard extends StatelessWidget {
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w200,
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white
-              )
-          ),
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white)),
           const SizedBox(width: 10.0),
-          _timer(context, quizModel, 3, CountdownController( autoStart: true ), () {
+          _timer(context, quizModel, 3, CountdownController(autoStart: true),
+              () {
+            bool isQuizFinished = quizModel.isQuizFinished(questionNumber.data);
+
             quizModel.onNextQuestion(questionNumber.data);
             Navigator.pop(context);
           })
@@ -95,24 +107,40 @@ class Leaderboard extends StatelessWidget {
       automaticallyImplyLeading: false,
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       title: Row(
-        children: const [
-          Text('Final scores'),
+        children: [
+          Text(
+            'Final scores',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w200,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white),
+          ),
         ],
       ),
       actions: [
-        IconButton(onPressed: () {
-          context.read<QuizNotifierModel>().onLeaveQuiz();
-          Navigator.pop(context);
-        }, icon: const Icon(Icons.exit_to_app))
+        IconButton(
+            onPressed: () {
+              context.read<QuizNotifierModel>().onLeaveQuiz();
+              Navigator.of(context).popAndPushNamed(
+                  '/home'
+              );
+            },
+            icon: Icon(Icons.exit_to_app,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white))
       ],
     );
 
-    return quizModel.isQuizFinished(questionNumber.data) ? appBarEndGame : appBarActiveGame;
-
+    return quizModel.isQuizFinished(questionNumber.data)
+        ? appBarEndGame
+        : appBarActiveGame;
   }
 
-
-  _timer(BuildContext context, QuizNotifierModel quizModel, int seconds, CountdownController controller, VoidCallback onFinished) {
+  _timer(BuildContext context, QuizNotifierModel quizModel, int seconds,
+      CountdownController controller, VoidCallback onFinished) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -150,6 +178,4 @@ class Leaderboard extends StatelessWidget {
       ),
     );
   }
-
-
 }
