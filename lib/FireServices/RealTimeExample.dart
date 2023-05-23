@@ -55,6 +55,20 @@ class GameSessionService {
     }
   }
 
+  Future<void> incrementPlayerScore(String? sessionId, String? playerId) async {
+    try {
+      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('incrementPlayerScore');
+      final Map<String, dynamic> data = {
+        'sessionId': sessionId,
+        'playerId': playerId,
+      };
+      await callable.call(data);
+      print('Player score incremented successfully');
+    } catch (e) {
+      print('Error incrementing player score: $e');
+    }
+  }
+
   Future<void> incrementCurrent(String? sessionId)async {
     try{
       _gameSessionsCollection.doc(sessionId).update({'currentQuestion': FieldValue.increment(1)});
