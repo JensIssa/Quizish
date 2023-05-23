@@ -15,7 +15,7 @@ Some of the features in the App is:
 * Host a quiz for others to participate in.
 * See others quizzes and be able to play them.
 
-# :trollface: Short description :trollface:
+# Short description:
 
 Kahoot is a popular learning tool in which a person, be they a student, teacher, etc., is able to create and host a quiz for others to participate in. Using Kahoot however requires a bigger screen for everyone to view the question they are being quizzed on, with the players answering on their personal device.
 
@@ -25,8 +25,8 @@ The game itself consists of a single quiz, which contains 1…n questions and a 
 
 The player should be able to leave a session, and the host should also be able to remove them themselves. Additionally, the game should have a time incentive, such as a countdown for answering the current question.
  
-### :shipit: Developed by: :shipit: 
+### Developed by: 
 * Andreas Berthelsen
-* Jens Bassem Hanna Issa :fishsticks:
+* Jens Bassem Hanna Issa 
 * Mathias Krarup Madsen
 * Rasmus Scherning Sandbæk
