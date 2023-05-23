@@ -21,6 +21,12 @@ class PlayersScreen extends StatelessWidget {
     return StreamBuilder<int?>(
       stream: _gameSessionService.getCurrentQuestion(gameSession?.id),
       builder: (context, questionSnapshot) {
+        if (questionSnapshot.data == 0) { //question number is 0 == Game has started
+          print(questionSnapshot.data);
+          var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
+          quizProvider.setGameSession(gameSession!);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
+        }
         return Scaffold(
           appBar: InGameAppBar(onLeave: () {}),
           body: StreamBuilder<List<String>>(
@@ -74,12 +80,6 @@ class PlayersScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   _gameSessionService.incrementCurrent(gameSession?.id);
-                  if (snapshot.data == 0) { //question number is 0 == Game has started
-                    print(snapshot.data);
-                    var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
-                    quizProvider.setGameSession(gameSession!);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
-                  }
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.green, // Set the button background color to green
