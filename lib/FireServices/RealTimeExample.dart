@@ -132,6 +132,15 @@ class GameSessionService {
     }
   }
 
+  //Leave session as user
+  Future<void> leaveSessionAsUser(String sessionId)async {
+    try{
+      _gameSessionsCollection.doc(sessionId).update({'scores': FieldValue.delete()});
+    }catch(e){
+      print('Error leaving session as user: $e');
+    }
+  }
+  
   Future<void> addHostToSession(String sessionId, User user) async {
     try {
       await _gameSessionsCollection.doc(sessionId).update({'hostId': user.uid});
