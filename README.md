@@ -24,9 +24,8 @@ The game itself consists of a single quiz, which contains 1…n questions and a 
 
 The player should be able to leave a session, and the host should also be able to remove them themselves. Additionally, the game should have a time incentive, such as a countdown for answering the current question.
  
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Developed by:
+* Andreas Berthelsen
+* Jens Bassem Hanna Issa
+* Mathias Krarup Madsen
+* Rasmus Scherning Sandbæk
