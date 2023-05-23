@@ -1,6 +1,6 @@
 # quizish
 ![alt text](https://ziique.dk/assets/ZiiQue-Logo.png)
-![alt text](Quizish\assets\images\quizish logo.png)
+![alt text](https://github.com/JensIssa/Quizish/blob/Readme/assets/images/quizish%20logo.png)
 
 
 A new Flutter project.
