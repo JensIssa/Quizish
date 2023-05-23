@@ -74,13 +74,11 @@ class PlayersScreen extends StatelessWidget {
             if (isHost)
               ElevatedButton(
                 onPressed: () {
-                   _gameSessionService.incrementCurrent(gameSession?.id);
-                  if (snapshot.data == 0) { //question number is 0 == Game has started
+                  _gameSessionService.incrementCurrent(gameSession?.id);
+                  if (snapshot.data == 1) { //question number is 0 == Game has started
                     print(snapshot.data);
-
                     var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
                     quizProvider.setGameSession(gameSession!);
-
                     Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
                   }
                 },
