@@ -55,6 +55,20 @@ class GameSessionService {
     }
   }
 
+  Future<void> incrementPlayerScore(String? sessionId, String? playerId) async {
+    try {
+      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('incrementPlayerScore');
+      final Map<String, dynamic> data = {
+        'sessionId': sessionId,
+        'playerId': playerId,
+      };
+      await callable.call(data);
+      print('Player score incremented successfully');
+    } catch (e) {
+      print('Error incrementing player score: $e');
+    }
+  }
+
   Future<void> incrementCurrent(String? sessionId)async {
     try{
       _gameSessionsCollection.doc(sessionId).update({'currentQuestion': FieldValue.increment(1)});
@@ -86,7 +100,6 @@ class GameSessionService {
     return null;
   }
 
-
   Future<void> addUserToSession(String sessionId, User? user) async {
     try {
       DocumentSnapshot sessionSnapshot =
@@ -115,6 +128,15 @@ class GameSessionService {
           .update({'quiz': quiz.toMap()});
     } catch (e) {
       print('Error adding quiz to game session: $e');
+    }
+  }
+
+  //Leave session as user
+  Future<void> leaveSessionAsUser(String sessionId)async {
+    try{
+      _gameSessionsCollection.doc(sessionId).update({'scores': FieldValue.delete()});
+    }catch(e){
+      print('Error leaving session as user: $e');
     }
   }
 
@@ -176,6 +198,18 @@ class GameSessionService {
     });
   }
 
+  //Get quiz from session in stream
+  Stream<Quiz?> getQuiz(String? sessionId) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        final quiz = data['quiz'] as Map<String, dynamic>;
+        return Quiz.fromMap(quiz);
+      } else {
+        return null;
+      }
+    });
+  }
 
   //Get questions from quiz in stream
   Stream<List<Question>?> getQuestions(String? sessionId, int currentQuestion) {
