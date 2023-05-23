@@ -25,7 +25,7 @@ class GameSessionService {
   Future<GameSession> createGameSession(Quiz quiz) async {
     User? _host = FirebaseAuth.instance.currentUser!;
     String gameSessionId = generateRandomId(5);
-    int current = -2;
+    int current = -1;
     Map<String, dynamic> scores = {}; // Empty scores map
     GameSession gameSession = GameSession(
       id: gameSessionId,
@@ -36,10 +36,12 @@ class GameSessionService {
     );
     DocumentReference sessionRef = _gameSessionsCollection.doc(gameSessionId);
     gameSession.id = gameSessionId;
+    gameSession.currentQuestion = -1;
     await sessionRef.set(gameSession.toMap());
     await addQuizToSession(gameSessionId, quiz);
     await addHostToSession(gameSessionId, _host);
     gameSession.quiz = quiz;
+    print(gameSession.currentQuestion);
     return gameSession;
   }
 
@@ -75,7 +77,6 @@ class GameSessionService {
     }catch(e){
       print('Error incrementing current question: $e');
     }
-
   }
 
 

@@ -75,7 +75,7 @@ class PlayersScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   _gameSessionService.incrementCurrent(gameSession?.id);
-                  if (snapshot.data == 1) {
+                  if (snapshot.data == 0) {
                     var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
                     quizProvider.setGameSession(gameSession!);
                     WidgetsBinding.instance.addPostFrameCallback((_) {
