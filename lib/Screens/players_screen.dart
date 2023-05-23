@@ -21,11 +21,13 @@ class PlayersScreen extends StatelessWidget {
     return StreamBuilder<int?>(
       stream: _gameSessionService.getCurrentQuestion(gameSession?.id),
       builder: (context, questionSnapshot) {
-        if (questionSnapshot.data == 1) { //question number is 0 == Game has started
+        if (questionSnapshot.data == 1) {
           print(questionSnapshot.data);
           var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
           quizProvider.setGameSession(gameSession!);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
+          });
         }
         return Scaffold(
           appBar: InGameAppBar(onLeave: () {}),
