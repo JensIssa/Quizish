@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 class QuizNameBox extends Material {
+  static Color get firstColor => const Color(0xFFD3BBFF);
+  static Color get secondColor => const Color(0xff6f43c0);
+
   QuizNameBox({
     Key? key,
     required String quizTitle,
-    required String quizAuthor, // Updated type to String?
+    required String quizAuthor,
     required String quizId,
   }) : super(
     color: Colors.transparent,
@@ -13,7 +16,11 @@ class QuizNameBox extends Material {
       padding: const EdgeInsets.all(10),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.grey,
+          gradient: LinearGradient(
+            colors: [firstColor, secondColor],
+            begin: Alignment.bottomRight,
+            end: Alignment.topLeft
+          ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
