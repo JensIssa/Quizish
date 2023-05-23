@@ -75,7 +75,7 @@ class PlayersScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   _gameSessionService.incrementCurrent(gameSession?.id);
-                  if (snapshot.data == 1) { //question number is 0 == Game has started
+                  if (snapshot.data == 0) { //question number is 0 == Game has started
                     print(snapshot.data);
                     var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
                     quizProvider.setGameSession(gameSession!);

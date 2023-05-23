@@ -25,7 +25,7 @@ class GameSessionService {
   Future<GameSession> createGameSession(Quiz quiz) async {
     User? _host = FirebaseAuth.instance.currentUser!;
     String gameSessionId = generateRandomId(5);
-    int current = -1;
+    int current = -2;
     Map<String, dynamic> scores = {}; // Empty scores map
     GameSession gameSession = GameSession(
       id: gameSessionId,
