@@ -15,31 +15,35 @@ class PlayersScreen extends StatelessWidget {
   final String? gamePin;
 
   PlayersScreen({Key? key, this.gameSession, this.gamePin}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<int?>(
       stream: _gameSessionService.getCurrentQuestion(gameSession?.id),
-      builder: (bcontext, questionSnapshot) {
+      builder: (context, questionSnapshot) {
         return Scaffold(
           appBar: InGameAppBar(onLeave: () {}),
-          body: StreamBuilder<List<String>>(
-            stream: _gameSessionService.getAllUsersBySession(gameSession?.id),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else {
-                final playerNames = snapshot.data ?? [];
-                return _buildPlayerList(playerNames, bcontext, questionSnapshot);
-              }
-            },
-          ),
+          body: _buildPlayerListWidget(context, questionSnapshot),
         );
       },
     );
   }
+
+  Widget _buildPlayerListWidget(BuildContext context, AsyncSnapshot<int?> questionSnapshot) {
+    return StreamBuilder<List<String>>(
+      stream: _gameSessionService.getAllUsersBySession(gameSession?.id),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          final playerNames = snapshot.data ?? [];
+          return _buildPlayerList(playerNames, context, questionSnapshot);
+        }
+      },
+    );
+  }
+  
   Widget _buildPlayerList(List<String> playerNames, BuildContext context, AsyncSnapshot<int?> questionSnapShot) {
     final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
     // Check the value of the current question
