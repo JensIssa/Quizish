@@ -15,25 +15,30 @@ class PlayersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: InGameAppBar(onLeave: () {}),
-      body: StreamBuilder<List<String>>(
-        stream: _gameSessionService.getAllUsersBySession(gameSession?.id ),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            final playerNames = snapshot.data ?? [];
-            return _buildPlayerList(playerNames, context);
-          }
-        },
-      ),
+    return StreamBuilder<int?>(
+      stream: _gameSessionService.getCurrentQuestion(gameSession?.id),
+      builder: (context, questionSnapshot) {
+        return Scaffold(
+          appBar: InGameAppBar(onLeave: () {}),
+          body: StreamBuilder<List<String>>(
+            stream: _gameSessionService.getAllUsersBySession(gameSession?.id ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                final playerNames = snapshot.data ?? [];
+                return _buildPlayerList(playerNames, context, questionSnapshot);
+              }
+            },
+          ),
+        );
+      }
     );
   }
 
-  Widget _buildPlayerList(List<String> playerNames, BuildContext context) {
+  Widget _buildPlayerList(List<String> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot) {
     final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid; // Assuming you have a getCurrentUserId() function to get the current user's ID
     return Stack(
       children: [
@@ -67,8 +72,8 @@ class PlayersScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                    _gameSessionService.incrementCurrent(gameSession?.id);
-                   print(gameSession?.currentQuestion);
-                  if (gameSession?.currentQuestion == 0) {
+                  if (snapshot.data == 0) {
+                    print(snapshot.data);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const Placeholder()));
                   }
                 },

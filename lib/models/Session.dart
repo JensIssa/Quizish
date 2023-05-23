@@ -6,7 +6,7 @@ class GameSession {
   String id;
   String hostId;
   Quiz? quiz;
-  int? currentQuestion;
+  int currentQuestion;
   Map<String?, dynamic>? scores;
 
   GameSession(
