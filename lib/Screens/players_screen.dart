@@ -71,7 +71,6 @@ class PlayersScreen extends StatelessWidget {
             const SizedBox(height: 20),
             QrButton(gameSessionId: gameSession?.id),
             const SizedBox(height: 20), // Add spacing between the player list and the button
-            if (isHost)
               ElevatedButton(
                 onPressed: () {
                   _gameSessionService.incrementCurrent(gameSession?.id);
