@@ -15,8 +15,8 @@ Some of the features in the App is:
 * Host a quiz for others to participate in.
 * See others quizzes and be able to play them.
 
-# Short description
-<span style="color:blue">some *blue* text</span>.
+# :trollface: Short description :trollface:
+
 Kahoot is a popular learning tool in which a person, be they a student, teacher, etc., is able to create and host a quiz for others to participate in. Using Kahoot however requires a bigger screen for everyone to view the question they are being quizzed on, with the players answering on their personal device.
 
 The purpose of the application is to create a Kahoot-like platform that will allow users to both view and answer a given question on their personal device, without major compromises on the user experience. The application will require an active game session in which up to 50 players should be able to connect. Google’s Firebase should function as the backend of this system, potentially by using both Cloud Firestore and Realtime Database.
@@ -25,8 +25,8 @@ The game itself consists of a single quiz, which contains 1…n questions and a 
 
 The player should be able to leave a session, and the host should also be able to remove them themselves. Additionally, the game should have a time incentive, such as a countdown for answering the current question.
  
-### Developed by:
+### :shipit: Developed by: :shipit: 
 * Andreas Berthelsen
-* Jens Bassem Hanna Issa
+* Jens Bassem Hanna Issa :fishsticks:
 * Mathias Krarup Madsen
 * Rasmus Scherning Sandbæk
