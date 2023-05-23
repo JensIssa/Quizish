@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:quizish/Screens/quiz_screen.dart';
 import 'package:quizish/Widgets/in_game_appbar.dart';
 import 'package:quizish/models/Session.dart';
+import 'package:quizish/provider/quiz_notifier_model.dart';
 import '../FireServices/RealTimeExample.dart';
 
 
@@ -72,9 +75,13 @@ class PlayersScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                    _gameSessionService.incrementCurrent(gameSession?.id);
-                  if (snapshot.data == 0) {
+                  if (snapshot.data == 0) { //question number is 0 == Game has started
                     print(snapshot.data);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Placeholder()));
+
+                    var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
+                    quizProvider.setGameSession(gameSession!);
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
                   }
                 },
                 style: ElevatedButton.styleFrom(

@@ -132,7 +132,7 @@ class GameSessionService {
   }
 
   //Leave session as user
-  Future<void> leaveSessionAsUser(String sessionId)async {
+  Future<void> leaveSessionAsUser(String? sessionId) async {
     try{
       _gameSessionsCollection.doc(sessionId).update({'scores': FieldValue.delete()});
     }catch(e){
