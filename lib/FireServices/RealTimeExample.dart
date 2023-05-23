@@ -100,7 +100,6 @@ class GameSessionService {
     return null;
   }
 
-
   Future<void> addUserToSession(String sessionId, User? user) async {
     try {
       DocumentSnapshot sessionSnapshot =
@@ -140,7 +139,7 @@ class GameSessionService {
       print('Error leaving session as user: $e');
     }
   }
-  
+
   Future<void> addHostToSession(String sessionId, User user) async {
     try {
       await _gameSessionsCollection.doc(sessionId).update({'hostId': user.uid});
