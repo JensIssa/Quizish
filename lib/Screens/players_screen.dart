@@ -26,14 +26,14 @@ class PlayersScreen extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final playerNames = snapshot.data ?? [];
-            return _buildPlayerList(playerNames);
+            return _buildPlayerList(playerNames, context);
           }
         },
       ),
     );
   }
 
-  Widget _buildPlayerList(List<String> playerNames) {
+  Widget _buildPlayerList(List<String> playerNames, BuildContext context) {
     final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid; // Assuming you have a getCurrentUserId() function to get the current user's ID
     return Stack(
       children: [
@@ -66,7 +66,11 @@ class PlayersScreen extends StatelessWidget {
             if (isHost)
               ElevatedButton(
                 onPressed: () {
-                  // Perform the "Play now" action
+                   _gameSessionService.incrementCurrent(gameSession?.id);
+                   print(gameSession?.currentQuestion);
+                  if (gameSession?.currentQuestion == 0) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Placeholder()));
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.green, // Set the button background color to green
