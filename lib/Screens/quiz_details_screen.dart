@@ -27,7 +27,7 @@ class QuizDetailsScreen extends StatelessWidget {
               child: QuizNameBox(
                 quizTitle: quiz.title,
                 quizAuthor: quiz.authorDisplayName,
-                quizId: quiz.id,
+                questions: quiz.questions.length.toString(),
               ),
             ),
           ),

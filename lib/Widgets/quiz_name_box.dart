@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
+
 class QuizNameBox extends Material {
   static Color get firstColor => const Color(0xFFD3BBFF);
   static Color get secondColor => const Color(0xff6f43c0);
 
+  final String quizTitle;
+  final String quizAuthor;
+  final String questions;
+
   QuizNameBox({
     Key? key,
-    required String quizTitle,
-    required String quizAuthor,
-    required String quizId,
+    required this.quizTitle,
+    required this.quizAuthor,
+    required this.questions,
   }) : super(
     color: Colors.transparent,
     key: key,
@@ -18,8 +23,8 @@ class QuizNameBox extends Material {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [firstColor, secondColor],
-            begin: Alignment.bottomRight,
-            end: Alignment.topLeft
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -30,7 +35,7 @@ class QuizNameBox extends Material {
             ),
             Center(
               child: Text(
-                quizTitle != "" ? quizTitle : "Quiz Name",
+                'Title: ${quizTitle != "" ? quizTitle : "Quiz Name"}',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -42,14 +47,14 @@ class QuizNameBox extends Material {
               height: 5,
             ),
             Text(
-              quizAuthor != null ? quizAuthor : 'No Questions',
+              'Host: ${quizAuthor != null ? quizAuthor : 'No Questions'}',
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.white,
               ),
             ),
             Text(
-              quizId != "" ? quizId : "",
+              'Questions: ${questions != "" ? questions : ""}',
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.white,
