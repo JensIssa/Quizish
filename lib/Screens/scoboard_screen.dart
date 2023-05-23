@@ -13,19 +13,6 @@ class LeaderboardData {
   LeaderboardData(this.name, this.score);
 }
 
-final leaderboardData = [
-  LeaderboardData('Rasmus', 1000),
-  LeaderboardData('Jens', 900),
-  LeaderboardData('Jakob', 800),
-  LeaderboardData('Andreas', 700),
-  LeaderboardData('Andy', 600),
-  LeaderboardData('Mathias', 500),
-  LeaderboardData('Søren', 400),
-  LeaderboardData('Henrik', 300),
-  LeaderboardData('Jeppe', 200),
-  LeaderboardData('Alex', 100),
-];
-
 class Leaderboard extends StatelessWidget {
   const Leaderboard({Key? key}) : super(key: key);
 
