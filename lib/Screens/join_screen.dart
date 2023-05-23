@@ -16,8 +16,9 @@ class JoinScreen extends StatefulWidget {
 }
 
   class _JoinScreen extends State<JoinScreen> {
+    TextEditingController qrCodeController = TextEditingController();
 
-  var getResult = 'QR Code Result';
+    var getResult = 'QR Code Result';
 
     @override
     Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class JoinScreen extends StatefulWidget {
           ),
           const SizedBox(height: 40),
           Center(
-            child: SessionInput(sessionController),
+            child: SessionInput(sessionController, qrCodeController),
           ),
           const SizedBox(height: 100),
           Center(
@@ -89,16 +90,17 @@ class JoinScreen extends StatefulWidget {
 
       if(!mounted) return;
       setState(() {
-        getResult = qrCode;
+        qrCodeController.text = qrCode;
       });
     } on PlatformException {
-      getResult = 'Failed to scan QR Code.';
+      qrCodeController.text = 'Failed to scan QR Code.';
     }
   }
 }
 
 
-  TextField SessionInput(TextEditingController sessionController) {
+  TextField SessionInput(TextEditingController sessionController,
+      TextEditingController qrCodeController) {
     return TextField(
       controller: sessionController,
       style: TextStyle(fontSize: 20, color: Colors.white),
