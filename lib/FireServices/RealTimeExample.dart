@@ -179,16 +179,39 @@ class GameSessionService {
   }
 
   Stream<Map<String, dynamic>?> getScores(String? sessionId) {
-    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().asyncMap((snapshot) async {
       if (snapshot.exists) {
         final data = snapshot.data() as Map<String, dynamic>;
-        return data['scores'] as Map<String, dynamic>?;
-      } else {
-        // Handle the case when the document doesn't exist
-        return null;
+        final scores = data['scores'] as Map<String, dynamic>?;
+
+        if (scores != null) {
+          // Retrieve the user display names based on user IDs
+          final userIds = scores.keys.toList();
+          final usersSnapshot = await FirebaseFirestore.instance
+              .collection('users')
+              .where(FieldPath.documentId, whereIn: userIds)
+              .get();
+          final usersData = usersSnapshot.docs.map((doc) => doc.data()).toList();
+
+          // Create a new map with display names and scores
+          final result = <String, dynamic>{};
+          scores.forEach((userId, score) {
+            final userIndex = userIds.indexOf(userId);
+            if (userIndex != -1 && usersData.length > userIndex) {
+              final userData = usersData[userIndex] as Map<String, dynamic>?;
+              final displayName = userData?['displayName'] as String?;
+              result[displayName ?? userId] = score;
+            }
+          });
+
+          return result;
+        }
       }
+      // Handle the case when the document doesn't exist or no scores are available
+      return null;
     });
   }
+
 
   //Get quiz from session in stream
   Stream<Quiz?> getQuiz(String? sessionId) {
