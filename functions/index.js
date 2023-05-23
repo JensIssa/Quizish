@@ -13,6 +13,7 @@ exports.incrementCurrentQuestion = functions.firestore
     const sessionRef = firestore.collection('gameSessions').doc(context.params.sessionId);
     return sessionRef.update({ currentQuestion: newCurrentQuestion });
   });
+ 
 
 
 

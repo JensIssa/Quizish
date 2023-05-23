@@ -164,8 +164,51 @@ class GameSessionService {
     });
   }
 
+  Stream<Map<String, dynamic>?> getScores(String? sessionId) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        return data['scores'] as Map<String, dynamic>?;
+      } else {
+        // Handle the case when the document doesn't exist
+        return null;
+      }
+    });
+  }
 
 
+  //Get questions from quiz in stream
+  Stream<List<Question>?> getQuestions(String? sessionId, int currentQuestion) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        final quiz = data['quiz'] as Map<String, dynamic>;
+        final questions = quiz['questions'] as List<dynamic>;
+        return questions
+            .map<Question>((question) => Question.fromMap(question, currentQuestion))
+            .toList();
+      } else {
+        return null;
+      }
+    });
+  }
+
+  //Get answers from questions in stream
+  Stream<List<Answers>?> getAnswers(String? sessionId, int currentQuestion) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        final quiz = data['quiz'] as Map<String, dynamic>;
+        final questions = quiz['questions'] as List<dynamic>;
+        final answers = questions[currentQuestion]['answers'] as List<dynamic>;
+        return answers
+            .map<Answers>((answer) => Answers.fromMap(answer))
+            .toList();
+      } else {
+        return null;
+      }
+    });
+  }
 
   Stream<DocumentSnapshot> getGameSessionData(String sessionId) {
     return _gameSessionsCollection.doc(sessionId).snapshots();
@@ -190,9 +233,6 @@ class GameSessionService {
     }
     return null;
   }
-
-
-
 
   Stream<List<String>> getAllUsersBySession(String? sessionId) async* {
     try {
@@ -221,4 +261,6 @@ class GameSessionService {
       yield [];
     }
   }
+
+
 }
