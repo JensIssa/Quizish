@@ -45,21 +45,43 @@ class JoinScreen extends StatefulWidget {
               child: QuizButton(
                 text: 'Join',
                 onPressed: () async {
-                  await gameSessionService.addUserToSession(
-                    sessionController.text,
-                    authService.getCurrentFirebaseUser(),
-                  );
-                  GameSession? gameSession =
-                  await gameSessionService.getGameSessionByCode(
-                    sessionController.text,
-                  );
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PlayersScreen(
-                        gameSession: gameSession,
+                  if (sessionController.text.isNotEmpty) {
+                    await gameSessionService.addUserToSession(
+                      sessionController.text,
+                      authService.getCurrentFirebaseUser(),
+                    );
+                    GameSession? gameSession =
+                    await gameSessionService.getGameSessionByCode(
+                      sessionController.text,
+                    );
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PlayersScreen(
+                              gameSession: gameSession,
+                            ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    final currentContext = context;
+                    showDialog(
+                      context: currentContext,
+                      builder: (BuildContext dialogContext) {
+                        return AlertDialog(
+                          title: const Text('Error'),
+                          content: const Text('Please enter a session code'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(dialogContext).pop();
+                              },
+                              child: const Text('Okay'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 color: Colors.green,
               ),
