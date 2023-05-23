@@ -40,16 +40,9 @@ class PlayersScreen extends StatelessWidget {
       },
     );
   }
-  Widget _buildPlayerList(List<String> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot) {
+  Widget _buildPlayerList(List<String> playerNames, BuildContext context, AsyncSnapshot<int?> questionSnapShot) {
     final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
     // Check the value of the current question
-    if (snapshot.data == 1) {
-      var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
-      quizProvider.setGameSession(gameSession!);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
-      });
-    }
     return Stack(
       children: [
         Column(
@@ -82,6 +75,13 @@ class PlayersScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   _gameSessionService.incrementCurrent(gameSession?.id);
+                  if (questionSnapShot.data == 1) {
+                    var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
+                    quizProvider.setGameSession(gameSession!);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
+                    });
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.green,

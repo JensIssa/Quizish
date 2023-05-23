@@ -148,14 +148,6 @@ class GameSessionService {
     }
   }
 
-  Future<void> updateCurrentQuestion(String sessionId, int currentQuestion) async {
-    try {
-       _gameSessionsCollection.doc(sessionId).update({'currentQuestion': currentQuestion}).asStream();
-    } catch (e) {
-      print('Error updating current question: $e');
-    }
-  }
-
   Future<void> removeUserFromSession(String sessionId, User user) async {
     try {
       DocumentSnapshot sessionSnapshot = await _gameSessionsCollection.doc(sessionId).get();
