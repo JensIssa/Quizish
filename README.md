@@ -1,5 +1,5 @@
 # Quizish
-![alt text](https://github.com/JensIssa/Quizish/blob/Readme/assets/images/quizish%20logo.png)
+![alt text](https://github.com/JensIssa/Quizish/blob/Development/assets/images/quizish%20logo.png)
 
 ## Quizish is a quiz game, with a full project with backend and frontend for App (Android only). 
 
