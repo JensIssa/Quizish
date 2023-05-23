@@ -190,6 +190,18 @@ class GameSessionService {
     });
   }
 
+  //Get quiz from session in stream
+  Stream<Quiz?> getQuiz(String? sessionId) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        final quiz = data['quiz'] as Map<String, dynamic>;
+        return Quiz.fromMap(quiz);
+      } else {
+        return null;
+      }
+    });
+  }
 
   //Get questions from quiz in stream
   Stream<List<Question>?> getQuestions(String? sessionId, int currentQuestion) {
