@@ -26,113 +26,118 @@ class CorrectAnswersScreen extends StatelessWidget {
       width = width / 2;
     }
 
-    return Scaffold(
-      body: Column(children: [
-        Flex(
-          direction: Axis.horizontal,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                quizModel.quizProgress,
-                style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w200),
-              ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                quizModel.quizTitle,
-                style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w200),
-              ),
-            ),
-            const Spacer(),
-            _timer(context, quizModel, 3, CountdownController(autoStart: true), () {
-
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  maintainState: false,
-                  builder: (context) => Leaderboard(),
-                ),
-              );
-            }),
-          ],
-        ),
-        Flexible(
-          child: Center(
-            child: Column(
+    return StreamBuilder<int?>(
+      stream: quizModel.questionNumberStream,
+      builder: (context, questionNumberSnapshot) {
+        return Scaffold(
+          body: Column(children: [
+            Flex(
+              direction: Axis.horizontal,
               children: [
-                Text(
-                  quizModel.currentQuestion,
-                  style: const TextStyle(
-                      fontSize: 32, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  quizModel.currentQuestionCorrectAnswers.length > 1
-                      ? 'Correct Answers'
-                      : 'Correct Answer',
-                ),
-                const Divider(),
-                _correctAnswerOptionsChildren(quizModel, answerHeight, answerWidth),
-                SizedBox(
-                  height: 100,
-                ),
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Container(
-                    color: _correctAnswerTextColor(quizModel.isAnswerCorrect()),
-                    child: Center(
-                      child: Text(
-                          quizModel.getCorrectAnswerText(),
-                          style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white)
-                      ),
-                    ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    quizModel.quizProgress(questionNumberSnapshot.data!),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w200),
                   ),
                 ),
-                Text(
-                  'You answered ${quizModel.lastAnswerText()}',
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.w500),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    quizModel.quizTitle,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w200),
+                  ),
                 ),
+                const Spacer(),
+                _timer(context, quizModel, 3, CountdownController(autoStart: true), () {
+
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      maintainState: false,
+                      builder: (context) => Leaderboard(),
+                    ),
+                  );
+                }),
               ],
             ),
-          ),
-        ),
-
-        /*
-        Padding(
-          padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
-          child: SizedBox(
-              width: width,
-              height: height / 1.5,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                verticalDirection: VerticalDirection.down,
-                children: [
-                  Text(
-                    quizModel.getCorrectAnswerText(),
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
-                        color: _correctAnswerTextColor(quizModel.isAnswerCorrect())
+            Flexible(
+              child: Center(
+                child: Column(
+                  children: [
+                    Text(
+                      quizModel.currentQuestion(questionNumberSnapshot.data!),
+                      style: const TextStyle(
+                          fontSize: 32, fontWeight: FontWeight.w500),
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      quizModel.currentQuestionCorrectAnswers(questionNumberSnapshot.data).length > 1
+                          ? 'Correct Answers'
+                          : 'Correct Answer',
+                    ),
+                    const Divider(),
+                    _correctAnswerOptionsChildren(quizModel, answerHeight, answerWidth, questionNumberSnapshot),
+                    SizedBox(
+                      height: 100,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Container(
+                        color: _correctAnswerTextColor(quizModel.isAnswerCorrect(questionNumberSnapshot.data!)),
+                        child: Center(
+                          child: Text(
+                              quizModel.getCorrectAnswerText(questionNumberSnapshot.data!),
+                              style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white)
+                          ),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      'You answered ${quizModel.lastAnswerText(questionNumberSnapshot.data!)}',
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
               ),
             ),
 
+            /*
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
+              child: SizedBox(
+                  width: width,
+                  height: height / 1.5,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    verticalDirection: VerticalDirection.down,
+                    children: [
+                      Text(
+                        quizModel.getCorrectAnswerText(),
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w500,
+                            color: _correctAnswerTextColor(quizModel.isAnswerCorrect())
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-        ),*/
-      ]),
+
+            ),*/
+          ]),
+        );
+      }
     );
   }
 
@@ -147,14 +152,14 @@ class CorrectAnswersScreen extends StatelessWidget {
   }
 
   _correctAnswerOptionsChildren(
-      QuizNotifierModel quizModel, double answerHeight, double answerWidth) {
+      QuizNotifierModel quizModel, double answerHeight, double answerWidth, AsyncSnapshot<int?> questionNumberSnapshot) {
     if (quizModel.timerController.isCompleted!) {
-      var correctAnswers = quizModel.currentQuestionCorrectAnswers;
+      var correctAnswers = quizModel.currentQuestionCorrectAnswers(questionNumberSnapshot.data!);
       List<Widget> answers = [];
 
       for (Answers answer in correctAnswers) {
-        answers.add(_answerButton(quizModel.getAnswerText(answer.index),
-            answer.index, answerHeight, answerWidth, quizModel));
+        answers.add(_answerButton(quizModel.getAnswerText(answer.index, questionNumberSnapshot.data!),
+            answer.index, answerHeight, answerWidth, quizModel, questionNumberSnapshot));
       }
       return
         Row(
@@ -166,7 +171,7 @@ class CorrectAnswersScreen extends StatelessWidget {
   }
 
   Widget _answerButton(String text, int index, double height, double width,
-      QuizNotifierModel quizModel) {
+      QuizNotifierModel quizModel, AsyncSnapshot<int?> questionNumberSnapshot) {
     return Expanded(
       flex: 1,
       child: SizedBox(
@@ -178,7 +183,7 @@ class CorrectAnswersScreen extends StatelessWidget {
             tag: index,
             child: QuizButton(
               text: text,
-              onPressed: () => quizModel.answerQuestion(index),
+              onPressed: () => quizModel.answerQuestion(index, questionNumberSnapshot.data!),
               color: _getAnswerColor(index),
             ),
           ),

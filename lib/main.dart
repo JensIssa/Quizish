@@ -62,6 +62,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<GameSessionProvider>(
           create: (_) => GameSessionProvider(),
         ),
+        ChangeNotifierProvider<QuizNotifierModel>(
+          create: (_) => QuizNotifierModel(),
+        ),
       ],
       child: RepositoryProvider.value(
         value: _authService,

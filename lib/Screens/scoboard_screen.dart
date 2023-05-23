@@ -34,12 +34,48 @@ class Leaderboard extends StatelessWidget {
   Widget build(BuildContext context) {
     var quizModel = Provider.of<QuizNotifierModel>(context, listen: true);
 
+
+    return StreamBuilder<int?>(
+      stream: quizModel.questionNumberStream,
+      builder: (context, questionNumberSnapshot) {
+        return Scaffold(
+            appBar: appBars(context, questionNumberSnapshot, quizModel),
+            body: ListView.separated(
+              separatorBuilder: (context, index) => const Divider(
+                color: Colors.white, thickness: 3.0, height: 5,
+              ),
+              itemCount: leaderboardData.length,
+              itemBuilder: (context, index) {
+                final data = leaderboardData[index];
+                return ListTile(
+                  leading: Text(
+                    '${index + 1}',
+                    style: const TextStyle(fontSize: 20.0),
+                  ),
+                  title: Text(data.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  trailing: Text('${data.score}', style: const TextStyle(fontSize: 20.0)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  tileColor: index == 0 ? _tileColor(context, 0.9): index == 1 ? _tileColor(context, 0.6) : index == 2 ? _tileColor(context, 0.3) : index % 2 == 0 ? _tileColor(context, 0) : _tileColor(context, 0),
+                );
+              },
+            ),
+        );
+      }
+    );
+  }
+
+  _tileColor(BuildContext context, double opacity) {
+    return Theme.of(context).colorScheme.secondary.withOpacity(opacity);
+  }
+
+
+  AppBar appBars(BuildContext context, AsyncSnapshot<int?> questionNumber, QuizNotifierModel quizModel) {
     var appBarActiveGame = AppBar(
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       automaticallyImplyLeading: false,
       title: Row(
         children: [
-            Text('Next question in:',
+          Text('Next question in:',
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w200,
@@ -48,7 +84,7 @@ class Leaderboard extends StatelessWidget {
           ),
           const SizedBox(width: 10.0),
           _timer(context, quizModel, 3, CountdownController( autoStart: true ), () {
-            quizModel.onNextQuestion();
+            quizModel.onNextQuestion(questionNumber.data);
             Navigator.pop(context);
           })
         ],
@@ -63,35 +99,16 @@ class Leaderboard extends StatelessWidget {
           Text('Final scores'),
         ],
       ),
+      actions: [
+        IconButton(onPressed: () {
+          context.read<QuizNotifierModel>().onLeaveQuiz();
+          Navigator.pop(context);
+        }, icon: const Icon(Icons.exit_to_app))
+      ],
     );
 
+    return quizModel.isQuizFinished(questionNumber.data) ? appBarEndGame : appBarActiveGame;
 
-    return Scaffold(
-        appBar: quizModel.isQuizFinished ? appBarEndGame : appBarActiveGame,
-        body: ListView.separated(
-          separatorBuilder: (context, index) => const Divider(
-            color: Colors.white, thickness: 3.0, height: 5,
-          ),
-          itemCount: leaderboardData.length,
-          itemBuilder: (context, index) {
-            final data = leaderboardData[index];
-            return ListTile(
-              leading: Text(
-                '${index + 1}',
-                style: const TextStyle(fontSize: 20.0),
-              ),
-              title: Text(data.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-              trailing: Text('${data.score}', style: const TextStyle(fontSize: 20.0)),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              tileColor: index == 0 ? _tileColor(context, 0.9): index == 1 ? _tileColor(context, 0.6) : index == 2 ? _tileColor(context, 0.3) : index % 2 == 0 ? _tileColor(context, 0) : _tileColor(context, 0),
-            );
-          },
-        ),
-    );
-  }
-
-  _tileColor(BuildContext context, double opacity) {
-    return Theme.of(context).colorScheme.secondary.withOpacity(opacity);
   }
 
 

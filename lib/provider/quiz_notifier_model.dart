@@ -7,20 +7,19 @@ import '../models/Quiz.dart';
 
 class QuizNotifierModel extends ChangeNotifier {
   Quiz? quiz;
-  int _questionNumber = 0;
+
   Map<Question, Answers> _selectedAnswers = {};
-  final CountdownController _timerController = CountdownController(autoStart: true);
-  final StreamController<int> _questionNumberController = StreamController<int>.broadcast();
-  final StreamController<Quiz> _quizController = StreamController<Quiz>.broadcast();
+  final CountdownController _timerController =
+      CountdownController(autoStart: true);
+  final StreamController<int> _questionNumberController =
+      StreamController<int>.broadcast();
+
 
   QuizNotifierModel.notifier(this.quiz);
 
   QuizNotifierModel() {
     quiz = null;
-  }
-
-  Future<int> questionNumber() async {
-    return _questionNumber;
+    _questionNumberController.add(0);
   }
 
   Future<Quiz?> getQuiz() async {
@@ -32,43 +31,49 @@ class QuizNotifierModel extends ChangeNotifier {
       return;
     }
     this.quiz = quiz;
-    _quizController.add(quiz);
-  }
-
-  void incrementQuestionNumber() {
-    if (isLastQuestion()) {
-      endQuiz();
-    } else {
-      _questionNumber++;
-    }
-    _questionNumberController.add(_questionNumber);
     notifyListeners();
   }
 
-  void answerQuestion(int answerIndex) {
-    if (isAnswered()) {
+  //TODO: implement this
+  void incrementQuestionNumber(int? questionNumber) {
+    if (isLastQuestion(questionNumber)) {
+      endQuiz();
+    } else {
+      //_questionNumber++;
+      _questionNumberController.sink.add(questionNumber! + 1);
+    }
+
+    notifyListeners();
+  }
+
+  void answerQuestion(int answerIndex, int? questionNumber) {
+    if (isAnswered(questionNumber)) {
       return;
     }
 
     _selectedAnswers.putIfAbsent(
-      quiz!.questions[_questionNumber],
-          () => quiz!.questions[_questionNumber].answers[answerIndex],
+      quiz!.questions[questionNumber!],
+      () => quiz!.questions[questionNumber!].answers[answerIndex],
     );
 
     notifyListeners();
   }
 
-  bool isLastQuestion() {
-    return _questionNumber == quiz!.questions.length - 1;
+  bool isLastQuestion(int? questionNumber) {
+    return questionNumber! == quiz!.questions.length - 1;
   }
 
+  String currentQuestion(int? questionNumber) {
+    return quiz!.questions[questionNumber!].question;
+  }
 
-  get currentQuestion => quiz!.questions[_questionNumber].question;
+  int currentQuestionTimeLimit(int? questionNumber) {
+    return quiz!.questions[questionNumber!].timer;
+  }
 
-
-  get currentQuestionTimeLimit => quiz!.questions[_questionNumber].timer;
-
-  Iterable<Answers> get currentQuestionCorrectAnswers => quiz!.questions[_questionNumber].correctAnswers;
+  Iterable<Answers> currentQuestionCorrectAnswers(int? questionNumber) {
+    return quiz!.questions[questionNumber!].correctAnswers;
+  }
 
   CountdownController get timerController => _timerController;
 
@@ -76,14 +81,16 @@ class QuizNotifierModel extends ChangeNotifier {
 
   int get _quizLength => quiz!.questions.length;
 
-  String get quizProgress => '${_questionNumber+1} / $_quizLength';
-
-  String getAnswerText(int i) {
-    return quiz!.questions[_questionNumber].answers[i].answer;
+  String quizProgress(int? questionNumber) {
+    return '${questionNumber! + 1} / $_quizLength';
   }
 
-  String lastAnswerText() {
-    Answers? answer = _selectedAnswers[quiz!.questions[_questionNumber]];
+  String getAnswerText(int answerIndex, int? questionNumber) {
+    return quiz!.questions[questionNumber!].answers[answerIndex].answer;
+  }
+
+  String lastAnswerText(int? questionNumber) {
+    Answers? answer = _selectedAnswers[quiz!.questions[questionNumber!]];
 
     if (answer == null) {
       return 'Nothing...';
@@ -94,37 +101,39 @@ class QuizNotifierModel extends ChangeNotifier {
 
   Stream<int> get questionNumberStream => _questionNumberController.stream;
 
-  Stream<Quiz> get quizStream => _quizController.stream;
-
-  void onNextQuestion() {
+  void onNextQuestion(int? questionNumber) {
     _timerController.restart();
-    incrementQuestionNumber();
+    incrementQuestionNumber(questionNumber);
     notifyListeners();
   }
 
-  bool get isQuizFinished => _questionNumber == _quizLength;
+  bool isQuizFinished(int? questionNumber) {
+    return questionNumber == _quizLength;
+  }
 
   void endQuiz() {
     _timerController.pause();
     notifyListeners();
   }
 
-  bool? isAnswerCorrect() {
-    if (_selectedAnswers.containsKey(quiz!.questions[_questionNumber])) {
-      return _selectedAnswers[quiz!.questions[_questionNumber]]?.isCorrect;
+  bool? isAnswerCorrect(int? questionNumber) {
+    if (_selectedAnswers.containsKey(quiz!.questions[questionNumber!])) {
+      return _selectedAnswers[quiz!.questions[questionNumber]]?.isCorrect;
     } else {
       return null;
     }
   }
 
-  bool isAnswered() {
-    return _selectedAnswers.containsKey(quiz!.questions[_questionNumber]);
+  bool isAnswered(int? questionNumber) {
+    return _selectedAnswers.containsKey(quiz!.questions[questionNumber!]);
   }
 
-  int? get currentAnswerIndex => _selectedAnswers[quiz!.questions[_questionNumber]]?.index;
+  int? currentAnswerIndex(int? questionNumber) {
+    return _selectedAnswers[quiz!.questions[questionNumber!]]?.index;
+  }
 
-  String getCorrectAnswerText() {
-    bool? isCorrect = isAnswerCorrect();
+  String getCorrectAnswerText(int? questionNumber) {
+    bool? isCorrect = isAnswerCorrect(questionNumber);
     if (isCorrect == null) {
       return 'You did not answer 👎';
     } else if (isCorrect) {
@@ -137,14 +146,10 @@ class QuizNotifierModel extends ChangeNotifier {
   void onLeaveQuiz() {}
 
   Future<bool> resetQuiz() async {
-    _questionNumber = 0;
     _selectedAnswers = {};
     _timerController.restart();
     quiz = null;
     notifyListeners();
     return true;
   }
-
 }
-
-

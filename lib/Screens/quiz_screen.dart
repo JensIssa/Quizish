@@ -27,6 +27,9 @@ class _QuizScreenState extends State<QuizScreen> {
   void initState() {
     super.initState();
 
+    var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
+    quizProvider.setQuiz(quiz);
+
     quiz = Quiz.noAuthor(
         title: "quiz title",
         id: "-1",
@@ -66,74 +69,73 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     QuizNotifierModel quizProvider = Provider.of<QuizNotifierModel>(context, listen: true);
-    quizProvider.setQuiz(quiz);
 
-    return StreamBuilder<Quiz>(
-      stream: quizProvider.quizStream,
-      builder: (context, quizSnapshot) {
+    return StreamBuilder<int?>(
+      stream: quizProvider.questionNumberStream,
+      builder: (context, questionNumber) {
         return Scaffold(
-                appBar: AppBar(
-                  title: const Text('Quiz'),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.exit_to_app),
-                      onPressed: () => _leaveQuizDialog(
-                          () {
-                            quizProvider.onLeaveQuiz();
-                            Navigator.of(context).pop();
-                          }
-                      ),
-                    )
-                  ],
-                ),
-                body: Column(children: [
-                  Flex(
-                    direction: Axis.horizontal,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          quizProvider.quizProgress, //current question / total questions
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w200),
-                        ),
-                      ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          quizSnapshot.data!.title,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w200),
-                        ),
-                      ),
-                      const Spacer(),
-                      _timer(
-                          context,
-                          quizProvider.currentQuestionTimeLimit,
-                          quizProvider.timerController,
-                              (){ _overlayCorrectAnswer(); }
-                      ),
-                    ],
-                  ),
-                  Flexible(
-                    child: Center(
-                      child: Text(
-                        quizProvider.currentQuestion,
-                        style: const TextStyle(
-                            fontSize: 32, fontWeight: FontWeight.w500),
-                      ),
+                    appBar: AppBar(
+                      title: const Text('Quiz'),
+                      actions: [
+                        IconButton(
+                          icon: const Icon(Icons.exit_to_app),
+                          onPressed: () => _leaveQuizDialog(
+                              () {
+                                quizProvider.onLeaveQuiz();
+                                Navigator.of(context).pop();
+                              }
+                          ),
+                        )
+                      ],
                     ),
-                  ),
-                  _answersOptionsContainer(quizProvider),
-                ],
-          ),
-        );
+                    body: Column(children: [
+                      Flex(
+                        direction: Axis.horizontal,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              quizProvider.quizProgress(questionNumber.data), //current question / total questions
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w200),
+                            ),
+                          ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              quizProvider.quizTitle,
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w200),
+                            ),
+                          ),
+                          const Spacer(),
+                          _timer(
+                              context,
+                              quizProvider.currentQuestionTimeLimit(questionNumber.data), //current question time limit needs questionNumber
+                              quizProvider.timerController,
+                                  (){ _overlayCorrectAnswer(); }
+                          ),
+                        ],
+                      ),
+                      Flexible(
+                        child: Center(
+                          child: Text(
+                            quizProvider.currentQuestion(questionNumber.data),
+                            style: const TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                      _answersOptionsContainer(quizProvider, questionNumber),
+                    ],
+              ),
+            );
       }
     );
   }
 
-  _answersOptionsContainer(QuizNotifierModel quizProvider) {
+  _answersOptionsContainer(QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
@@ -152,14 +154,14 @@ class _QuizScreenState extends State<QuizScreen> {
         child: SizedBox(
           width: width,
           height: height / 1.5,
-          child: _answerOptionsChildren(quizProvider, answerHeight, answerWidth),
+          child: _answerOptionsChildren(quizProvider, answerHeight, answerWidth, questionNumber),
           ),
         ),
     );
   }
 
   _answerOptionsChildren(
-      QuizNotifierModel quizProvider, double answerHeight, double answerWidth) {
+      QuizNotifierModel quizProvider, double answerHeight, double answerWidth, AsyncSnapshot<int?> questionNumber) {
     return
       Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -169,19 +171,19 @@ class _QuizScreenState extends State<QuizScreen> {
           Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _answerButton(quizProvider.getAnswerText(0), 0, answerHeight,
-                answerWidth, quizProvider),
-            _answerButton(quizProvider.getAnswerText(1), 1, answerHeight,
-                answerWidth, quizProvider),
+            _answerButton(quizProvider.getAnswerText(0, questionNumber.data), 0, answerHeight,
+                answerWidth, quizProvider, questionNumber),
+            _answerButton(quizProvider.getAnswerText(1, questionNumber.data), 1, answerHeight,
+                answerWidth, quizProvider, questionNumber),
           ],
         ),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _answerButton(quizProvider.getAnswerText(2), 2, answerHeight,
-              answerWidth, quizProvider),
-          _answerButton(quizProvider.getAnswerText(3), 3, answerHeight,
-              answerWidth, quizProvider),
+          _answerButton(quizProvider.getAnswerText(2, questionNumber.data), 2, answerHeight,
+              answerWidth, quizProvider, questionNumber),
+          _answerButton(quizProvider.getAnswerText(3, questionNumber.data), 3, answerHeight,
+              answerWidth, quizProvider, questionNumber),
         ],
       ),
     ]);
@@ -203,7 +205,7 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _answerButton(String text, int index, double height, double width,
-      QuizNotifierModel quizProvider) {
+      QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
     return Expanded(
       flex: 1,
       child: DecoratedBox(
@@ -224,7 +226,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 tag: index,
                 child: QuizButton(
                   text: text,
-                  onPressed: () => quizProvider.answerQuestion(index),
+                  onPressed: () => quizProvider.answerQuestion(index, questionNumber.data),
                   color: _getAnswerColor(index),
                 ),
               ),
