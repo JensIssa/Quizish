@@ -198,7 +198,7 @@ class GameSessionService {
           scores.forEach((userId, score) {
             final userIndex = userIds.indexOf(userId);
             if (userIndex != -1 && usersData.length > userIndex) {
-              final userData = usersData[userIndex] as Map<String, dynamic>?;
+              final userData = usersData[userIndex];
               final displayName = userData?['displayName'] as String?;
               result[displayName ?? userId] = score;
             }
