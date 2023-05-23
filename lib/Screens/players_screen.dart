@@ -20,7 +20,7 @@ class PlayersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<int?>(
       stream: _gameSessionService.getCurrentQuestion(gameSession?.id),
-      builder: (context, questionSnapshot) {
+      builder: (bcontext, questionSnapshot) {
         return Scaffold(
           appBar: InGameAppBar(onLeave: () {}),
           body: StreamBuilder<List<String>>(
@@ -32,7 +32,7 @@ class PlayersScreen extends StatelessWidget {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
                 final playerNames = snapshot.data ?? [];
-                return _buildPlayerList(playerNames, context, questionSnapshot);
+                return _buildPlayerList(playerNames, bcontext, questionSnapshot);
               }
             },
           ),
