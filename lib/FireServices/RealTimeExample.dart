@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quizish/models/Quiz.dart';
+
 
 import '../models/Session.dart';
 
@@ -23,11 +25,12 @@ class GameSessionService {
   Future<GameSession> createGameSession(Quiz quiz) async {
     User? _host = FirebaseAuth.instance.currentUser!;
     String gameSessionId = generateRandomId(5);
+    int current = -1;
     Map<String, dynamic> scores = {}; // Empty scores map
     GameSession gameSession = GameSession(
       id: gameSessionId,
       hostId: _host.uid,
-      currentQuestion: 0,
+      currentQuestion: current,
       scores: scores,
       quiz: null,
     );
@@ -38,6 +41,27 @@ class GameSessionService {
     await addHostToSession(gameSessionId, _host);
     gameSession.quiz = quiz;
     return gameSession;
+  }
+
+  Future<void> incrementCurrentQuestion(String? sessionId) async {
+    try {
+      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('incrementCurrentQuestion');
+      final Map<String, dynamic> data = {'sessionId': sessionId};
+      final result = await callable.call(data);
+      final int newCurrentQuestion = result.data['currentQuestion'];
+      print('Current question incremented to: $newCurrentQuestion');
+    } catch (e) {
+      print('Error incrementing current question: $e');
+    }
+  }
+
+  Future<void> incrementCurrent(String? sessionId)async {
+    try{
+      _gameSessionsCollection.doc(sessionId).update({'currentQuestion': FieldValue.increment(1)});
+    }catch(e){
+      print('Error incrementing current question: $e');
+    }
+
   }
 
 
@@ -104,7 +128,7 @@ class GameSessionService {
 
   Future<void> updateCurrentQuestion(String sessionId, int currentQuestion) async {
     try {
-      await _gameSessionsCollection.doc(sessionId).update({'currentQuestion': currentQuestion});
+       _gameSessionsCollection.doc(sessionId).update({'currentQuestion': currentQuestion}).asStream();
     } catch (e) {
       print('Error updating current question: $e');
     }
@@ -128,6 +152,63 @@ class GameSessionService {
     }
   }
 
+  Stream<int?> getCurrentQuestion(String? sessionId) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        return data['currentQuestion'] as int?;
+      } else {
+        // Handle the case when the document doesn't exist
+        return null;
+      }
+    });
+  }
+
+  Stream<Map<String, dynamic>?> getScores(String? sessionId) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        return data['scores'] as Map<String, dynamic>?;
+      } else {
+        // Handle the case when the document doesn't exist
+        return null;
+      }
+    });
+  }
+
+
+  //Get questions from quiz in stream
+  Stream<List<Question>?> getQuestions(String? sessionId, int currentQuestion) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        final quiz = data['quiz'] as Map<String, dynamic>;
+        final questions = quiz['questions'] as List<dynamic>;
+        return questions
+            .map<Question>((question) => Question.fromMap(question, currentQuestion))
+            .toList();
+      } else {
+        return null;
+      }
+    });
+  }
+
+  //Get answers from questions in stream
+  Stream<List<Answers>?> getAnswers(String? sessionId, int currentQuestion) {
+    return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        final quiz = data['quiz'] as Map<String, dynamic>;
+        final questions = quiz['questions'] as List<dynamic>;
+        final answers = questions[currentQuestion]['answers'] as List<dynamic>;
+        return answers
+            .map<Answers>((answer) => Answers.fromMap(answer))
+            .toList();
+      } else {
+        return null;
+      }
+    });
+  }
 
   Stream<DocumentSnapshot> getGameSessionData(String sessionId) {
     return _gameSessionsCollection.doc(sessionId).snapshots();
@@ -152,9 +233,6 @@ class GameSessionService {
     }
     return null;
   }
-
-
-
 
   Stream<List<String>> getAllUsersBySession(String? sessionId) async* {
     try {
@@ -183,4 +261,6 @@ class GameSessionService {
       yield [];
     }
   }
+
+
 }
