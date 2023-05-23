@@ -15,6 +15,7 @@ class PlayersScreen extends StatelessWidget {
   final String? gamePin;
 
   PlayersScreen({Key? key, this.gameSession, this.gamePin}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<int?>(
@@ -22,29 +23,24 @@ class PlayersScreen extends StatelessWidget {
       builder: (context, questionSnapshot) {
         return Scaffold(
           appBar: InGameAppBar(onLeave: () {}),
-          body: _buildPlayerListWidget(context, questionSnapshot),
+          body: StreamBuilder<List<String>>(
+            stream: _gameSessionService.getAllUsersBySession(gameSession?.id),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                final playerNames = snapshot.data ?? [];
+                return _buildPlayerList(playerNames, context, questionSnapshot);
+              }
+            },
+          ),
         );
       },
     );
   }
-
-  Widget _buildPlayerListWidget(BuildContext context, AsyncSnapshot<int?> questionSnapshot) {
-    return StreamBuilder<List<String>>(
-      stream: _gameSessionService.getAllUsersBySession(gameSession?.id),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          final playerNames = snapshot.data ?? [];
-          return _buildPlayerList(playerNames, context, questionSnapshot);
-        }
-      },
-    );
-  }
-  
-  Widget _buildPlayerList(List<String> playerNames, BuildContext context, AsyncSnapshot<int?> questionSnapShot) {
+  Widget _buildPlayerList(List<String> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot) {
     final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
     // Check the value of the current question
     return Stack(
@@ -79,7 +75,7 @@ class PlayersScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   _gameSessionService.incrementCurrent(gameSession?.id);
-                  if (questionSnapShot.data == 1) {
+                  if (snapshot.data == 1) {
                     var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
                     quizProvider.setGameSession(gameSession!);
                     WidgetsBinding.instance.addPostFrameCallback((_) {
