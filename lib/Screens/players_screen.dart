@@ -21,18 +21,10 @@ class PlayersScreen extends StatelessWidget {
     return StreamBuilder<int?>(
       stream: _gameSessionService.getCurrentQuestion(gameSession?.id),
       builder: (context, questionSnapshot) {
-        if (questionSnapshot.data == 1) {
-          print(questionSnapshot.data);
-          var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
-          quizProvider.setGameSession(gameSession!);
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
-          });
-        }
         return Scaffold(
           appBar: InGameAppBar(onLeave: () {}),
           body: StreamBuilder<List<String>>(
-            stream: _gameSessionService.getAllUsersBySession(gameSession?.id ),
+            stream: _gameSessionService.getAllUsersBySession(gameSession?.id),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -45,12 +37,19 @@ class PlayersScreen extends StatelessWidget {
             },
           ),
         );
-      }
+      },
     );
   }
-
   Widget _buildPlayerList(List<String> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot) {
-    final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid; // Assuming you have a getCurrentUserId() function to get the current user's ID
+    final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
+    // Check the value of the current question
+    if (snapshot.data == 1) {
+      var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
+      quizProvider.setGameSession(gameSession!);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
+      });
+    }
     return Stack(
       children: [
         Column(
@@ -78,14 +77,15 @@ class PlayersScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             QrButton(gameSessionId: gameSession?.id),
-            const SizedBox(height: 20), // Add spacing between the player list and the button
+            const SizedBox(height: 20),
+            if(isHost)
               ElevatedButton(
                 onPressed: () {
                   _gameSessionService.incrementCurrent(gameSession?.id);
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green, // Set the button background color to green
-                  minimumSize: const Size(200, 50), // Set the button size
+                  primary: Colors.green,
+                  minimumSize: const Size(200, 50),
                 ),
                 child: const Text(
                   'Play now',
@@ -97,6 +97,7 @@ class PlayersScreen extends StatelessWidget {
       ],
     );
   }
+
 
 
   Widget _quizName() {
