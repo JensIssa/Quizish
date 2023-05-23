@@ -30,6 +30,8 @@ class _QuizScreenState extends State<QuizScreen> {
     quiz = Quiz.noAuthor(
         title: "quiz title",
         id: "-1",
+        author: "author",
+        authorDisplayName: "author display name",
         description: "description",
         questions: [
           Question.noImg(index: 0, question: "question", timer: 20, answers: [
