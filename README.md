@@ -1,5 +1,7 @@
 # quizish
-![Logo] (https://ibb.co/cyTVnwB)
+![alt text](https://ziique.dk/assets/ZiiQue-Logo.png)
+![alt text](https://ibb.co/cyTVnwB)
+
 
 A new Flutter project.
 
