@@ -1,5 +1,5 @@
 # quizish
-![Logo] (Quizish/assets/images/quizish logo.png)
+![Logo] (https://ibb.co/cyTVnwB)
 
 A new Flutter project.
 
