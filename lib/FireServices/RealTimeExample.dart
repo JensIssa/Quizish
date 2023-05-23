@@ -36,7 +36,6 @@ class GameSessionService {
     );
     DocumentReference sessionRef = _gameSessionsCollection.doc(gameSessionId);
     gameSession.id = gameSessionId;
-    gameSession.currentQuestion = -1;
     await sessionRef.set(gameSession.toMap());
     await addQuizToSession(gameSessionId, quiz);
     await addHostToSession(gameSessionId, _host);
