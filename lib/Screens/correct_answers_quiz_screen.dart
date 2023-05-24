@@ -166,7 +166,6 @@ class CorrectAnswersScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [...answers],
         );
-
     }
   }
 
@@ -183,7 +182,7 @@ class CorrectAnswersScreen extends StatelessWidget {
             tag: index,
             child: QuizButton(
               text: text,
-              onPressed: () => quizModel.answerQuestion(index, questionNumberSnapshot.data!),
+              onPressed: () { },
               color: _getAnswerColor(index),
             ),
           ),

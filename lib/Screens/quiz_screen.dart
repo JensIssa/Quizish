@@ -41,6 +41,7 @@ class _QuizScreenState extends State<QuizScreen> {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Quiz'),
+              automaticallyImplyLeading: false, //Remove backbutton
               actions: [
                 IconButton(
                   icon: const Icon(Icons.exit_to_app),
@@ -118,16 +119,12 @@ class _QuizScreenState extends State<QuizScreen> {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
-      child: Positioned(
-        bottom: 10,
-        height: height / 1.5,
-        child: SizedBox(
+      child: SizedBox(
           width: width,
           height: height / 1.5,
           child: _answerOptionsChildren(
               quizProvider, answerHeight, answerWidth, questionNumber),
         ),
-      ),
     );
   }
 
