@@ -19,7 +19,7 @@ class QuizNameBox extends Material {
       padding: const EdgeInsets.all(10),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.grey,
+          color: Colors.white12,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
