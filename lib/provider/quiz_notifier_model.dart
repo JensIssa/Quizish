@@ -52,10 +52,14 @@ class QuizNotifierModel extends ChangeNotifier {
       return;
     }
 
-    _selectedAnswers.putIfAbsent(
+    Answers userAnswer = _selectedAnswers.putIfAbsent(
       quiz!.questions[questionNumber!],
       () => quiz!.questions[questionNumber].answers[answerIndex],
     );
+
+    if (userAnswer.isCorrect) {
+      _gameSessionService.incrementScore(gameSession?.id, FirebaseAuth.instance.currentUser!.uid);
+    }
 
     notifyListeners();
   }
@@ -146,7 +150,6 @@ class QuizNotifierModel extends ChangeNotifier {
     if (isCorrect == null) {
       return 'You did not answer 👎';
     } else if (isCorrect) {
-      _gameSessionService.incrementScore(gameSession?.id, FirebaseAuth.instance.currentUser!.uid);
       return 'Correct! 🎈';
     } else {
       return 'Wrong... 💀';
