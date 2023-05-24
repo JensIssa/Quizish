@@ -33,7 +33,7 @@ class PlayersScreen extends StatelessWidget {
               } else {
                 final players = snapshot.data ?? [];
                 final playerNames = players.map((player) => player['displayName']).toList();
-                final playerIds = players.map((player) => player['id']).toList();
+                final playerIds = players.map((player) => player['playerId']).toList();
                 return _buildPlayerList(playerNames, context, questionSnapshot, playerIds);
               }
             },
@@ -74,7 +74,8 @@ class PlayersScreen extends StatelessWidget {
                   mainAxisSpacing: 20,
                 ),
                 itemBuilder: (context, index) =>
-                    _playerNameBox(playerNames[index]!),
+                    _playerNameBox(playerNames[index]!,
+                    playerIds[index]!),
                 itemCount: playerNames.length,
               ),
             ),
@@ -153,7 +154,8 @@ class PlayersScreen extends StatelessWidget {
     );
   }
 
-  Widget _playerNameBox(String playerName) {
+  Widget _playerNameBox(String playerName, String playerId) {
+    final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
     return Padding(
       padding: const EdgeInsets.all(10),
       child: DecoratedBox(
@@ -165,7 +167,8 @@ class PlayersScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
-        child: Text(     playerName,
+        child: Text(
+          playerName,
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -173,9 +176,10 @@ class PlayersScreen extends StatelessWidget {
           ),
         ),
         ),
+        if(isHost)
         Center(
           child: IconButton(onPressed: (){
-
+            _gameSessionService.removeUserFromSession(gameSession?.id, playerId);
           }, icon: const Icon(Icons.close, color: Colors.black, size: 30)),
         )
       ],

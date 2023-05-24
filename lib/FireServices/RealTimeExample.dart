@@ -145,14 +145,14 @@ class GameSessionService {
     }
   }
 
-  Future<void> removeUserFromSession(String sessionId, User user) async {
+  Future<void> removeUserFromSession(String? sessionId, String userid) async {
     try {
       DocumentSnapshot sessionSnapshot = await _gameSessionsCollection.doc(sessionId).get();
       if (sessionSnapshot.exists) {
         final data = sessionSnapshot.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>?
         final scores = data?['scores'] as Map<dynamic, dynamic>?; // Cast to Map<dynamic, dynamic>?
         if (scores != null) {
-          scores.remove(user.uid);
+          scores.remove(userid);
           await _gameSessionsCollection.doc(sessionId).update({'scores': scores});
         }
       } else {
