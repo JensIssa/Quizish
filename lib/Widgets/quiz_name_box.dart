@@ -31,20 +31,20 @@ class QuizNameBox extends Material {
         child: Column(
           children: [
             const SizedBox(
-              height: 5,
+              height: 25,
             ),
             Center(
               child: Text(
                 'Title: ${quizTitle != "" ? quizTitle : "Quiz Name"}',
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
             ),
             const SizedBox(
-              height: 5,
+              height: 10,
             ),
             Text(
               'Host: ${quizAuthor != null ? quizAuthor : 'No Questions'}',
@@ -52,6 +52,9 @@ class QuizNameBox extends Material {
                 fontSize: 16,
                 color: Colors.white,
               ),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Text(
               'Questions: ${questions != "" ? questions : ""}',
