@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quizish/FireServices/RealTimeExample.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -12,66 +13,78 @@ class LeaderboardData {
   LeaderboardData(this.name, this.score);
 }
 
-final leaderboardData = [
-  LeaderboardData('Rasmus', 1000),
-  LeaderboardData('Jens', 900),
-  LeaderboardData('Jakob', 800),
-  LeaderboardData('Andreas', 700),
-  LeaderboardData('Andy', 600),
-  LeaderboardData('Mathias', 500),
-  LeaderboardData('Søren', 400),
-  LeaderboardData('Henrik', 300),
-  LeaderboardData('Jeppe', 200),
-  LeaderboardData('Alex', 100),
-];
-
 class Leaderboard extends StatelessWidget {
   const Leaderboard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var quizModel = Provider.of<QuizNotifierModel>(context, listen: true);
+    GameSessionService gameSessionService = GameSessionService();
 
     return StreamBuilder<int?>(
-        stream: quizModel.questionNumberStream(),
-        builder: (context, questionNumberSnapshot) {
-          return Scaffold(
-            appBar: appBars(context, questionNumberSnapshot, quizModel),
-            body: ListView.separated(
-              separatorBuilder: (context, index) => const Divider(
-                color: Colors.white,
-                thickness: 3.0,
-                height: 5,
-              ),
-              itemCount: leaderboardData.length,
-              itemBuilder: (context, index) {
-                final data = leaderboardData[index];
-                return ListTile(
-                  leading: Text(
-                    '${index + 1}',
-                    style: const TextStyle(fontSize: 20.0),
+      stream: quizModel.questionNumberStream(),
+      builder: (context, questionNumberSnapshot) {
+
+        return StreamBuilder<Map<String, dynamic>?>(
+          stream: gameSessionService.getScores(quizModel.gameSession?.id),
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data != null) {
+              final scoresData = snapshot.data!;
+              final scoresList = scoresData.entries.map((entry) {
+                final name = entry.key;
+                final score = entry.value;
+                return LeaderboardData(name, score);
+              }).toList();
+
+              return Scaffold(
+                appBar: appBars(context, questionNumberSnapshot, quizModel),
+                body: ListView.separated(
+                  separatorBuilder: (context, index) => const Divider(
+                    color: Colors.white,
+                    thickness: 3.0,
+                    height: 5,
                   ),
-                  title: Text(data.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  trailing: Text('${data.score}',
-                      style: const TextStyle(fontSize: 20.0)),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 10.0),
-                  tileColor: index == 0
-                      ? _tileColor(context, 0.9)
-                      : index == 1
+                  itemCount: scoresList.length,
+                  itemBuilder: (context, index) {
+                    final data = scoresList[index];
+                    return ListTile(
+                      leading: Text(
+                        '${index + 1}',
+                        style: const TextStyle(fontSize: 20.0),
+                      ),
+                      title: Text(data.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      trailing: Text('${data.score}',
+                          style: const TextStyle(fontSize: 20.0)),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10.0),
+                      tileColor: index == 0
+                          ? _tileColor(context, 0.9)
+                          : index == 1
                           ? _tileColor(context, 0.6)
                           : index == 2
-                              ? _tileColor(context, 0.3)
-                              : index % 2 == 0
-                                  ? _tileColor(context, 0)
-                                  : _tileColor(context, 0),
-                );
-              },
-            ),
-          );
-        });
+                          ? _tileColor(context, 0.3)
+                          : index % 2 == 0
+                          ? _tileColor(context, 0)
+                          : _tileColor(context, 0),
+                    );
+                  },
+                ),
+              );
+            } else {
+              // Display a loading indicator or placeholder if data is not available
+              return Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
   }
+
 
   _tileColor(BuildContext context, double opacity) {
     return Theme.of(context).colorScheme.secondary.withOpacity(opacity);

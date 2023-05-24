@@ -28,7 +28,7 @@ class GameSession {
     return {
       'hostId': hostId,
       'quiz': quiz,
-      'currentQuestion': currentQuestion,
+      'currentQuestion': currentQuestion as int?,
       'scores': scores,
       'id': id
     };

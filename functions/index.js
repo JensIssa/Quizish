@@ -5,30 +5,33 @@ admin.initializeApp({projectId: 'quizish-ee75f'});
 
 const firestore = admin.firestore();
 
+exports.incrementScore = functions.https.onCall(async (data, context) => {
+  const { sessionId, userId } = data;
+  try {
+    // Fetch the gameSession document
+    const sessionRef = firestore.collection('gameSessions').doc(sessionId);
+    const sessionDoc = await sessionRef.get();
 
-exports.incrementCurrentQuestion = functions.firestore
-  .document('gameSessions/{sessionId}')
-  .onUpdate((change, context) => {
-    const newCurrentQuestion = admin.firestore.FieldValue.increment(1);
-    const sessionRef = firestore.collection('gameSessions').doc(context.params.sessionId);
-    return sessionRef.update({ currentQuestion: newCurrentQuestion });
-  });
-
-exports.incrementPlayerScore = functions.firestore
-  .document('gamesessions/{sessionId}/scores/{playerId}')
-  .onUpdate(async (change, context) => {
-    const newScore = change.after.data().score + 500;
-
-    const sessionRef = admin.firestore().doc(`gamesessions/${context.params.sessionId}`);
-    const playerRef = sessionRef.collection('scores').doc(context.params.playerId);
-
-    try {
-      await playerRef.update({ score: newScore });
-      console.log(`Player ${context.params.playerId} score updated to ${newScore}`);
-    } catch (error) {
-      console.error('Error updating player score:', error);
+    // Check if the gameSession document exists
+    if (!sessionDoc.exists) {
+      throw new Error('Game session does not exist');
     }
-  });
+    // Get the current score for the specified user
+    const sessionData = sessionDoc.data();
+    const scores = sessionData.scores || {};
+    const currentScore = scores[userId] || 0;
+    // Increment the score by 500
+    const newScore = currentScore + 500;
+    // Update the score in the gameSession document
+    await sessionRef.update({ [`scores.${userId}`]: newScore });
+
+    return { success: true, newScore };
+  } catch (error) {
+    console.error('Error incrementing score:', error);
+    return { success: false, error: error.message };
+  }
+});
+
 
 
 
