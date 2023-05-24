@@ -146,6 +146,7 @@ class QuizNotifierModel extends ChangeNotifier {
     if (isCorrect == null) {
       return 'You did not answer 👎';
     } else if (isCorrect) {
+      _gameSessionService.incrementScore(gameSession?.id, FirebaseAuth.instance.currentUser!.uid);
       return 'Correct! 🎈';
     } else {
       return 'Wrong... 💀';
