@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 
 class QuizNameBox extends Material {
-  static Color get firstColor => const Color(0xFFD3BBFF);
-  static Color get secondColor => const Color(0xff6f43c0);
 
   final String quizTitle;
   final String quizAuthor;
@@ -21,11 +19,7 @@ class QuizNameBox extends Material {
       padding: const EdgeInsets.all(10),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [firstColor, secondColor],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.grey,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
