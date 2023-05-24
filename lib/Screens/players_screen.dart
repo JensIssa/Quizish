@@ -23,7 +23,7 @@ class PlayersScreen extends StatelessWidget {
       builder: (context, questionSnapshot) {
         return Scaffold(
           appBar: InGameAppBar(onLeave: () {}),
-          body: StreamBuilder<List<String>>(
+          body: StreamBuilder<List<Map<String, String>>>(
             stream: _gameSessionService.getAllUsersBySession(gameSession?.id),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -31,7 +31,8 @@ class PlayersScreen extends StatelessWidget {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
-                final playerNames = snapshot.data ?? [];
+                final players = snapshot.data ?? [];
+                final playerNames = players.map((player) => player['displayName']).toList();
                 return _buildPlayerList(playerNames, context, questionSnapshot);
               }
             },
@@ -40,7 +41,7 @@ class PlayersScreen extends StatelessWidget {
       },
     );
   }
-  Widget _buildPlayerList(List<String> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot) {
+  Widget _buildPlayerList(List<String?> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot) {
     final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
     // Check the value of the current question
     if (snapshot.data == 0) {
@@ -72,7 +73,7 @@ class PlayersScreen extends StatelessWidget {
                   mainAxisSpacing: 20,
                 ),
                 itemBuilder: (context, index) =>
-                    _playerNameBox(playerNames[index]),
+                    _playerNameBox(playerNames[index]!),
                 itemCount: playerNames.length,
               ),
             ),

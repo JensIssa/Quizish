@@ -246,7 +246,7 @@ class GameSessionService {
     return null;
   }
 
-  Stream<List<String>> getAllUsersBySession(String? sessionId) async* {
+  Stream<List<Map<String, String>>> getAllUsersBySession(String? sessionId) async* {
     try {
       final gameSessionData = getGameSessionData(sessionId!);
       await for (final gameSession in gameSessionData) {
@@ -254,15 +254,20 @@ class GameSessionService {
           final scores = gameSession['scores'];
           if (scores != null && scores is Map<dynamic, dynamic>) {
             final playerIds = scores.keys.cast<String>().toList();
-            final displayNames = <String>[];
+            final users = <Map<String, String>>[];
             for (var playerId in playerIds) {
               final displayName = await getUserDisplayName(playerId);
               if (displayName != null) {
-                displayNames.add(displayName);
+                final user = {
+                  'playerId': playerId,
+                  'displayName': displayName,
+                };
+                users.add(user);
               }
             }
-            yield displayNames;
-            print(displayNames);
+
+            yield users;
+            print(users);
           }
         } else {
           yield [];
