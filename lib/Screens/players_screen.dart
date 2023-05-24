@@ -50,7 +50,7 @@ class PlayersScreen extends StatelessWidget {
                           actions: [
                             TextButton(
                                 onPressed: () {
-                                  Navigator.of(context).pushReplacementNamed('/home');
+                                  Navigator.of(context).popAndPushNamed('/home');
                                 },
                                 child: const Text('Return to the home-screen'),
                             ),
