@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 
+
 class QuizNameBox extends Material {
+
+  final String quizTitle;
+  final String quizAuthor;
+  final String questions;
+
   QuizNameBox({
     Key? key,
-    required String quizTitle,
-    required String quizAuthor, // Updated type to String?
-    required String quizId,
+    required this.quizTitle,
+    required this.quizAuthor,
+    required this.questions,
   }) : super(
     color: Colors.transparent,
     key: key,
@@ -19,30 +25,33 @@ class QuizNameBox extends Material {
         child: Column(
           children: [
             const SizedBox(
-              height: 5,
+              height: 25,
             ),
             Center(
               child: Text(
-                quizTitle != "" ? quizTitle : "Quiz Name",
+                'Title: ${quizTitle != "" ? quizTitle : "Quiz Name"}',
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
             ),
             const SizedBox(
-              height: 5,
+              height: 10,
             ),
             Text(
-              quizAuthor != null ? quizAuthor : 'No Questions',
+              'Host: ${quizAuthor != null ? quizAuthor : 'No Questions'}',
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.white,
               ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
             Text(
-              quizId != "" ? quizId : "",
+              'Questions: ${questions != "" ? questions : ""}',
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.white,

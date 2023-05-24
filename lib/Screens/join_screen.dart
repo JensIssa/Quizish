@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quizish/FireServices/AuthService.dart';
@@ -12,39 +11,40 @@ class JoinScreen extends StatefulWidget {
   const JoinScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _JoinScreen();
+  State<StatefulWidget> createState() => _JoinScreenState();
 }
 
-  class _JoinScreen extends State<JoinScreen> {
-    final sessionController = TextEditingController();
-    var getResult = 'QR Code Result';
+class _JoinScreenState extends State<JoinScreen> {
+  final sessionController = TextEditingController();
+  var getResult = 'QR Code Result';
 
-    @override
-    Widget build(BuildContext context) {
-      final GameSessionService gameSessionService = GameSessionService();
-      final AuthService authService = AuthService();
+  @override
+  Widget build(BuildContext context) {
+    final GameSessionService gameSessionService = GameSessionService();
+    final AuthService authService = AuthService();
 
-      return Column(
-        children: [
-          const SizedBox(height: 40),
-          const Center(
-            child: Text(
-              'Join Session',
-              style: TextStyle(fontSize: 40, color: Colors.white),
-            ),
+    return Column(
+      children: [
+        const SizedBox(height: 40),
+        const Center(
+          child: Text(
+            'Join Session',
+            style: TextStyle(fontSize: 40, color: Colors.white),
           ),
-          const SizedBox(height: 40),
-          Center(
-            child: SessionInput(sessionController),
-          ),
-          const SizedBox(height: 100),
-          Center(
-            child: Container(
-              width: 200,
-              height: 50,
-              child: QuizButton(
-                text: 'Join',
-                onPressed: () async {
+        ),
+        const SizedBox(height: 40),
+        Center(
+          child: SessionInput(sessionController),
+        ),
+        const SizedBox(height: 100),
+        Center(
+          child: Container(
+            width: 200,
+            height: 50,
+            child: QuizButton(
+              text: 'Join',
+              onPressed: () async {
+                if (sessionController.text.isNotEmpty) {
                   await gameSessionService.addUserToSession(
                     sessionController.text,
                     authService.getCurrentFirebaseUser(),
@@ -53,40 +53,73 @@ class JoinScreen extends StatefulWidget {
                   await gameSessionService.getGameSessionByCode(
                     sessionController.text,
                   );
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PlayersScreen(
-                        gameSession: gameSession,
+                  if (gameSession != null) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => PlayersScreen(
+                          gameSession: gameSession,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                color: Colors.green,
-              ),
+                    );
+                  } else {
+                    showSessionErrorDialog('Session not found');
+                  }
+                } else {
+                  showSessionErrorDialog('Please enter a session code');
+                }
+              },
+              color: Colors.green,
             ),
           ),
-          const SizedBox(height: 20),
-          Center(
-            child: Container(
-              width: 200,
-              height: 50,
-              child: QuizButton(
-                text: 'Scan QR',
-                onPressed: () async {
-                  scanQRCode();
-                }, color: Colors.green,
-              ),
+        ),
+        const SizedBox(height: 20),
+        Center(
+          child: Container(
+            width: 200,
+            height: 50,
+            child: QuizButton(
+              text: 'Scan QR',
+              onPressed: () async {
+                scanQRCode();
+              },
+              color: Colors.green,
             ),
-          )
-        ],
-      );
-    }
+          ),
+        )
+      ],
+    );
+  }
+
+  void showSessionErrorDialog(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Okay'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void scanQRCode() async {
     try {
-      final qrCode = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+      final qrCode = await FlutterBarcodeScanner.scanBarcode(
+        '#ff6666',
+        'Cancel',
+        true,
+        ScanMode.QR,
+      );
 
-      if(!mounted) return;
+      if (!mounted) return;
       setState(() {
         sessionController.text = qrCode;
       });
@@ -96,23 +129,21 @@ class JoinScreen extends StatefulWidget {
   }
 }
 
-
-  TextField SessionInput(TextEditingController sessionController) {
-    return TextField(
-      controller: sessionController,
-      style: TextStyle(fontSize: 20, color: Colors.white),
-      decoration: InputDecoration(
-        hintText: 'Enter Session Code',
-        hintStyle: TextStyle(fontSize: 20, color: Colors.white),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-          borderRadius: BorderRadius.circular(10),
-        ),
+TextField SessionInput(TextEditingController sessionController) {
+  return TextField(
+    controller: sessionController,
+    style: TextStyle(fontSize: 20, color: Colors.white),
+    decoration: InputDecoration(
+      hintText: 'Enter Session Code',
+      hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.circular(10),
       ),
-    );
-  }
-
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.circular(10),
+      ),
+    ),
+  );
+}

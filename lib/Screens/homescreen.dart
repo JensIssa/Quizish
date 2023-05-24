@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: QuizNameBox(
                   quizTitle: quiz.title,
                   quizAuthor:  quiz.authorDisplayName,
-                  quizId: quiz.id,
+                  questions: quiz.questions.length.toString(),
                 ),
               ),
             );
