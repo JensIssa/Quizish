@@ -33,7 +33,8 @@ class PlayersScreen extends StatelessWidget {
               } else {
                 final players = snapshot.data ?? [];
                 final playerNames = players.map((player) => player['displayName']).toList();
-                return _buildPlayerList(playerNames, context, questionSnapshot);
+                final playerIds = players.map((player) => player['id']).toList();
+                return _buildPlayerList(playerNames, context, questionSnapshot, playerIds);
               }
             },
           ),
@@ -41,7 +42,7 @@ class PlayersScreen extends StatelessWidget {
       },
     );
   }
-  Widget _buildPlayerList(List<String?> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot) {
+  Widget _buildPlayerList(List<String?> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot, List<String?> playerIds ) {
     final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
     // Check the value of the current question
     if (snapshot.data == 0) {
