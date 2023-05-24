@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:quizish/Screens/homescreen.dart';
 import 'package:quizish/Screens/quiz_screen.dart';
 import 'package:quizish/Widgets/in_game_appbar.dart';
 import 'package:quizish/models/Session.dart';
@@ -34,6 +35,30 @@ class PlayersScreen extends StatelessWidget {
                 final players = snapshot.data ?? [];
                 final playerNames = players.map((player) => player['displayName']).toList();
                 final playerIds = players.map((player) => player['playerId']).toList();
+                final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+                final isCurrentUserInSession = playerIds.contains(currentUserUid);
+                final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
+
+
+                if(!isCurrentUserInSession && !isHost) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Session Notification'),
+                          content: const Text('You are no longer a part of this session'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushReplacementNamed('/home');
+                                },
+                                child: const Text('Return to the home-screen'),
+                            ),
+                          ],
+                        ),
+                    );
+                  });
+                }
                 return _buildPlayerList(playerNames, context, questionSnapshot, playerIds);
               }
             },
