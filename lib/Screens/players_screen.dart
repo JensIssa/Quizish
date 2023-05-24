@@ -161,14 +161,24 @@ class PlayersScreen extends StatelessWidget {
       color: Colors.white,
       borderRadius: BorderRadius.circular(10),
     ),
-    child: Center(
-    child: Text(     playerName,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.blue,
-      ),
-    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+        child: Text(     playerName,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
+        ),
+        ),
+        Center(
+          child: IconButton(onPressed: (){
+
+          }, icon: const Icon(Icons.close, color: Colors.black, size: 30)),
+        )
+      ],
     ),
       ),
     );
