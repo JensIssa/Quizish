@@ -51,7 +51,6 @@ class QuizNotifierModel extends ChangeNotifier {
     if (isAnswered(questionNumber)) {
       return;
     }
-
     Answers userAnswer = _selectedAnswers.putIfAbsent(
       quiz!.questions[questionNumber!],
       () => quiz!.questions[questionNumber].answers[answerIndex],
