@@ -23,7 +23,7 @@ class PlayersScreen extends StatelessWidget {
       builder: (context, questionSnapshot) {
         return Scaffold(
           appBar: InGameAppBar(onLeave: () {}),
-          body: StreamBuilder<List<String>>(
+          body: StreamBuilder<List<Map<String, String>>>(
             stream: _gameSessionService.getAllUsersBySession(gameSession?.id),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -31,8 +31,10 @@ class PlayersScreen extends StatelessWidget {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
-                final playerNames = snapshot.data ?? [];
-                return _buildPlayerList(playerNames, context, questionSnapshot);
+                final players = snapshot.data ?? [];
+                final playerNames = players.map((player) => player['displayName']).toList();
+                final playerIds = players.map((player) => player['playerId']).toList();
+                return _buildPlayerList(playerNames, context, questionSnapshot, playerIds);
               }
             },
           ),
@@ -40,7 +42,7 @@ class PlayersScreen extends StatelessWidget {
       },
     );
   }
-  Widget _buildPlayerList(List<String> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot) {
+  Widget _buildPlayerList(List<String?> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot, List<String?> playerIds ) {
     final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
     // Check the value of the current question
     if (snapshot.data == 0) {
@@ -72,7 +74,8 @@ class PlayersScreen extends StatelessWidget {
                   mainAxisSpacing: 20,
                 ),
                 itemBuilder: (context, index) =>
-                    _playerNameBox(playerNames[index]),
+                    _playerNameBox(playerNames[index]!,
+                    playerIds[index]!),
                 itemCount: playerNames.length,
               ),
             ),
@@ -151,7 +154,8 @@ class PlayersScreen extends StatelessWidget {
     );
   }
 
-  Widget _playerNameBox(String playerName) {
+  Widget _playerNameBox(String playerName, String playerId) {
+    final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
     return Padding(
       padding: const EdgeInsets.all(10),
       child: DecoratedBox(
@@ -159,14 +163,26 @@ class PlayersScreen extends StatelessWidget {
       color: Colors.white,
       borderRadius: BorderRadius.circular(10),
     ),
-    child: Center(
-    child: Text(     playerName,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.blue,
-      ),
-    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+        child: Text(
+          playerName,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
+        ),
+        ),
+        if(isHost)
+        Center(
+          child: IconButton(onPressed: (){
+            _gameSessionService.removeUserFromSession(gameSession?.id, playerId);
+          }, icon: const Icon(Icons.close, color: Colors.black, size: 30)),
+        )
+      ],
     ),
       ),
     );

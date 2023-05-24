@@ -145,14 +145,14 @@ class GameSessionService {
     }
   }
 
-  Future<void> removeUserFromSession(String sessionId, User user) async {
+  Future<void> removeUserFromSession(String? sessionId, String userid) async {
     try {
       DocumentSnapshot sessionSnapshot = await _gameSessionsCollection.doc(sessionId).get();
       if (sessionSnapshot.exists) {
         final data = sessionSnapshot.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>?
         final scores = data?['scores'] as Map<dynamic, dynamic>?; // Cast to Map<dynamic, dynamic>?
         if (scores != null) {
-          scores.remove(user.uid);
+          scores.remove(userid);
           await _gameSessionsCollection.doc(sessionId).update({'scores': scores});
         }
       } else {
@@ -246,7 +246,7 @@ class GameSessionService {
     return null;
   }
 
-  Stream<List<String>> getAllUsersBySession(String? sessionId) async* {
+  Stream<List<Map<String, String>>> getAllUsersBySession(String? sessionId) async* {
     try {
       final gameSessionData = getGameSessionData(sessionId!);
       await for (final gameSession in gameSessionData) {
@@ -254,15 +254,20 @@ class GameSessionService {
           final scores = gameSession['scores'];
           if (scores != null && scores is Map<dynamic, dynamic>) {
             final playerIds = scores.keys.cast<String>().toList();
-            final displayNames = <String>[];
+            final users = <Map<String, String>>[];
             for (var playerId in playerIds) {
               final displayName = await getUserDisplayName(playerId);
               if (displayName != null) {
-                displayNames.add(displayName);
+                final user = {
+                  'playerId': playerId,
+                  'displayName': displayName,
+                };
+                users.add(user);
               }
             }
-            yield displayNames;
-            print(displayNames);
+
+            yield users;
+            print(users);
           }
         } else {
           yield [];
