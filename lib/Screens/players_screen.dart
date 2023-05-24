@@ -8,6 +8,7 @@ import 'package:quizish/Widgets/in_game_appbar.dart';
 import 'package:quizish/models/Session.dart';
 import 'package:quizish/provider/quiz_notifier_model.dart';
 import '../FireServices/RealTimeExample.dart';
+import 'homescreen.dart';
 
 
 class PlayersScreen extends StatelessWidget {
@@ -36,29 +37,6 @@ class PlayersScreen extends StatelessWidget {
                 final playerNames = players.map((player) => player['displayName']).toList();
                 final playerIds = players.map((player) => player['playerId']).toList();
                 final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
-                final isCurrentUserInSession = playerIds.contains(currentUserUid);
-                final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
-
-
-                if(!isCurrentUserInSession && !isHost) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Session Notification'),
-                          content: const Text('You are no longer a part of this session'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).popAndPushNamed('/home');
-                                },
-                                child: const Text('Return to the home-screen'),
-                            ),
-                          ],
-                        ),
-                    );
-                  });
-                }
                 return _buildPlayerList(playerNames, context, questionSnapshot, playerIds);
               }
             },
@@ -75,6 +53,27 @@ class PlayersScreen extends StatelessWidget {
       quizProvider.setGameSession(gameSession!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
+      });
+    }
+    final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+    final isCurrentUserInSession = playerIds.contains(currentUserUid);
+    if(!isCurrentUserInSession && !isHost) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Session Notification'),
+            content: const Text('You are no longer a part of this session'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).popAndPushNamed('/home');
+                },
+                child: const Text('Return to the home-screen'),
+              ),
+            ],
+          ),
+        );
       });
     }
 
