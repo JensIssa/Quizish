@@ -98,12 +98,24 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                   ),
                 ),
+                image_input(quizProvider, questionNumber),
                 _answersOptionsContainer(quizProvider, questionNumber),
               ],
             ),
           );
         });
   }
+
+    image_input(QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
+     return Padding(
+               padding: const EdgeInsets.all(8.0),
+               child: Image.network(
+                 quizProvider.currentQuestionImage(questionNumber.data) ?? '',
+                 width: 150,
+                 height: 80,
+               ),
+             );
+   }
 
   _answersOptionsContainer(
       QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
