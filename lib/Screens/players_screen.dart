@@ -23,7 +23,19 @@ class PlayersScreen extends StatelessWidget {
       stream: _gameSessionService.getCurrentQuestion(gameSession?.id),
       builder: (context, questionSnapshot) {
         return Scaffold(
-          appBar: InGameAppBar(onLeave: () {}),
+          appBar: InGameAppBar(onLeave: () {
+            if (gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid) {
+              SnackBar snackBar = const SnackBar(
+                content: Text('You are the host of this session. You cannot leave.'),
+                duration: Duration(seconds: 2),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+            else {
+              _gameSessionService.leaveSessionAsUser(gameSession?.id);
+              Navigator.of(context).popAndPushNamed('/home');
+            }
+          }),
           body: StreamBuilder<List<Map<String, String>>>(
             stream: _gameSessionService.getAllUsersBySession(gameSession?.id),
             builder: (context, snapshot) {
@@ -41,23 +53,7 @@ class PlayersScreen extends StatelessWidget {
 
 
                 if(!isCurrentUserInSession && !isHost) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Session Notification'),
-                          content: const Text('You are no longer a part of this session'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).popAndPushNamed('/home');
-                                },
-                                child: const Text('Return to the home-screen'),
-                            ),
-                          ],
-                        ),
-                    );
-                  });
+                  _showUserKickedDialog(context);
                 }
                 return _buildPlayerList(playerNames, context, questionSnapshot, playerIds);
               }
@@ -209,6 +205,41 @@ class PlayersScreen extends StatelessWidget {
         )
       ],
     ),
+      ),
+    );
+  }
+
+  Future<void> _showUserKickedDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text('You are no longer part of this session',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )),
+              const SizedBox(height: 15),
+              SizedBox(
+                width: 350,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {Navigator.of(context, rootNavigator: true).popAndPushNamed('/home'); },
+                      child: const Text('Return to the home-screen'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
