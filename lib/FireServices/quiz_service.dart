@@ -58,9 +58,9 @@ class QuizService {
   }
 
   Future<String> uploadImage(XFile image) async {
-    Reference ref = FirebaseStorage.instance.ref().child('quiz_images/${DateTime.now().microsecondsSinceEpoch.toString()}.jpg');
+    Reference ref = FirebaseStorage.instance.ref().child("quiz_images/${generateId()}/QuestionImage");
     if (kIsWeb){
-      UploadTask uploadTask = ref.putData(await image.readAsBytes(), SettableMetadata(contentType: 'image/jpeg'));
+      UploadTask uploadTask = ref.putData(await image.readAsBytes());
       TaskSnapshot snap = await uploadTask;
       String downloadUrl = await snap.ref.getDownloadURL();
       return downloadUrl;
@@ -73,9 +73,6 @@ class QuizService {
     }
     return "";
   }
-
-
-
 
   // Get the display name for a given user ID
   Future<String> getUserDisplayName(String userId) async {

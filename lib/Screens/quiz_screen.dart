@@ -34,10 +34,11 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget build(BuildContext context) {
     QuizNotifierModel quizProvider =
     Provider.of<QuizNotifierModel>(context, listen: true);
-
     return StreamBuilder<int?>(
       stream: quizProvider.questionNumberStream(),
       builder: (context, questionNumber) {
+        String? imageUrl = quizProvider.currentQuestionImage(questionNumber.data);
+        print('imageUrl: $imageUrl');
         return Scaffold(
           appBar: AppBar(
             title: const Text('Quiz'),
