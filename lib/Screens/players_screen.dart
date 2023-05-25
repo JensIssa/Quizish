@@ -53,7 +53,9 @@ class PlayersScreen extends StatelessWidget {
 
 
                 if(!isCurrentUserInSession && !isHost) {
-                  _showUserKickedDialog(context);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _showUserKickedDialog(context);
+                  });
                 }
                 return _buildPlayerList(playerNames, context, questionSnapshot, playerIds);
               }
@@ -138,7 +140,7 @@ class PlayersScreen extends StatelessWidget {
             ),
           ),
           Text(
-            '10 questions',
+            'Questions: ${gameSession?.quiz?.questions.length ?? 'No Question'}',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w100,
