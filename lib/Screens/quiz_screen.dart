@@ -107,14 +107,24 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
     image_input(QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
-     return Padding(
-               padding: const EdgeInsets.all(8.0),
-               child: Image.network(
-                 quizProvider.currentQuestionImage(questionNumber.data) ?? '',
-                 width: 150,
-                 height: 80,
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var pictureHeight = height / 3;
+    var pictureWidth = width / 2;
+
+    if (height > 1200) {
+      height = height / 2;
+    }
+    return Flexible(
+      child: Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Image.network(
+                   quizProvider.currentQuestionImage(questionNumber.data) ?? '',
+                   width: pictureWidth,
+                   height: pictureHeight,
+                 ),
                ),
-             );
+    );
    }
 
   _answersOptionsContainer(
