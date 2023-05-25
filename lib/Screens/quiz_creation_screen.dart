@@ -4,6 +4,9 @@ import 'package:quizish/FireServices/quiz_service.dart';
 
 import '../models/Quiz.dart';
 
+import 'package:image_picker/image_picker.dart';
+
+
 class QuizCreationScreen extends StatefulWidget {
   const QuizCreationScreen({Key? key}) : super(key: key);
 
@@ -124,6 +127,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         Row(
           children: [
             _questionNumber(question),
+            _imageInput(question),
             _questionInput(question),
             _timeInput(question),
             _deleteBtn(question, index)
@@ -135,6 +139,38 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         ),
         const SizedBox(height: 20)
       ],
+    );
+  }
+
+  Widget _imageInput(Question question) {
+    final ImagePicker _imagePicker = ImagePicker();
+
+    Future<void> _selectImage() async {
+      final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        setState(() {
+          // Update the question object with the selected image or the image path
+          question.imageUrl = image.path;
+        });
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: SizedBox(
+        width: 40,
+        height: 50,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: backgroundColor,
+          ),
+          child: IconButton(
+            icon: Icon(Icons.image),
+            onPressed: _selectImage,
+          ),
+        ),
+      ),
     );
   }
 
