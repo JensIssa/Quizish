@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:quizish/Screens/homescreen.dart';
 import 'package:quizish/Screens/quiz_screen.dart';
 import 'package:quizish/Widgets/in_game_appbar.dart';
 import 'package:quizish/models/Session.dart';
@@ -22,7 +23,20 @@ class PlayersScreen extends StatelessWidget {
       stream: _gameSessionService.getCurrentQuestion(gameSession?.id),
       builder: (context, questionSnapshot) {
         return Scaffold(
-          appBar: InGameAppBar(onLeave: () {}),
+          appBar: InGameAppBar(onLeave: () {
+            if (gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid) {
+              SnackBar snackBar = const SnackBar(
+                content: Text(
+                    'You are the host of this session. You cannot leave.'),
+                duration: Duration(seconds: 2),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+            else {
+              _gameSessionService.leaveSessionAsUser(gameSession?.id);
+              Navigator.of(context).popAndPushNamed('/home');
+            }
+          }),
           body: StreamBuilder<List<Map<String, String>>>(
             stream: _gameSessionService.getAllUsersBySession(gameSession?.id),
             builder: (context, snapshot) {
@@ -32,9 +46,24 @@ class PlayersScreen extends StatelessWidget {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
                 final players = snapshot.data ?? [];
-                final playerNames = players.map((player) => player['displayName']).toList();
-                final playerIds = players.map((player) => player['playerId']).toList();
-                return _buildPlayerList(playerNames, context, questionSnapshot, playerIds);
+                final playerNames = players.map((
+                    player) => player['displayName']).toList();
+                final playerIds = players.map((player) => player['playerId'])
+                    .toList();
+                /*
+                final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+                final isCurrentUserInSession = playerIds.contains(currentUserUid);
+                final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
+
+
+                if(!isCurrentUserInSession && !isHost) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _showUserKickedDialog(context);
+                  });
+                }
+                 */
+                return _buildPlayerList(
+                    playerNames, context, questionSnapshot, playerIds);
               }
             },
           ),
@@ -42,14 +71,18 @@ class PlayersScreen extends StatelessWidget {
       },
     );
   }
-  Widget _buildPlayerList(List<String?> playerNames, BuildContext context, AsyncSnapshot<int?> snapshot, List<String?> playerIds ) {
-    final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
+
+  Widget _buildPlayerList(List<String?> playerNames, BuildContext context,
+      AsyncSnapshot<int?> snapshot, List<String?> playerIds) {
+    final isHost = gameSession?.hostId ==
+        FirebaseAuth.instance.currentUser?.uid;
     // Check the value of the current question
     if (snapshot.data == 0) {
       var quizProvider = Provider.of<QuizNotifierModel>(context, listen: false);
       quizProvider.setGameSession(gameSession!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => QuizScreen(gameSession!)));
       });
     }
 
@@ -75,7 +108,7 @@ class PlayersScreen extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) =>
                     _playerNameBox(playerNames[index]!,
-                    playerIds[index]!),
+                        playerIds[index]!),
                 itemCount: playerNames.length,
               ),
             ),
@@ -103,11 +136,10 @@ class PlayersScreen extends StatelessWidget {
   }
 
 
-
   Widget _quizName() {
     return Container(
       child: Column(
-        children:  [
+        children: [
           Text(
             gameSession?.quiz?.title ?? 'Loading...',
             style: const TextStyle(
@@ -117,7 +149,8 @@ class PlayersScreen extends StatelessWidget {
             ),
           ),
           Text(
-            '10 questions',
+            'Questions: ${gameSession?.quiz?.questions.length ??
+                'No Question'}',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w100,
@@ -132,7 +165,7 @@ class PlayersScreen extends StatelessWidget {
   Widget _gamePin() {
     return Container(
       child: Center(
-        child: Column(children:  [
+        child: Column(children: [
           const Text(
             'Game code: ',
             style: TextStyle(
@@ -155,39 +188,80 @@ class PlayersScreen extends StatelessWidget {
   }
 
   Widget _playerNameBox(String playerName, String playerId) {
-    final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
+    final isHost = gameSession?.hostId ==
+        FirebaseAuth.instance.currentUser?.uid;
     return Padding(
       padding: const EdgeInsets.all(10),
       child: DecoratedBox(
-      decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-        child: Text(
-          playerName,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.blue,
-          ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
         ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Text(
+                playerName,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+            if(isHost)
+              Center(
+                child: IconButton(onPressed: () {
+                  _gameSessionService.removeUserFromSession(
+                      gameSession?.id, playerId);
+                },
+                    icon: const Icon(
+                        Icons.close, color: Colors.black, size: 30)),
+              )
+          ],
         ),
-        if(isHost)
-        Center(
-          child: IconButton(onPressed: (){
-            _gameSessionService.removeUserFromSession(gameSession?.id, playerId);
-          }, icon: const Icon(Icons.close, color: Colors.black, size: 30)),
-        )
-      ],
-    ),
       ),
     );
   }
 }
+  /*
+  Future<void> _showUserKickedDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text('You are no longer part of this session',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )),
+              const SizedBox(height: 15),
+              SizedBox(
+                width: 350,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {Navigator.of(context, rootNavigator: true).popAndPushNamed('/home'); },
+                      child: const Text('Return to the home-screen'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  */
+
 
 class QrButton extends StatelessWidget {
   final String? gameSessionId;

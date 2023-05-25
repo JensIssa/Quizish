@@ -38,6 +38,7 @@ class _InAppContainerState extends State<InAppContainer> {
     return Scaffold(
       appBar: AppBar(
         title: _widgetOptions[_selectedIndex].item2,
+          automaticallyImplyLeading: false,
           actions: [
             IconButton(onPressed: () {
               context.read<AppBloc>().add(AppLogOutRequested());
