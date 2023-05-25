@@ -71,6 +71,10 @@ class QuizNotifierModel extends ChangeNotifier {
     return quiz!.questions[questionNumber!].question;
   }
 
+  String? currentQuestionImage(int? questionNumber) {
+    return quiz!.questions[questionNumber!].imageUrl;
+  }
+
   int currentQuestionTimeLimit(int? questionNumber) {
     return quiz!.questions[questionNumber!].timer;
   }

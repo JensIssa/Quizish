@@ -1,7 +1,3 @@
-import 'dart:html';
-
-import 'package:firebase_auth/firebase_auth.dart';
-
 class Quiz {
   String title;
   String id;

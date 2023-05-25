@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:html';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+
 import 'package:http/http.dart' as http;
 
 import '../models/Quiz.dart';
@@ -47,13 +45,6 @@ class QuizService {
       DocumentReference quizRef =
       FirebaseFirestore.instance.collection('quizzes').doc();
       quiz.id = quizRef.id;
-      // Set quiz data in Firestore
-      await quizRef.set(quiz.toMap());
-      // Update author and authorDisplayName
-      await quizRef.update({'author': user.uid});
-      String displayName = await getUserDisplayName(user.uid);
-      await quizRef.update({'authorDisplayName': displayName});
-      // Upload images to Firebase Storage and get the download URLs
       List<String> imageUrls = await _uploadImages(quiz.questions);
       // Update quiz data with image URLs
       for (int i = 0; i < quiz.questions.length; i++) {
@@ -63,11 +54,20 @@ class QuizService {
           print(question.imageUrl);
         }
       }
+      // Set quiz data in Firestore
+      await quizRef.set(quiz.toMap());
+      // Update author and authorDisplayName
+      await quizRef.update({'author': user.uid});
+      String displayName = await getUserDisplayName(user.uid);
+      await quizRef.update({'authorDisplayName': displayName});
+      // Upload images to Firebase Storage and get the download URLs
+
       print(quiz);
     } catch (e) {
       print('Error creating quiz: $e');
     }
   }
+
   Future<List<String>> _uploadImages(List<Question> questions) async {
     List<String> imageUrls = [];
     for (Question question in questions) {
@@ -80,7 +80,8 @@ class QuizService {
           String imagePath = 'quiz_images/$imageName.jpg';
           storage.Reference imageRef =
           storage.FirebaseStorage.instance.ref().child(imagePath);
-          await imageRef.putData(imageData);
+          await imageRef.putData(imageData, storage.SettableMetadata(
+              contentType: 'image/jpeg'));
           String downloadUrl = await imageRef.getDownloadURL();
           imageUrls.add(downloadUrl);
         } catch (e) {
@@ -91,7 +92,6 @@ class QuizService {
         imageUrls.add(''); // Add empty URL for questions without images
       }
     }
-
     return imageUrls;
   }
 
