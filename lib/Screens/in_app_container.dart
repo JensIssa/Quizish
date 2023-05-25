@@ -16,6 +16,9 @@ class InAppContainer extends StatefulWidget {
   State<InAppContainer> createState() => _InAppContainerState();
 }
 
+/**
+ * This class contains all the screens that are in the navigation bar
+ */
 class _InAppContainerState extends State<InAppContainer> {
   int _selectedIndex = 0;
 
@@ -28,6 +31,9 @@ class _InAppContainerState extends State<InAppContainer> {
 
   //TODO: Consider provider to fix appbar and bottom nav bar not showing on first view
 
+  /**
+   * Sets the state of the on tap of the bottom navigation bar
+   */
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

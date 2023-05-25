@@ -9,6 +9,9 @@ class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit(this._authService) : super(RegisterState.initial());
 
 
+  /**
+   * This method is called when the user changes the email
+   */
   void emailChanged(String value) {
     emit(
         state.copyWith
@@ -19,6 +22,9 @@ class RegisterCubit extends Cubit<RegisterState> {
     );
   }
 
+  /**
+   * This method is called when the user changes the password
+   */
   void passwordChanged(String value) {
     emit(state.copyWith
       (password: value,
@@ -26,6 +32,10 @@ class RegisterCubit extends Cubit<RegisterState> {
       ),
     );
   }
+
+  /**
+   * This method is called when the user changes the display name
+   */
   void displayNameChanged(String value){
     emit(state.copyWith
       (displayName: value,
@@ -34,6 +44,9 @@ class RegisterCubit extends Cubit<RegisterState> {
     );
   }
 
+  /**
+   * This method registers the user with credentials provided by the user
+   */
   Future<void> registerFormSubmitted() async {
     if (state.status == RegisterStatus.submitting) {
       emit(state.copyWith(status: RegisterStatus.submitting));

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/**
+ * A Material widget that is a button with a text in the center.
+ */
 class QuizButton extends Material {
   QuizButton({
     Key? key,

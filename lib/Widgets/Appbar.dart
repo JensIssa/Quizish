@@ -13,6 +13,7 @@ class PurpleAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.backgroundColor,
   }) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
     return AppBar(

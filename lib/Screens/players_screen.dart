@@ -17,6 +17,13 @@ class PlayersScreen extends StatelessWidget {
 
   PlayersScreen({Key? key, this.gameSession, this.gamePin}) : super(key: key);
 
+  /**
+   * This method builds the player list
+   * It also checks if the current user is the host of the session
+   * If so, it will show a button to start the game session
+   * If not, it will show a button to leave the session
+   * It also contains two streams, one for the players and one for the current question
+   */
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<int?>(
@@ -72,6 +79,9 @@ class PlayersScreen extends StatelessWidget {
     );
   }
 
+  /**
+   * This method builds the player name box
+   */
   Widget _buildPlayerList(List<String?> playerNames, BuildContext context,
       AsyncSnapshot<int?> snapshot, List<String?> playerIds) {
     final isHost = gameSession?.hostId ==
@@ -86,6 +96,9 @@ class PlayersScreen extends StatelessWidget {
       });
     }
 
+    /**
+     * This method builds the players list
+     */
     return Stack(
       children: [
         Column(
@@ -136,6 +149,9 @@ class PlayersScreen extends StatelessWidget {
   }
 
 
+  /**
+   * This widget builds the quiz name box and displays the quiz name
+   */
   Widget _quizName() {
     return Container(
       child: Column(
@@ -162,6 +178,9 @@ class PlayersScreen extends StatelessWidget {
     );
   }
 
+  /**
+   * This widget builds the game pin box and displays the game pin
+   */
   Widget _gamePin() {
     return Container(
       child: Center(
@@ -187,6 +206,9 @@ class PlayersScreen extends StatelessWidget {
     );
   }
 
+  /**
+   * This widget builds the player name box and displays the player name
+   */
   Widget _playerNameBox(String playerName, String playerId) {
     final isHost = gameSession?.hostId ==
         FirebaseAuth.instance.currentUser?.uid;
@@ -262,6 +284,9 @@ class PlayersScreen extends StatelessWidget {
   }
 
 
+/**
+ * This widget builds the QR button and displays the QR code for the game session
+ */
 
 class QrButton extends StatelessWidget {
   final String? gameSessionId;

@@ -49,6 +49,9 @@ class AccountDetails extends StatelessWidget {
     );
   }
 
+  /**
+   * This method builds a text field, used for the display name, email and password
+   */
   Widget buildTextField(
       String labelText,
       bool isPasswordTextfield,
@@ -74,6 +77,11 @@ class AccountDetails extends StatelessWidget {
     );
   }
 
+  /**
+   * This method sets the new display name, email and password
+   * and updates the account details
+   * If no fields are entered, an error message is shown
+   */
   void updateAccountDetails(BuildContext context,
       TextEditingController displayNameController,
       TextEditingController emailController,

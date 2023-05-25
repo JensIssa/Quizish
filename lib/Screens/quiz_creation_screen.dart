@@ -30,8 +30,12 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
 
   Color backgroundColor = Colors.grey[800]!;
 
-  //Use the index of the question for name field, with "a, b, c, d" to get the answer fields, and index + "_t" for time field
-
+  /**
+   * This method saves the quiz title and description to the quiz object
+   * It also validates the form and shows a snackbar if the form is invalid
+   * It also checks if the quiz has any questions and shows a snackbar if it doesn't
+   * It also calls the quizService to create the quiz
+   */
   _saveQuiz(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -56,6 +60,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     }
   }
 
+  /**
+   * This Widget builds the quiz creation screen
+   */
   @override
   Widget build(BuildContext context) {
     backgroundColor = _backgroundColor(context);
@@ -121,6 +128,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     }
   }
 
+  /**
+   * This builds the question input widget
+   */
   _questionWidget(Question question, int index) {
     return Column(
       children: [
@@ -142,6 +152,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This builds the image input widget
+   */
   Widget _imageInput(Question question) {
     final ImagePicker imagePicker = ImagePicker();
 
@@ -177,6 +190,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This builds the question number widget
+   */
   _questionNumber(Question question) {
     return Padding(
       padding: const EdgeInsets.all(5),
@@ -200,6 +216,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This builds the question input widget
+   */
   _questionInput(Question question) {
     return Expanded(
       child: Padding(
@@ -230,6 +249,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This builds the timer input widget
+   */
   _timeInput(Question question) {
     return Padding(
       padding: const EdgeInsets.all(5),
@@ -283,6 +305,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This builds the delete button widget
+   */
   _deleteBtn(Question question, int index) {
     return Padding(
       padding: const EdgeInsets.all(5),
@@ -319,6 +344,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This builds the answer field widget
+   */
   _answerInput(Question question) {
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -340,6 +368,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This builds the quiz info widget
+   */
   _quizInfoInput() {
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -418,6 +449,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This builds the answer field widget
+   */
   _answerField(int answerIndex, Question question) {
     Color color;
     switch (answerIndex) {
@@ -503,6 +537,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This builds the background color for the quiz
+   */
   _backgroundColor(BuildContext context) {
     var themeColor = Theme.of(context).scaffoldBackgroundColor;
     var hslColorBG = HSLColor.fromColor(themeColor);
@@ -513,6 +550,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         : Colors.grey[300];
   }
 
+  /**
+   * This builds the dialog that appears when the quiz is saved
+   */
   _showOnSavedDialog(BuildContext context) {
     return showDialog<String>(
       context: context,
@@ -556,6 +596,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
   }
 
+  /**
+   * This method creates a new quiz
+   */
   _createNewQuiz(BuildContext context) {
     setState(() {
       _quizTitle.clear();

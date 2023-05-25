@@ -1,4 +1,7 @@
 import 'package:image_picker/image_picker.dart';
+/**
+ * This class represents a quiz, with it's related classes, answers and question
+ */
 
 class Quiz {
   String title;

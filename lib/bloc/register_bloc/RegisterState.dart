@@ -15,6 +15,9 @@ class RegisterState extends Equatable {
     required this.status
   });
 
+  /**
+   * This method sets the initial state of the register form
+   */
   factory RegisterState.initial() {
     return const RegisterState(
       email: '',

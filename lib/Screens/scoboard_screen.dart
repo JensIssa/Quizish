@@ -21,6 +21,14 @@ class Leaderboard extends StatelessWidget {
     var quizModel = Provider.of<QuizNotifierModel>(context, listen: true);
     GameSessionService gameSessionService = GameSessionService();
 
+    /**
+     * This is the screen that shows the leaderboard of a quiz.
+     * It is shown after each question.
+     * It is also shown at the end of the quiz.
+     * It shows the scores of all the players, in ascending order.
+     * It has a stream builder that listens to the question number stream.
+     * It has a stream builder that listens to the scores stream.
+     */
     return StreamBuilder<int?>(
       stream: quizModel.questionNumberStream(),
       builder: (context, questionNumberSnapshot) {
@@ -87,10 +95,16 @@ class Leaderboard extends StatelessWidget {
   }
 
 
+  /**
+   * This is the tile color for the leaderboard.
+   */
   _tileColor(BuildContext context, double opacity) {
     return Theme.of(context).colorScheme.secondary.withOpacity(opacity);
   }
 
+  /**
+   * This is the app bar for the leaderboard, that has the question number, and the timer.
+   */
   AppBar appBars(BuildContext context, AsyncSnapshot<int?> questionNumber,
       QuizNotifierModel quizModel) {
     var appBarActiveGame = AppBar(
@@ -153,6 +167,9 @@ class Leaderboard extends StatelessWidget {
         : appBarActiveGame;
   }
 
+  /**
+   * This is the timer for the leaderboard.
+   */
   _timer(BuildContext context, QuizNotifierModel quizModel, int seconds,
       CountdownController controller, VoidCallback onFinished) {
     return Padding(

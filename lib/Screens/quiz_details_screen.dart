@@ -14,6 +14,9 @@ class QuizDetailsScreen extends StatelessWidget {
 
   const QuizDetailsScreen({Key? key, required this.quiz}) : super(key: key);
 
+  /**
+   * This is the screen that shows the details of a quiz.
+   */
   @override
   Widget build(BuildContext context) {
     final GameSessionService gameSessionService = GameSessionService();

@@ -12,6 +12,9 @@ class GameSessionService {
   final CollectionReference _gameSessionsCollection =
   FirebaseFirestore.instance.collection('gameSessions');
 
+  /**
+   * This method generates a randomId of the specified length
+   */
   String generateRandomId(int length) {
     final random = Random();
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -22,7 +25,9 @@ class GameSessionService {
     return result;
   }
 
-  //delete session
+  /**
+   * This method deletes a gamesession from firebase
+   */
   Future<void> deleteSession(String? sessionId) async {
     try {
       await _gameSessionsCollection.doc(sessionId).delete();
@@ -31,6 +36,9 @@ class GameSessionService {
     }
   }
 
+  /**
+   * This method increments the score of the specified user, in the specified session, using a cloud function
+   */
   Future<void> incrementScore(String? sessionId, String userId) async {
     try {
       final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('incrementScore');
@@ -52,25 +60,9 @@ class GameSessionService {
     }
   }
 
-  Future<void> incrementQuestion(String? sessionId) async {
-    try{
-      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('incremenCurrentQuestion');
-
-      final result = await callable.call({
-        'sessionId': sessionId,
-      });
-      final data = result.data;
-      if(data['success']) {
-        print('Current question incremented successfully');
-      } else {
-        print('Error incrementing current question');
-      }
-    }
-    catch(error){
-      print('Error calling incrementCurrentQuestion function: $error');
-    }
-  }
-
+  /**
+   * This method creates a game session and sends it to firebase
+   */
   Future<GameSession> createGameSession(Quiz quiz) async {
     User? _host = FirebaseAuth.instance.currentUser!;
     String gameSessionId = generateRandomId(5);
@@ -94,7 +86,9 @@ class GameSessionService {
   }
 
 
-
+  /**
+   * This method increments the current question of the specified session
+   */
   Future<void> incrementCurrent(String? sessionId)async {
     try{
       _gameSessionsCollection.doc(sessionId).update({'currentQuestion': FieldValue.increment(1)});
@@ -104,6 +98,9 @@ class GameSessionService {
   }
 
 
+  /**
+   * This method gets a gamesession from firebase using the specified sessionId and returns it
+   */
   Future<GameSession?> getGameSessionByCode(String sessionId) async {
     try {
       DocumentSnapshot sessionSnapshot = await _gameSessionsCollection.doc(sessionId).get();
@@ -125,6 +122,9 @@ class GameSessionService {
     return null;
   }
 
+  /**
+   * This method adds a user to the specified session
+   */
   Future<void> addUserToSession(String sessionId, User? user) async {
     try {
       DocumentSnapshot sessionSnapshot =
@@ -146,6 +146,9 @@ class GameSessionService {
     }
   }
 
+  /**
+   * This method adds a quiz to the specified session
+   */
   Future<void> addQuizToSession(String sessionId, Quiz quiz) async {
     try {
       await _gameSessionsCollection
@@ -156,7 +159,9 @@ class GameSessionService {
     }
   }
 
-  //Leave session as user
+  /**
+   * This method removes a user from the specified session
+   */
   Future<void> leaveSessionAsUser(String? sessionId) async {
     try{
       _gameSessionsCollection.doc(sessionId).update({'scores': FieldValue.delete()});
@@ -165,6 +170,9 @@ class GameSessionService {
     }
   }
 
+  /**
+   * This method adds a host to the specified session
+   */
   Future<void> addHostToSession(String sessionId, User user) async {
     try {
       await _gameSessionsCollection.doc(sessionId).update({'hostId': user.uid});
@@ -173,6 +181,9 @@ class GameSessionService {
     }
   }
 
+  /**
+   * This method removes a user from the specified session
+   */
   Future<void> removeUserFromSession(String? sessionId, String userid) async {
     try {
       DocumentSnapshot sessionSnapshot = await _gameSessionsCollection.doc(sessionId).get();
@@ -191,6 +202,9 @@ class GameSessionService {
     }
   }
 
+  /**
+   * This method returns the current question of the specified session
+   */
   Stream<int?> getCurrentQuestion(String? sessionId) {
     return _gameSessionsCollection.doc(sessionId).snapshots().map((snapshot) {
       if (snapshot.exists) {
@@ -203,6 +217,9 @@ class GameSessionService {
     });
   }
 
+  /**
+   * This method returns the scores of the specified session
+   */
   Stream<Map<String, dynamic>?> getScores(String? sessionId) {
     return _gameSessionsCollection.doc(sessionId).snapshots().asyncMap((snapshot) async {
       if (snapshot.exists) {
@@ -250,10 +267,16 @@ class GameSessionService {
     });
   }
 
+  /**
+   * This method returns the gameSession data of the specified session
+   */
   Stream<DocumentSnapshot> getGameSessionData(String sessionId) {
     return _gameSessionsCollection.doc(sessionId).snapshots();
   }
 
+  /**
+   * This method returns the user display name of the specified user, given the user id
+   */
   Future<String?> getUserDisplayName(String userId) async {
     try {
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
@@ -274,6 +297,10 @@ class GameSessionService {
     return null;
   }
 
+  /**
+   * This method returns all the users in a given session, by looping through the playerIds in the scores map of the session
+   * It also returns the user id for each user
+   */
   Stream<List<Map<String, String>>> getAllUsersBySession(String? sessionId) async* {
     try {
       final gameSessionData = getGameSessionData(sessionId!);

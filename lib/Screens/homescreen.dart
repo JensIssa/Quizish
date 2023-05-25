@@ -22,6 +22,12 @@ class _HomeScreenState extends State<HomeScreen> {
     _quizStream = _quizService.getQuizzes();
   }
 
+  /**
+   * This method is builds a StreamBuilder that listens to the quizStream
+   * and returns the home screen accordingly
+   * It also uses a Hero widget to animate the transition between the home screen and the quiz details screen
+   * It also uses a GridView to display the quizzes
+   */
   @override
   Widget build(BuildContext context) {
     const spacing = 5.0;

@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 
+/**
+ * This class represents a user
+ */
 class User extends Equatable {
   final String? uid;
   final String? email;
