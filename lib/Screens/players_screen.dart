@@ -50,18 +50,18 @@ class PlayersScreen extends StatelessWidget {
                     player) => player['displayName']).toList();
                 final playerIds = players.map((player) => player['playerId'])
                     .toList();
-                /*
-                final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
-                final isCurrentUserInSession = playerIds.contains(currentUserUid);
-                final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
 
+                // final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+                // final isCurrentUserInSession = playerIds.contains(currentUserUid);
+                // final isHost = gameSession?.hostId == FirebaseAuth.instance.currentUser?.uid;
+                //
+                //
+                // if(!isCurrentUserInSession && !isHost) {
+                //   WidgetsBinding.instance.addPostFrameCallback((_) {
+                //     _showUserKickedDialog(context);
+                //   });
+                // }
 
-                if(!isCurrentUserInSession && !isHost) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _showUserKickedDialog(context);
-                  });
-                }
-                 */
                 return _buildPlayerList(
                     playerNames, context, questionSnapshot, playerIds);
               }
@@ -225,7 +225,7 @@ class PlayersScreen extends StatelessWidget {
     );
   }
 }
-  /*
+
   Future<void> _showUserKickedDialog(BuildContext context) {
     return showDialog<void>(
       context: context,
@@ -260,7 +260,7 @@ class PlayersScreen extends StatelessWidget {
       ),
     );
   }
-  */
+
 
 
 class QrButton extends StatelessWidget {

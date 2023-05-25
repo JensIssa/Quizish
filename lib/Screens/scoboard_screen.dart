@@ -108,7 +108,6 @@ class Leaderboard extends StatelessWidget {
           const SizedBox(width: 10.0),
           _timer(context, quizModel, 3, CountdownController(autoStart: true),
               () {
-            bool isQuizFinished = quizModel.isQuizFinished(questionNumber.data);
 
             quizModel.onNextQuestion(questionNumber.data);
             Navigator.pop(context);
@@ -137,6 +136,7 @@ class Leaderboard extends StatelessWidget {
         IconButton(
             onPressed: () {
               context.read<QuizNotifierModel>().onLeaveQuiz();
+
               Navigator.of(context).popAndPushNamed(
                   '/home'
               );

@@ -34,84 +34,98 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget build(BuildContext context) {
     QuizNotifierModel quizProvider =
     Provider.of<QuizNotifierModel>(context, listen: true);
+
     return StreamBuilder<int?>(
-      stream: quizProvider.questionNumberStream(),
-      builder: (context, questionNumber) {
-        String? imageUrl = quizProvider.currentQuestionImage(questionNumber.data);
-        print('imageUrl: $imageUrl');
-        print(questionNumber.data);
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Quiz'),
-            automaticallyImplyLeading: false, //Remove backbutton
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.exit_to_app),
-                onPressed: () => _leaveQuizDialog(() {
-                  quizProvider.onLeaveQuiz();
-                  Navigator.of(context).popAndPushNamed('/home');
-                }),
-              )
-            ],
-          ),
-          body: Column(
-            children: [
-              Flex(
-                direction: Axis.horizontal,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      quizProvider.quizProgress(questionNumber.data),
-                      //current question / total questions
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w200),
+        stream: quizProvider.questionNumberStream(),
+        builder: (context, questionNumber) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Quiz'),
+              automaticallyImplyLeading: false, //Remove backbutton
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.exit_to_app),
+                  onPressed: () => _leaveQuizDialog(() {
+                    quizProvider.onLeaveQuiz();
+                    Navigator.of(context).popAndPushNamed(
+                        '/home'
+                    );
+
+                  }),
+                )
+              ],
+            ),
+            body: Column(
+              children: [
+                Flex(
+                  direction: Axis.horizontal,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        quizProvider.quizProgress(questionNumber.data),
+                        //current question / total questions
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w200),
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      quizProvider.quizTitle,
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w200),
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        quizProvider.quizTitle,
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w200),
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  _timer(
-                    context,
-                    quizProvider.currentQuestionTimeLimit(questionNumber.data),
-                    //current question time limit needs questionNumber
-                    quizProvider.timerController,
-                        () {
+                    const Spacer(),
+                    _timer(
+                        context,
+                        quizProvider
+                            .currentQuestionTimeLimit(questionNumber.data),
+                        //current question time limit needs questionNumber
+                        quizProvider.timerController, () {
                       _overlayCorrectAnswer();
-                    },
+                    }),
+                  ],
+                ),
+                Flexible(
+                  child: Center(
+                    child: Text(
+                      quizProvider.currentQuestion(questionNumber.data),
+                      style: const TextStyle(
+                          fontSize: 32, fontWeight: FontWeight.w500),
+                    ),
                   ),
-                ],
-              ), // Add the image widget here
-              image_input(quizProvider, questionNumber),
-              // Move the AnswersOptionsContainer below the image widget
-              _answersOptionsContainer(
-                quizProvider,
-                questionNumber,
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                ),
+                image_input(quizProvider, questionNumber),
+                _answersOptionsContainer(quizProvider, questionNumber),
+              ],
+            ),
+          );
+        });
   }
 
-  Padding image_input(QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
-    return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.network(
-                quizProvider.currentQuestionImage(questionNumber.data) ?? '',
-                width: 150,
-                height: 80,
-              ),
-            );
-  }
+    image_input(QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var pictureHeight = height / 3;
+    var pictureWidth = width / 2;
+
+    if (height > 1200) {
+      height = height / 2;
+    }
+    return Flexible(
+      child: Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Image.network(
+                   quizProvider.currentQuestionImage(questionNumber.data) ?? '',
+                   width: pictureWidth,
+                   height: pictureHeight,
+                 ),
+               ),
+    );
+   }
 
   _answersOptionsContainer(
       QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
@@ -128,11 +142,11 @@ class _QuizScreenState extends State<QuizScreen> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
       child: SizedBox(
-          width: width,
-          height: height / 1.5,
-          child: _answerOptionsChildren(
-              quizProvider, answerHeight, answerWidth, questionNumber),
-        ),
+        width: width,
+        height: height / 1.5,
+        child: _answerOptionsChildren(
+            quizProvider, answerHeight, answerWidth, questionNumber),
+      ),
     );
   }
 
