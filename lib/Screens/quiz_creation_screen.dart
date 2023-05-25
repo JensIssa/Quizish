@@ -143,10 +143,10 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   }
 
   Widget _imageInput(Question question) {
-    final ImagePicker _imagePicker = ImagePicker();
+    final ImagePicker imagePicker = ImagePicker();
 
     Future<void> _selectImage() async {
-      final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
+      final XFile? image = await imagePicker.pickImage(source: ImageSource.gallery, maxHeight: 500, maxWidth: 500, imageQuality: 50);
       if (image != null) {
         await quizService.uploadImage(image).then((value) {
           setState(() {

@@ -145,7 +145,8 @@ class Question {
         index = data['index'],
         question = data['question'],
         answers = _getAnswers(data['answers']),
-        timer = data['timer'];
+        timer = data['timer'],
+        imageUrl = data['imageUrl'];
 
   static _getAnswers(Map<String, dynamic> data) {
     List<Answers> answersList = [];
@@ -160,8 +161,8 @@ class Question {
       : index = data['index'],
         question = data['question'],
         answers = _getAnswers(data['answers']),
-        timer = data['timer'],
-       imageUrl = data['imageUrl'];
+        timer = data['timer'];
+
   Iterable<Answers> get correctAnswers => answers.where((answer) => answer.isCorrect);
 
   Map<String, dynamic> toMap() {
@@ -174,7 +175,7 @@ class Question {
       'question': question,
       'answers': answersMap,
       'timer': timer,
-      'imageurl': imageUrl
+      'imageUrl': imageUrl
     };
   }
 
