@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import '../models/Quiz.dart';
 
@@ -36,63 +40,38 @@ class QuizService {
 
   Future<void> createQuiz(Quiz quiz) async {
     try {
-      // Get the current user
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         throw Exception('User not authenticated');
       }
-      // Create a new document reference in Firestore
       DocumentReference quizRef =
       FirebaseFirestore.instance.collection('quizzes').doc();
       quiz.id = quizRef.id;
-      List<String> imageUrls = await _uploadImages(quiz.questions);
-      // Update quiz data with image URLs
-      for (int i = 0; i < quiz.questions.length; i++) {
-        Question question = quiz.questions[i];
-        if (question.imageUrl != null) {
-          question.imageUrl = imageUrls[i];
-          print(question.imageUrl);
-        }
-      }
-      // Set quiz data in Firestore
       await quizRef.set(quiz.toMap());
-      // Update author and authorDisplayName
       await quizRef.update({'author': user.uid});
       String displayName = await getUserDisplayName(user.uid);
       await quizRef.update({'authorDisplayName': displayName});
-      // Upload images to Firebase Storage and get the download URLs
-
       print(quiz);
     } catch (e) {
       print('Error creating quiz: $e');
     }
   }
 
-  Future<List<String>> _uploadImages(List<Question> questions) async {
-    List<String> imageUrls = [];
-    for (Question question in questions) {
-      if (question.imageUrl != null) {
-        try {
-          http.Response response =
-          await http.get(Uri.parse(question.imageUrl!));
-          Uint8List imageData = response.bodyBytes;
-          String imageName = DateTime.now().microsecondsSinceEpoch.toString();
-          String imagePath = 'quiz_images/$imageName.jpg';
-          storage.Reference imageRef =
-          storage.FirebaseStorage.instance.ref().child(imagePath);
-          await imageRef.putData(imageData, storage.SettableMetadata(
-              contentType: 'image/jpeg'));
-          String downloadUrl = await imageRef.getDownloadURL();
-          imageUrls.add(downloadUrl);
-        } catch (e) {
-          print('Error uploading image: $e');
-          imageUrls.add(''); // Add empty URL if upload fails
-        }
-      } else {
-        imageUrls.add(''); // Add empty URL for questions without images
-      }
+  Future<String> uploadImage(XFile image) async {
+    Reference ref = FirebaseStorage.instance.ref().child('quiz_images/${DateTime.now().microsecondsSinceEpoch.toString()}.jpg');
+    if (kIsWeb){
+      UploadTask uploadTask = ref.putData(await image.readAsBytes(), SettableMetadata(contentType: 'image/jpeg'));
+      TaskSnapshot snap = await uploadTask;
+      String downloadUrl = await snap.ref.getDownloadURL();
+      return downloadUrl;
     }
-    return imageUrls;
+    else if(!kIsWeb){
+      await ref.putFile(File(image.path));
+      ref.getDownloadURL().then((value) {
+        return value;
+      });
+    }
+    return "";
   }
 
 

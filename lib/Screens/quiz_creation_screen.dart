@@ -148,10 +148,13 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     Future<void> _selectImage() async {
       final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
       if (image != null) {
-        setState(() {
-          // Update the question object with the selected image or the image path
-          question.imageUrl = image.path;
+        await quizService.uploadImage(image).then((value) {
+          setState(() {
+            // Update the question object with the selected image or the image path
+            question.imageUrl = value;
+          });
         });
+
       }
     }
 

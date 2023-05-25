@@ -1,3 +1,5 @@
+import 'package:image_picker/image_picker.dart';
+
 class Quiz {
   String title;
   String id;
@@ -160,7 +162,6 @@ class Question {
         answers = _getAnswers(data['answers']),
         timer = data['timer'],
        imageUrl = data['imageUrl'];
-
   Iterable<Answers> get correctAnswers => answers.where((answer) => answer.isCorrect);
 
   Map<String, dynamic> toMap() {
@@ -173,7 +174,7 @@ class Question {
       'question': question,
       'answers': answersMap,
       'timer': timer,
-      'imageurl': imageUrl,
+      'imageurl': imageUrl
     };
   }
 
