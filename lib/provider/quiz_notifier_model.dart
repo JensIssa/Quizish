@@ -162,7 +162,11 @@ class QuizNotifierModel extends ChangeNotifier {
   }
 
   void onLeaveQuiz() {
-    _gameSessionService.leaveSessionAsUser(gameSession?.id);
+    if(gameSession?.hostId == FirebaseAuth.instance.currentUser!.uid) {
+      _gameSessionService.deleteSession(gameSession?.id);
+    } else {
+      _gameSessionService.leaveSessionAsUser(gameSession?.id);
+    }
     resetQuiz();
   }
 

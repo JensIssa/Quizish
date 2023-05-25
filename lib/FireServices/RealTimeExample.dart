@@ -22,6 +22,15 @@ class GameSessionService {
     return result;
   }
 
+  //delete session
+  Future<void> deleteSession(String? sessionId) async {
+    try {
+      await _gameSessionsCollection.doc(sessionId).delete();
+    } catch (e) {
+      print('Error deleting session: $e');
+    }
+  }
+
   Future<void> incrementScore(String? sessionId, String userId) async {
     try {
       final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('incrementScore');
