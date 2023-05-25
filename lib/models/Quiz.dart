@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Quiz {
   String title;
@@ -111,6 +111,7 @@ class Answers {
 }
 
 class Question {
+  String? imageUrl;
   int index = -1;
   String question;
   List<Answers> answers;
@@ -134,7 +135,7 @@ class Question {
           Answers(answer: '', isCorrect: false, index: 3),
         ];
 
-  Question({required this.index, required this.question, required this.answers, required this.timer});
+  Question({required this.index, required this.question, required this.answers, required this.timer, this.imageUrl});
 
   Question.noImgOrTimer({required this.index, required this.question, required this.answers});
 
@@ -144,7 +145,8 @@ class Question {
         index = data['index'],
         question = data['question'],
         answers = _getAnswers(data['answers']),
-        timer = data['timer'];
+        timer = data['timer'],
+        imageUrl = data['imageUrl'];
 
   static _getAnswers(Map<String, dynamic> data) {
     List<Answers> answersList = [];
@@ -173,13 +175,14 @@ class Question {
       'question': question,
       'answers': answersMap,
       'timer': timer,
+      'imageUrl': imageUrl
     };
   }
 
 
   @override
   String toString() {
-    var baseInfo = 'Question{index: $index, question: $question, timer: $timer}';
+    var baseInfo = 'Question{index: $index, question: $question, timer: $timer, imageUrl: $imageUrl}';
     var answersString = answers.fold('', (prev, element) => prev + element.toString());
     return baseInfo + answersString;
   }

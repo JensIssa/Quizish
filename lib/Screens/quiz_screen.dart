@@ -33,76 +33,84 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     QuizNotifierModel quizProvider =
-        Provider.of<QuizNotifierModel>(context, listen: true);
-
+    Provider.of<QuizNotifierModel>(context, listen: true);
     return StreamBuilder<int?>(
-        stream: quizProvider.questionNumberStream(),
-        builder: (context, questionNumber) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Quiz'),
-              automaticallyImplyLeading: false, //Remove backbutton
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.exit_to_app),
-                  onPressed: () => _leaveQuizDialog(() {
-                    quizProvider.onLeaveQuiz();
-                    Navigator.of(context).popAndPushNamed(
-                      '/home'
-                    );
-
-                  }),
-                )
-              ],
-            ),
-            body: Column(
-              children: [
-                Flex(
-                  direction: Axis.horizontal,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        quizProvider.quizProgress(questionNumber.data),
-                        //current question / total questions
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w200),
-                      ),
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        quizProvider.quizTitle,
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w200),
-                      ),
-                    ),
-                    const Spacer(),
-                    _timer(
-                        context,
-                        quizProvider
-                            .currentQuestionTimeLimit(questionNumber.data),
-                        //current question time limit needs questionNumber
-                        quizProvider.timerController, () {
-                      _overlayCorrectAnswer();
-                    }),
-                  ],
-                ),
-                Flexible(
-                  child: Center(
+      stream: quizProvider.questionNumberStream(),
+      builder: (context, questionNumber) {
+        String? imageUrl = quizProvider.currentQuestionImage(questionNumber.data);
+        print('imageUrl: $imageUrl');
+        print(questionNumber.data);
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Quiz'),
+            automaticallyImplyLeading: false, //Remove backbutton
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.exit_to_app),
+                onPressed: () => _leaveQuizDialog(() {
+                  quizProvider.onLeaveQuiz();
+                  Navigator.of(context).popAndPushNamed('/home');
+                }),
+              )
+            ],
+          ),
+          body: Column(
+            children: [
+              Flex(
+                direction: Axis.horizontal,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      quizProvider.currentQuestion(questionNumber.data),
+                      quizProvider.quizProgress(questionNumber.data),
+                      //current question / total questions
                       style: const TextStyle(
-                          fontSize: 32, fontWeight: FontWeight.w500),
+                          fontSize: 16, fontWeight: FontWeight.w200),
                     ),
                   ),
-                ),
-                _answersOptionsContainer(quizProvider, questionNumber),
-              ],
-            ),
-          );
-        });
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      quizProvider.quizTitle,
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w200),
+                    ),
+                  ),
+                  const Spacer(),
+                  _timer(
+                    context,
+                    quizProvider.currentQuestionTimeLimit(questionNumber.data),
+                    //current question time limit needs questionNumber
+                    quizProvider.timerController,
+                        () {
+                      _overlayCorrectAnswer();
+                    },
+                  ),
+                ],
+              ), // Add the image widget here
+              image_input(quizProvider, questionNumber),
+              // Move the AnswersOptionsContainer below the image widget
+              _answersOptionsContainer(
+                quizProvider,
+                questionNumber,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Padding image_input(QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
+    return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.network(
+                quizProvider.currentQuestionImage(questionNumber.data) ?? '',
+                width: 150,
+                height: 80,
+              ),
+            );
   }
 
   _answersOptionsContainer(

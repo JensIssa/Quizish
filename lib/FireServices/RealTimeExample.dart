@@ -43,6 +43,24 @@ class GameSessionService {
     }
   }
 
+  Future<void> incrementQuestion(String? sessionId) async {
+    try{
+      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('incremenCurrentQuestion');
+
+      final result = await callable.call({
+        'sessionId': sessionId,
+      });
+      final data = result.data;
+      if(data['success']) {
+        print('Current question incremented successfully');
+      } else {
+        print('Error incrementing current question');
+      }
+    }
+    catch(error){
+      print('Error calling incrementCurrentQuestion function: $error');
+    }
+  }
 
   Future<GameSession> createGameSession(Quiz quiz) async {
     User? _host = FirebaseAuth.instance.currentUser!;
@@ -65,6 +83,7 @@ class GameSessionService {
     print(gameSession.currentQuestion);
     return gameSession;
   }
+
 
 
   Future<void> incrementCurrent(String? sessionId)async {

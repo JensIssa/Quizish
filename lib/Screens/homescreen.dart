@@ -5,64 +5,64 @@ import 'package:quizish/widgets/quiz_name_box.dart';
 
 import '../models/Quiz.dart';
 
-
 class HomeScreen extends StatefulWidget {
-
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-
-
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   final QuizService _quizService = QuizService();
-  List<Quiz> _quizzes  = [];
+  Stream<List<Quiz>>? _quizStream;
 
   @override
   void initState() {
     super.initState();
-    _fetchQuizzes();
-  }
-
-  Future<void> _fetchQuizzes() async {
-    final quizzes = await _quizService.getQuizzes();
-    setState(() {
-      _quizzes = quizzes;
-    });
+    _quizStream = _quizService.getQuizzes();
   }
 
   @override
   Widget build(BuildContext context) {
     const spacing = 5.0;
-    return Container(
-        child: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: spacing,
-          crossAxisSpacing: spacing,
-          children: _quizzes.map((quiz) {
-            final index = _quizzes.indexOf(quiz);
-            return GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => QuizDetailsScreen(quiz: _quizzes[index]),
+    return StreamBuilder<List<Quiz>>(
+      stream: _quizStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final quizzes = snapshot.data!;
+          return Container(
+            child: GridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: spacing,
+              crossAxisSpacing: spacing,
+              children: quizzes.map((quiz) {
+                final index = quizzes.indexOf(quiz);
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => QuizDetailsScreen(quiz: quizzes[index]),
+                      ),
+                    );
+                  },
+                  child: Hero(
+                    tag: 'quiz-$index',
+                    child: QuizNameBox(
+                      quizTitle: quiz.title,
+                      quizAuthor: quiz.authorDisplayName,
+                      questions: quiz.questions.length.toString(),
+                    ),
                   ),
                 );
-              },
-              child: Hero(
-                tag: 'quiz-$index',
-                child: QuizNameBox(
-                  quizTitle: quiz.title,
-                  quizAuthor:  quiz.authorDisplayName,
-                  questions: quiz.questions.length.toString(),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
+              }).toList(),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 }

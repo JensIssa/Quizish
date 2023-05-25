@@ -36,6 +36,7 @@ class Leaderboard extends StatelessWidget {
                 return LeaderboardData(name, score);
               }).toList();
 
+              scoresList.sort((a, b) => b.score.compareTo(a.score));
               return Scaffold(
                 appBar: appBars(context, questionNumberSnapshot, quizModel),
                 body: ListView.separated(

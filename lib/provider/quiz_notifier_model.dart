@@ -71,6 +71,10 @@ class QuizNotifierModel extends ChangeNotifier {
     return quiz!.questions[questionNumber!].question;
   }
 
+  String? currentQuestionImage(int? questionNumber) {
+    return quiz!.questions[questionNumber!].imageUrl.toString();
+  }
+
   int currentQuestionTimeLimit(int? questionNumber) {
     return quiz!.questions[questionNumber!].timer;
   }
@@ -84,6 +88,8 @@ class QuizNotifierModel extends ChangeNotifier {
   String get quizTitle => quiz!.title;
 
   int get _quizLength => quiz!.questions.length;
+
+  String? get imageUrl => quiz!.questions[0].imageUrl;
 
   String quizProgress(int? questionNumber) {
     return '${questionNumber! + 1} / $_quizLength';

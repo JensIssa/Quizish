@@ -1,10 +1,20 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import '../models/Quiz.dart';
+
+import 'package:firebase_storage/firebase_storage.dart' as storage;
+
 
 class UserKeys {
   static const name = 'name';
@@ -30,7 +40,6 @@ class QuizService {
 
   Future<void> createQuiz(Quiz quiz) async {
     try {
-      // Get the current user
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         throw Exception('User not authenticated');
@@ -45,6 +54,22 @@ class QuizService {
       print(quiz);
     } catch (e) {
       print('Error creating quiz: $e');
+    }
+  }
+
+  Future<String> uploadImage(XFile image) async {
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("quiz_images/${generateId()}/QuestionImage");
+    if (kIsWeb) {
+      UploadTask uploadTask =
+      ref.putData(await image.readAsBytes(), SettableMetadata(contentType: 'image/jpeg'));
+      TaskSnapshot snap = await uploadTask;
+      String downloadUrl = await snap.ref.getDownloadURL();
+      return downloadUrl;
+    } else {
+      await ref.putFile(File(image.path));
+      return ref.getDownloadURL(); // Return the download URL directly
     }
   }
 
@@ -66,11 +91,18 @@ class QuizService {
     return '';
   }
 
-  Future<List<Quiz>> getQuizzes() async {
+  Stream<List<Quiz>> getQuizzes() {
     final quizRef = FirebaseFirestore.instance.collection('quizzes');
-    final quiz = quizRef.withConverter(fromFirestore: (snapshot, options) => Quiz.fromMap(snapshot.data()!), toFirestore: (value, options) => value.toMap());
-    return quiz.get().then((value) => value.docs.map((e) => e.data()).toList());
+    final quiz = quizRef.withConverter(
+      fromFirestore: (snapshot, options) => Quiz.fromMap(snapshot.data()!),
+      toFirestore: (value, options) => value.toMap(),
+    );
+
+    return quiz.snapshots().map((querySnapshot) {
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    });
   }
+
 
   Future<void> deleteQuiz(String quizId) async {
     final quizRef = FirebaseFirestore.instance.collection('quizzes').doc(quizId);
