@@ -92,11 +92,18 @@ class QuizService {
     return '';
   }
 
-  Future<List<Quiz>> getQuizzes() async {
+  Stream<List<Quiz>> getQuizzes() {
     final quizRef = FirebaseFirestore.instance.collection('quizzes');
-    final quiz = quizRef.withConverter(fromFirestore: (snapshot, options) => Quiz.fromMap(snapshot.data()!), toFirestore: (value, options) => value.toMap());
-    return quiz.get().then((value) => value.docs.map((e) => e.data()).toList());
+    final quiz = quizRef.withConverter(
+      fromFirestore: (snapshot, options) => Quiz.fromMap(snapshot.data()!),
+      toFirestore: (value, options) => value.toMap(),
+    );
+
+    return quiz.snapshots().map((querySnapshot) {
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    });
   }
+
 
   Future<void> deleteQuiz(String quizId) async {
     final quizRef = FirebaseFirestore.instance.collection('quizzes').doc(quizId);
