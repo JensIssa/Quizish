@@ -27,7 +27,10 @@ The player should be able to leave a session, and the host should also be able t
  
 
 # Screenshots from Flutter app:
-<details>    <summary>Login</summary>    <img src="assets/images/login.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
+<details>    <summary>Login</summary>    
+<img src="assets/images/login.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> 
+<img src="assets/images/right.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> 
+</details>
 <details>    <summary>Homescreen</summary>    <img src="" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
 <details>    <summary>Create Quiz</summary>    <img src="" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
 <details>    <summary>Join Quiz</summary>    <img src="" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
