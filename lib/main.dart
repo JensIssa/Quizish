@@ -24,6 +24,7 @@ import 'bloc_observer.dart';
 
 
 
+
 Future<void> main() {
   return BlocOverrides.runZoned(
       () async {
@@ -44,7 +45,10 @@ Future<void> main() {
   );
 }
 
-
+/**
+ * My app class, this is the root of the app
+ * Uses MultiProvider to provide the GameSessionProvider and QuizNotifierModel
+ */
 
 class MyApp extends StatelessWidget {
   final ThemeData theme;
@@ -80,6 +84,11 @@ class MyApp extends StatelessWidget {
 final navigatorKey = GlobalKey<NavigatorState>();
 
 
+/**
+ * AppView class
+ * This is the main view of the app
+ * It uses FlowBuilder to build the app
+ */
 class AppView extends StatelessWidget {
   const AppView({Key? key, required this.theme}) : super(key: key);
   final ThemeData theme;

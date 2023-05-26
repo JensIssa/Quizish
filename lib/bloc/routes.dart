@@ -8,6 +8,9 @@ import 'package:quizish/bloc/app_state.dart';
 
 import '../models/Quiz.dart';
 
+/**
+ * This method is called when the app navigates to a new page
+ */
 List<Page> onGenerateAppViewPages(AppState state, List<Page<dynamic>> pages) {
 
   switch (state.status) {

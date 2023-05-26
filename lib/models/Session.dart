@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+/**
+ * This class represents a GameSession object
+ */
 import 'Quiz.dart';
 
 class GameSession {

@@ -23,6 +23,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         add(AppUserChanged(user)),);
   }
 
+  /**
+   * This method is called when the user changes
+   */
   void _onUserChanged(
     AppUserChanged event,
     Emitter<AppState> emit,
@@ -32,6 +35,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         : const AppState.unauthenticated());
   }
 
+  /**
+   * This method is called when the user logs out
+   */
   void _onLogOutRequested(
     AppLogOutRequested event,
     Emitter<AppState> emit,
@@ -39,6 +45,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     unawaited(_authService.logOut());
   }
 
+  /**
+   * This method closes the stream subscription
+   */
   @override
   Future<void> close() {
   _authSubscription?.cancel();

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/**
+ * A Material widget that is a box with a title, author and number of questions.
+ */
 
 class QuizNameBox extends Material {
 

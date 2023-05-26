@@ -26,6 +26,10 @@ class CorrectAnswersScreen extends StatelessWidget {
       width = width / 2;
     }
 
+    /**
+     * This method is builds a StreamBuilder that listens to the questionNumberStream
+     * and builds the screen accordingly
+     */
     return StreamBuilder<int?>(
       stream: quizModel.questionNumberStream(),
       builder: (context, questionNumberSnapshot) {
@@ -141,6 +145,9 @@ class CorrectAnswersScreen extends StatelessWidget {
     );
   }
 
+  /**
+   * This method checks if the answer is correct and returns the appropriate color
+   */
   _correctAnswerTextColor(bool? answerStatus) {
     if (answerStatus == null) {
       return Colors.red;
@@ -151,6 +158,9 @@ class CorrectAnswersScreen extends StatelessWidget {
     }
   }
 
+  /**
+   * This method returns the correct answer options, when the timer is completed
+   */
   _correctAnswerOptionsChildren(
       QuizNotifierModel quizModel, double answerHeight, double answerWidth, AsyncSnapshot<int?> questionNumberSnapshot) {
     if (quizModel.timerController.isCompleted!) {
@@ -169,6 +179,9 @@ class CorrectAnswersScreen extends StatelessWidget {
     }
   }
 
+  /**
+   * Widget that returns the answer button
+   */
   Widget _answerButton(String text, int index, double height, double width,
       QuizNotifierModel quizModel, AsyncSnapshot<int?> questionNumberSnapshot) {
     return Expanded(
@@ -191,6 +204,9 @@ class CorrectAnswersScreen extends StatelessWidget {
     );
   }
 
+  /**
+   * This method returns the color of the answer answer container
+   */
   _getAnswerColor(int index) {
     switch (index) {
       case 0:
@@ -206,6 +222,9 @@ class CorrectAnswersScreen extends StatelessWidget {
     }
   }
 
+  /**
+   * This method returns the timer widget
+   */
   _timer(BuildContext context, QuizNotifierModel quizModel, int seconds, CountdownController controller, VoidCallback onFinished) {
     return Padding(
       padding: const EdgeInsets.all(8.0),

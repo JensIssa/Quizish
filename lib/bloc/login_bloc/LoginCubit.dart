@@ -8,13 +8,23 @@ class LoginCubit extends Cubit<LoginState>{
 
   LoginCubit(this._authService) : super(LoginState.initial());
 
+  /**
+   * This method is called when the user changes the email
+   */
   void emailChanged(String value) {
     emit(state.copyWith(email: value, status: LoginStatus.initial));
   }
 
+  /**
+   *This method is called when the user changes the password
+   */
   void passwordChanged(String value) {
     emit(state.copyWith(password: value, status: LoginStatus.initial));
   }
+
+  /**
+   * This method logs in with credentials provided by the user
+   */
   Future<void> logInWithCredentials() async {
     if (state.status == LoginStatus.submitting)
     emit(state.copyWith(status: LoginStatus.submitting));

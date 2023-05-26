@@ -30,6 +30,12 @@ class _QuizScreenState extends State<QuizScreen> {
     super.initState();
   }
 
+  /**
+   * This is the screen that shows the quiz.
+   * It uses a stream to listen to the question number.
+   * When the question number changes, the screen rebuilds.
+   */
+
   @override
   Widget build(BuildContext context) {
     QuizNotifierModel quizProvider =
@@ -106,6 +112,9 @@ class _QuizScreenState extends State<QuizScreen> {
         });
   }
 
+  /**
+   * This is the image input for the question in the quiz.
+   */
     image_input(QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -127,6 +136,9 @@ class _QuizScreenState extends State<QuizScreen> {
     );
    }
 
+  /**
+   * Container to the answers options.
+   */
   _answersOptionsContainer(
       QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
     var height = MediaQuery.of(context).size.height;
@@ -150,6 +162,9 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
+  /**
+   * The children to the answer options container.
+   */
   _answerOptionsChildren(QuizNotifierModel quizProvider, double answerHeight,
       double answerWidth, AsyncSnapshot<int?> questionNumber) {
     return Column(
@@ -178,6 +193,9 @@ class _QuizScreenState extends State<QuizScreen> {
         ]);
   }
 
+  /**
+   * Sets the color of the border of the answer options.
+   */
   _getAnswerColor(int index) {
     switch (index) {
       case 0:
@@ -193,6 +211,9 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
 
+  /**
+   * Widget for the answer button.
+   */
   Widget _answerButton(String text, int index, double height, double width,
       QuizNotifierModel quizProvider, AsyncSnapshot<int?> questionNumber) {
     return Expanded(
@@ -226,6 +247,9 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
+  /**
+   * Sets the color of the border of the answer options.
+   */
   _answerBorderColor(int index, QuizNotifierModel quizProvider,
       AsyncSnapshot<int?> questionNumber) {
     var answerIndex = quizProvider.currentAnswerIndex(questionNumber.data);
@@ -239,6 +263,9 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
 
+  /**
+   * This is the timer for the question.
+   */
   _timer(BuildContext context, int seconds, CountdownController controller,
       VoidCallback onFinished) {
     return Padding(
@@ -279,6 +306,9 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
+  /**
+   * This is the timer for the question.
+   */
   _leaveQuizDialog(VoidCallback onLeaveQuiz) {
     return showDialog(
       context: context,

@@ -11,6 +11,9 @@ class AuthService{
 
   var currentUser = User.empty;
 
+  /**
+   * This method returns a stream of the user, if the user is logged in
+   */
   Stream<User> get user {
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
       final user = firebaseUser == null ? User.empty : firebaseUser.toUser;
@@ -20,11 +23,17 @@ class AuthService{
 
   }
 
+  /**
+   * This method returns the current authenticated user
+   */
   firebase_Auth.User? getCurrentFirebaseUser() {
     return _firebaseAuth.currentUser;
   }
 
 
+  /**
+   * This method signs up the user with the email and password provided, and send it to firebase
+   */
   Future<void> signUp({
     required String email,
     required String password,
@@ -49,6 +58,9 @@ class AuthService{
     }
   }
 
+  /**
+   * This method updates the password of the current user
+   */
   Future<void> updatePassword(String newPassword) async {
     try {
       await _firebaseAuth.currentUser?.updatePassword(newPassword);
@@ -56,7 +68,10 @@ class AuthService{
       throw Exception(e.message);
     }
   }
-  
+
+  /**
+   * This method updates the display name of the current user
+   */
   Future<void> updateDisplayName(String newDisplayName) async {
     try {
       await _firebaseAuth.currentUser?.updateDisplayName(newDisplayName);
@@ -71,7 +86,9 @@ class AuthService{
   }
 
 
-
+  /**
+   * This method updates the email of the current user
+   */
   Future<void> updateEmail(String newEmail) async {
     try {
       await _firebaseAuth.currentUser?.updateEmail(newEmail);
@@ -86,7 +103,9 @@ class AuthService{
   }
 
 
-
+  /**
+   * This method logs in the user with the email and password provided
+   */
 
   Future<void> loginWithEmailAndPassword({
   required String email,
@@ -101,6 +120,9 @@ class AuthService{
     }
   }
 
+  /**
+   * this method logs out the current user
+   */
   Future<void> logOut() async {
     try{
       await Future.wait([_firebaseAuth.signOut()]);
@@ -110,6 +132,9 @@ class AuthService{
   }
 }
 
+/**
+ * This extension is used to convert a firebase user to a user
+ */
 extension on firebase_Auth.User {
   User get toUser {
     return User(

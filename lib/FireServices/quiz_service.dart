@@ -38,6 +38,9 @@ class QuizService {
 
   Stream<List<Quiz>> get quizzes => _quizzesController.stream;
 
+  /**
+   * This method creates a new quiz and sends it to firebase
+   */
   Future<void> createQuiz(Quiz quiz) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -56,7 +59,9 @@ class QuizService {
       print('Error creating quiz: $e');
     }
   }
-
+  /**
+   * This method uploads an image to firebase storage and returns the download URL
+   */
   Future<String> uploadImage(XFile image) async {
     Reference ref = FirebaseStorage.instance
         .ref()
@@ -73,7 +78,9 @@ class QuizService {
     }
   }
 
-  // Get the display name for a given user ID
+  /**
+   * This method gets the display name of a user from firebase
+   */
   Future<String> getUserDisplayName(String userId) async {
     try {
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
@@ -91,6 +98,9 @@ class QuizService {
     return '';
   }
 
+  /**
+   * This method returns a stream of all the quizzes in the firebase collection
+   */
   Stream<List<Quiz>> getQuizzes() {
     final quizRef = FirebaseFirestore.instance.collection('quizzes');
     final quiz = quizRef.withConverter(
@@ -104,11 +114,17 @@ class QuizService {
   }
 
 
+  /**
+   * This method deletes a quiz
+   */
   Future<void> deleteQuiz(String quizId) async {
     final quizRef = FirebaseFirestore.instance.collection('quizzes').doc(quizId);
     await quizRef.delete();
   }
 
+  /**
+   * This method gets a quiz from the database
+   */
   Future<void> getIndividualQuiz(String quizId) async{
     final quizRef = FirebaseFirestore.instance.collection('quizzes').doc(quizId);
     await quizRef.get(); //Get the quiz from the database

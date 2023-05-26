@@ -34,7 +34,10 @@ class loginScreen extends StatelessWidget {
     );
   }
 }
-
+/**
+ * This class is the login form, it is a stateless widget that builds the login form
+ * It uses a BlocListener to listen to the LoginCubit and build the form accordingly
+ */
 class LoginForm extends StatelessWidget {
   LoginForm({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
@@ -64,6 +67,9 @@ class LoginForm extends StatelessWidget {
   }
 }
 
+/**
+ * Class that builds the Login button
+ */
 class LoginBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -109,6 +115,9 @@ class LoginBtn extends StatelessWidget {
 }
 
 
+/**
+ * Class that builds the Sign up button
+ */
 
 class newUserBtn extends StatelessWidget {
   @override
@@ -127,6 +136,9 @@ class newUserBtn extends StatelessWidget {
   }
 }
 
+/**
+ * Class that builds the email input field
+ */
 class emailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -152,6 +164,9 @@ class emailInput extends StatelessWidget {
   }
 }
 
+/**
+ * Class that builds the password input field
+ */
 class passwordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -177,6 +192,9 @@ class passwordInput extends StatelessWidget {
   }
 }
 
+/**
+ * Class that builds the Google login button
+ */
   Widget btnGoogle(BuildContext buildContext) {
     return Padding(
         padding: EdgeInsets.only(top: 128),
@@ -226,6 +244,9 @@ class passwordInput extends StatelessWidget {
         );
   }
 
+  /**
+   * Function that handles the Google login
+   */
   loginWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
     final _auth = FirebaseAuth.instance;

@@ -36,7 +36,9 @@ class registerScreen extends StatelessWidget {
   }
 }
 
-
+/**
+ * This is the form that the user will use to register.
+ */
   class RegisterForm extends StatelessWidget {
     RegisterForm({Key? key}) : super(key: key);
     Widget build(BuildContext context) {
@@ -74,7 +76,10 @@ class registerScreen extends StatelessWidget {
     }
   }
 
-  class backBtn extends StatelessWidget {
+/**
+ * This is the class uset for the back btn
+ */
+class backBtn extends StatelessWidget {
     const backBtn({Key? key}) : super(key: key);
 
     Widget build(BuildContext context) {
@@ -95,6 +100,9 @@ class registerScreen extends StatelessWidget {
       );
     }
   }
+/**
+ * This is the class uset for the register btn
+ */
 
   class registerBtn extends StatelessWidget {
 
@@ -120,7 +128,10 @@ class registerScreen extends StatelessWidget {
     }
   }
 
-  class usernameInput extends StatelessWidget {
+/**
+ * This is the class uset for the username input
+ */
+class usernameInput extends StatelessWidget {
 
     Widget build(BuildContext context) {
       return TextFormField(
@@ -142,7 +153,10 @@ class registerScreen extends StatelessWidget {
     }
   }
 
-   class passwordInput extends StatelessWidget {
+/**
+ * This is the class uset for the password input
+ */
+class passwordInput extends StatelessWidget {
 
      Widget build(BuildContext context) {
        return BlocBuilder<RegisterCubit, RegisterState>(
@@ -169,7 +183,10 @@ class registerScreen extends StatelessWidget {
      }
    }
 
-  class emailInput extends StatelessWidget {
+/**
+ * This is the class uset for the email input
+ */
+class emailInput extends StatelessWidget {
     Widget build(BuildContext context){
     return BlocBuilder<RegisterCubit, RegisterState>(
         buildWhen: (previous, current) => previous.email != current.email,

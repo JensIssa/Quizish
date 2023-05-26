@@ -14,6 +14,11 @@ class JoinScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _JoinScreenState();
 }
 
+/**
+ * This class makes it possible for a user to join a session
+ * Both by entering a session code or by scanning a QR code
+ */
+
 class _JoinScreenState extends State<JoinScreen> {
   final sessionController = TextEditingController();
   var getResult = 'QR Code Result';
@@ -90,6 +95,9 @@ class _JoinScreenState extends State<JoinScreen> {
     );
   }
 
+  /**
+   * This method shows an error dialog when the user enters an invalid session code
+   */
   void showSessionErrorDialog(String errorMessage) {
     showDialog(
       context: context,
@@ -110,6 +118,9 @@ class _JoinScreenState extends State<JoinScreen> {
     );
   }
 
+  /**
+   * This method scans a QR code and sets the session code to the result
+   */
   void scanQRCode() async {
     try {
       final qrCode = await FlutterBarcodeScanner.scanBarcode(
@@ -129,6 +140,9 @@ class _JoinScreenState extends State<JoinScreen> {
   }
 }
 
+/**
+ * This method returns a text field for the session code
+ */
 TextField SessionInput(TextEditingController sessionController) {
   return TextField(
     controller: sessionController,
