@@ -32,10 +32,10 @@ The player should be able to leave a session, and the host should also be able t
 <details>    <summary>Create Quiz</summary>    <img src="assets/images/createquiz.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
 <details>    <summary>Join Quiz</summary>    <img src="assets/images/joinquiz.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
 <details>    <summary>Play Quiz</summary>    
-<img src="assets/images/ingame.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
-<img src="assets/images/wrong.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
-<img src="assets/images/leaderboard.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
-<img src="assets/images/right.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
+<img src="assets/images/ingame.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> 
+<img src="assets/images/wrong.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;">
+<img src="assets/images/leaderboard.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> 
+<img src="assets/images/right.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> 
 <img src="assets/images/leaderboardpoints.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
 <details>    <summary>Update user information</summary>    <img src="assets/images/updateuser.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
 
