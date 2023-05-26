@@ -25,6 +25,15 @@ The game itself consists of a single quiz, which contains 1…n questions and a 
 
 The player should be able to leave a session, and the host should also be able to remove them themselves. Additionally, the game should have a time incentive, such as a countdown for answering the current question.
  
+
+# Screenshots from Flutter app:
+<details>    <summary>Login</summary>    <img src="assets/images/login.png" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
+<details>    <summary>Homescreen</summary>    <img src="" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
+<details>    <summary>Create Quiz</summary>    <img src="" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
+<details>    <summary>Join Quiz</summary>    <img src="" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
+<details>    <summary>Play Quiz</summary>    <img src="" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
+<details>    <summary>Update user information</summary>    <img src="" style="display: inline-block; margin: 0 auto; width: 300px; height: auto;"> </details>
+
 ### Developed by: 
 * Andreas Berthelsen
 * Jens Bassem Hanna Issa 
