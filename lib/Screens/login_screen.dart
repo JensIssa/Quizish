@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizish/FireServices/AuthService.dart';
 import 'package:quizish/Screens/homescreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:quizish/Screens/in_app_container.dart';
 import 'package:quizish/Screens/register_screen.dart';
 import 'package:quizish/bloc/login_bloc/LoginCubit.dart';
 import 'package:quizish/bloc/login_bloc/LoginState.dart';
@@ -46,6 +47,18 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
+        if (state.status == LoginStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Login failed - please provide correct email and password'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if(state.status == LoginStatus.succes) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => InAppContainer()),
+          );
+        }
       },
       child: Form(
         key: _formKey,
@@ -93,20 +106,6 @@ class LoginBtn extends StatelessWidget {
           ),
           onPressed: () async {
             await context.read<LoginCubit>().logInWithCredentials();
-            if (state.status == LoginStatus.error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Login failed - please provide correct email and password'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            } else if(state.status == LoginStatus.succes) {
-              navigatorKey.currentState?.pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const HomeScreen(),
-                ),
-              );
-            }
           },
         );
       },
