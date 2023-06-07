@@ -46,7 +46,7 @@ class _InAppContainerState extends State<InAppContainer> {
         title: _widgetOptions[_selectedIndex].item2,
           automaticallyImplyLeading: false,
           actions: [
-            IconButton(onPressed: () {
+            IconButton(onPressed: () async {
               context.read<AppBloc>().add(AppLogOutRequested());
             }, icon: const Icon(Icons.exit_to_app))
           ],

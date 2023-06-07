@@ -54,10 +54,6 @@ class LoginForm extends StatelessWidget {
               backgroundColor: Colors.red,
             ),
           );
-        } else if(state.status == LoginStatus.succes) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => InAppContainer()),
-          );
         }
       },
       child: Form(
